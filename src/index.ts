@@ -3,19 +3,18 @@ import path from "path";
 
 type Graph = Record<string, string[]>;
 
-function fileToFolder(filePath: string) {
-  const parts = filePath.split("/");
-  return parts.slice(0, parts.length - 1).join("/");
-}
-
 function importToAbsolutePath(filePath: string, importPath: string) {
-  return path.join(fileToFolder(filePath), importPath);
+  return path.join(path.dirname(filePath), importPath);
 }
 
 const importRegex = /(?:from\s+|require\()["']((?:\.|\.\.)\/.+)["']/gm;
 function findEdges(filePath: string) {
   const text = fs.readFileSync(filePath).toString();
   const edges: Array<[string, string]> = [];
+  const filePathWithoutExtension = path.join(
+    path.dirname(filePath),
+    path.basename(filePath)
+  );
 
   let m;
 
@@ -35,7 +34,12 @@ function findEdges(filePath: string) {
     //   console.log(filePathWithoutExtension, m[1]);
     //   console.log(importPath);
     // }
-    edges.push([filePath, importPath]);
+    // if (filePathWithoutExtension.includes("ResizeDebugHandler")) {
+    //   console.log("----");
+    //   console.log(filePath);
+    //   console.log(m[1], importPath);
+    // }
+    edges.push([filePathWithoutExtension, importPath]);
   }
 
   return edges;
@@ -74,6 +78,29 @@ function buildGraph(folderPath: string) {
   return { graph, files };
 }
 
+function getSharedParent(path1: string, path2: string) {
+  while (true) {
+    if (!path1 || !path2) {
+      throw new Error("could not find shared parent");
+    }
+
+    if (path1 === path2) {
+      return path1;
+    }
+
+    if (path1.includes(path2)) {
+      return path2;
+    }
+
+    if (path2.includes(path1)) {
+      return path1;
+    }
+
+    path1 = path.dirname(path1);
+    path2 = path.dirname(path2);
+  }
+}
+
 function resolveExtensionAndIndex(filePath: string): string {
   if (path.extname(filePath)) {
     return filePath;
@@ -84,7 +111,7 @@ function resolveExtensionAndIndex(filePath: string): string {
   }
 
   const basename = path.basename(filePath);
-  const folder = fileToFolder(filePath);
+  const folder = path.dirname(filePath);
   const files = fs.readdirSync(folder);
 
   const filePathWithExtension = files.find(
@@ -96,24 +123,19 @@ function resolveExtensionAndIndex(filePath: string): string {
     : path.resolve(filePath);
 }
 
-// let i = 0;
-function buildFileStructure(
-  filePath: string,
-  graph: Graph,
-  destination: string
-) {
+function buildFileStructure(filePaths: string[], graph: Graph) {
   const done: Record<string, string> = {};
 
-  const fn = (filePath: string, graph: Graph, destination: string) => {
+  const fn = (filePath: string, graph: Graph) => {
+    if (path.extname(filePath)) {
+      // console.log(filePath, destination);
+    }
     const filePathWithExtension = resolveExtensionAndIndex(filePath);
     // console.log(
     //   filePathWithExtension,
     //   path.join(destination, basenameWithExtension)
     // );
-    const fullDest = path.join(
-      destination,
-      path.basename(filePathWithExtension)
-    );
+    const fullDest = path.join(fileDest, path.basename(filePathWithExtension));
     try {
       fs.copyFileSync(filePathWithExtension, fullDest);
     } catch (err) {
@@ -125,7 +147,7 @@ function buildFileStructure(
     const imports = graph[filePath];
     if (imports && imports.length) {
       const folderName = path.basename(filePath, path.extname(filePath));
-      const newDestination = path.join(destination, folderName);
+      const newDestination = path.join(fileDest, folderName);
       try {
         fs.mkdirSync(newDestination);
       } catch (err) {
@@ -135,17 +157,47 @@ function buildFileStructure(
       }
       for (const importFilePath of imports) {
         if (importFilePath in done) {
-          continue;
+          // check for cycle
+          const depImports = graph[importFilePath];
+          if (depImports && depImports.includes(filePath)) {
+            console.log("found cycle");
+            continue;
+          } else {
+            // shared file so move it up
+            console.log("shared: ", importFilePath, filePath);
+            // @todo use new [path]
+            const parent = getSharedParent(importFilePath, filePath);
+            const sharedPath = path.join(parent, "shared");
+            if (!fs.existsSync(sharedPath)) {
+              fs.mkdirSync(sharedPath);
+            }
+            const currentPath = done[importFilePath];
+            console.log(
+              "found shared file: ",
+              path.basename(importFilePath),
+              currentPath
+            );
+            const newImportDest = path.join(
+              sharedPath,
+              path.basename(currentPath)
+            );
+            fs.renameSync(currentPath, newImportDest);
+            done[importFilePath] = newImportDest;
+            continue;
+          }
         }
+        console.log("import: ", importFilePath, filePath);
         fn(importFilePath, graph, newDestination);
       }
     }
   };
 
-  fn(filePath, graph, destination);
+  for (const filePath of filePaths) {
+    fn(filePath, graph);
+  }
 }
 
-function graphToFractalTree(graph: Graph) {
+function graphToFractalTree(graph: Graph, oldPath: string, newPath: string) {
   const importedFiles = new Set(Object.values(graph).flat());
   const possibleEntryPoints = Object.keys(graph);
 
@@ -153,28 +205,23 @@ function graphToFractalTree(graph: Graph) {
     file => !importedFiles.has(file)
   );
 
-  const destination = path.join(__dirname, "../tmp/src");
-
   // console.log(entryPoints);
-  for (const entryPoint of entryPoints) {
-    buildFileStructure(entryPoint, graph, destination);
-  }
-
-  // console.log(entryPoints);
-  // console.log(
-  //   graph[
-  //     "/Users/benawad/Documents/programming/debugging/recyclerlistview/src/core/sticky/StickyFooter"
-  //   ]
-  // );
+  buildFileStructure(entryPoints, graph, oldPath, newPath);
 }
 
 (() => {
   // testing :)
   process.argv = ["", "", "../../debugging/recyclerlistview/src"];
+  fs.rmdirSync(path.join(__dirname, "../tmp/src"), { recursive: true });
+  fs.mkdirSync(path.join(__dirname, "../tmp/src"));
   if (process.argv.length < 3) {
     return;
   }
 
   const { graph } = buildGraph(process.argv[2]);
-  graphToFractalTree(graph);
+  graphToFractalTree(
+    graph,
+    "../../debugging/recyclerlistview/src",
+    path.join(__dirname, "../tmp/src")
+  );
 })();
