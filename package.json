@@ -1,0 +1,12 @@
+{
+  "name": "file-structure-formatter",
+  "scripts": {
+    "watch": "tsc -w",
+    "start": "nodemon dist/index.js"
+  },
+  "devDependencies": {
+    "@types/node": "^13.7.0",
+    "nodemon": "^2.0.2",
+    "typescript": "^3.7.5"
+  }
+}
