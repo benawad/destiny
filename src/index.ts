@@ -15,10 +15,10 @@ import path = require("path");
     return;
   }
 
-  const { graph, oldGraph } = buildGraph(process.argv[2]);
+  const { graph, oldGraph } = buildGraph(start);
   const tree = toFractalTree(graph, findEntryPoints(graph));
   // syncFileSystem(oldGraph, tree, path.join(__dirname, "../tmp/src"));
-  syncFileSystem(oldGraph, tree, process.argv[2]);
+  syncFileSystem(oldGraph, tree, start);
   removeEmptyFolders(start);
   // graphToFractalTree(
   //   graph,
