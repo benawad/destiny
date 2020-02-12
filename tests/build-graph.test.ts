@@ -1,20 +1,22 @@
 import { buildGraph } from "../src/buildGraph";
 import path from "path";
 
+const t = (folder: string, g: any) => {
+  it(folder, () => {
+    expect(buildGraph(path.join(__dirname, folder)).graph).toEqual(g);
+  });
+};
+
 describe("build graph", () => {
-  it("simple", () => {
-    expect(buildGraph(path.join(__dirname, "simple")).graph).toEqual({
-      "index.js": ["routes.js"],
-      "routes.js": ["home.js"]
-    });
+  t("simple", {
+    "index.js": ["routes.js"],
+    "routes.js": ["home.js"]
   });
 
-  it("index", () => {
-    expect(buildGraph(path.join(__dirname, "index")).graph).toEqual({
-      "index.js": ["routes/index.js", "login/index.js"],
-      "routes/index.js": ["home/index.js"],
-      "login/index.js": ["utils/search.js"],
-      "utils/search.js": ["index.js"]
-    });
+  t("index-cycle", {
+    "index.js": ["routes/index.js", "login/index.js"],
+    "routes/index.js": ["home/index.js"],
+    "login/index.js": ["utils/search.js"],
+    "utils/search.js": ["index.js"]
   });
 });
