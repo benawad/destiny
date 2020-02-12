@@ -1,29 +1,9 @@
 import fs from "fs";
 import path from "path";
 import { buildGraph } from "./buildGraph";
-
-function getSharedParent(path1: string, path2: string) {
-  while (true) {
-    if (!path1 || !path2) {
-      throw new Error("could not find shared parent");
-    }
-
-    if (path1 === path2) {
-      return path1;
-    }
-
-    if (path1.includes(path2)) {
-      return path2;
-    }
-
-    if (path2.includes(path1)) {
-      return path1;
-    }
-
-    path1 = path.dirname(path1);
-    path2 = path.dirname(path2);
-  }
-}
+import { toFractalTree } from "./toFractalTree";
+import { findEntryPoints } from "./findEntryPoints";
+import { syncFileSystem } from "./syncFileSystem";
 
 (() => {
   console.log("hear");
@@ -35,8 +15,9 @@ function getSharedParent(path1: string, path2: string) {
     return;
   }
 
-  const { graph } = buildGraph(process.argv[2]);
-  console.log(graph);
+  const { graph, oldGraph } = buildGraph(process.argv[2]);
+  const tree = toFractalTree(graph, findEntryPoints(graph));
+  syncFileSystem(oldGraph, tree, path.join(__dirname, "../tmp/src"));
   // graphToFractalTree(
   //   graph,
   //   "../../debugging/recyclerlistview/src",
