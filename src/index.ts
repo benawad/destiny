@@ -18,7 +18,8 @@ import rimraf from "rimraf";
 
   const { graph, oldGraph } = buildGraph(process.argv[2]);
   const tree = toFractalTree(graph, findEntryPoints(graph));
-  syncFileSystem(oldGraph, tree, path.join(__dirname, "../tmp/src"));
+  // syncFileSystem(oldGraph, tree, path.join(__dirname, "../tmp/src"));
+  syncFileSystem(oldGraph, tree, process.argv[2]);
   // graphToFractalTree(
   //   graph,
   //   "../../debugging/recyclerlistview/src",

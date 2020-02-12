@@ -39,6 +39,7 @@ const findSharedParent = (paths: string[]) => {
 export function toFractalTree(graph: Graph, entryPoints: string[]) {
   const done: Record<string, string> = {};
   const deps: Record<string, string[]> = {};
+  let containsCycle = false;
 
   const fn = (filePath: string, folderPath: string, graph: Graph) => {
     let folderName = path.basename(filePath, path.extname(filePath));
@@ -59,7 +60,9 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
       const newDestination = path.join(folderPath, folderName);
       for (const importFilePath of imports) {
         if (importFilePath in done) {
-          if (hasCycle(importFilePath, graph, new Set())) {
+          if (containsCycle) {
+          } else if (hasCycle(importFilePath, graph, new Set())) {
+            containsCycle = true;
             console.log("Cycle detected");
           } else {
             if (!(importFilePath in deps)) {
@@ -86,13 +89,15 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
     fn(filePath, "", graph);
   }
 
-  Object.entries(deps).forEach(([k, v]) => {
-    if (v.length > 1) {
-      const parent = findSharedParent(v);
-      const filename = path.basename(k);
-      done[k] = path.join(parent, "shared", filename);
-    }
-  });
+  if (!containsCycle) {
+    Object.entries(deps).forEach(([k, v]) => {
+      if (v.length > 1) {
+        const parent = findSharedParent(v);
+        const filename = path.basename(k);
+        done[k] = path.join(parent, "shared", filename);
+      }
+    });
+  }
 
   return done;
 }
