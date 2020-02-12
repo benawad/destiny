@@ -4,12 +4,13 @@ import { buildGraph } from "./buildGraph";
 import { toFractalTree } from "./toFractalTree";
 import { findEntryPoints } from "./findEntryPoints";
 import { syncFileSystem } from "./syncFileSystem";
+import rimraf from "rimraf";
 
 (() => {
   console.log("hear");
-  // testing :)
+  // testing :
   process.argv = ["", "", "../../debugging/recyclerlistview/src"];
-  fs.rmdirSync(path.join(__dirname, "../tmp/src"), { recursive: true });
+  rimraf.sync(path.join(__dirname, "../tmp/src"));
   fs.mkdirSync(path.join(__dirname, "../tmp/src"));
   if (process.argv.length < 3) {
     return;

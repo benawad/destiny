@@ -19,11 +19,13 @@ export function buildGraph(folderPath: string) {
       }
       // console.log(file);
       const fullPath = path.resolve(path.join(currentFolderPath, file));
-      // console.log("l: ", fullPath, fs.lstatSync(fullPath).isFile());
+      const start = path.relative(folderPath, fullPath);
+      if (!(start in oldGraph)) {
+        oldGraph[start] = { oldLocation: fullPath, imports: [] };
+      }
       // check if it's a file if it has an extension
       if (fs.lstatSync(fullPath).isFile()) {
         findEdges(fullPath).forEach(edge => {
-          const start = path.relative(folderPath, edge[0]);
           const pathWithExtension = resolveExtensionAndIndex(
             importToAbsolutePath(edge[0], edge[1])
           );
@@ -37,10 +39,6 @@ export function buildGraph(folderPath: string) {
           }
 
           addEdge([start, end], graph);
-
-          if (!(start in oldGraph)) {
-            oldGraph[start] = { oldLocation: edge[0], imports: [] };
-          }
 
           oldGraph[start].imports.push({
             text: edge[1],
