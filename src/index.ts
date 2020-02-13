@@ -7,7 +7,6 @@ import { removeEmptyFolders } from "./index/removeEmptyFolders";
 import { existsSync } from "fs";
 
 (() => {
-  process.argv = ["", "", "../../debugging/recyclerlistview/src"];
   if (process.argv.length < 3) {
     console.log("expected argument (path to your src folder)");
     return;
