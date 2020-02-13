@@ -1,4 +1,4 @@
-import { Graph } from "./Graph";
+import { Graph } from "./shared/Graph";
 import path from "path";
 
 const hasCycle = (node: string, graph: Graph, visited: Set<string>) => {

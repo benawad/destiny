@@ -1,10 +1,10 @@
 import fs from "fs";
 import path from "path";
-import { findEdges } from "./findEdges";
-import { addEdge } from "./addEdge";
-import { Graph, OldGraph } from "./Graph";
-import { resolveExtensionAndIndex } from "./resolveExtensionAndIndex";
-import { importToAbsolutePath } from "./importToAbsolutePath";
+import { findEdges } from "./buildGraph/findEdges";
+import { addEdge } from "./buildGraph/addEdge";
+import { Graph, OldGraph } from "./shared/Graph";
+import { resolveExtensionAndIndex } from "./buildGraph/resolveExtensionAndIndex";
+import { importToAbsolutePath } from "./buildGraph/importToAbsolutePath";
 
 export function buildGraph(folderPath: string) {
   const graph: Graph = {};

@@ -13,20 +13,23 @@ export function resolveExtensionAndIndex(
     }
   }
 
+  const basename = path.basename(filePath);
+  const folder = path.dirname(filePath);
+  const files = fs.readdirSync(folder);
+  const filePathWithExtension = files.find(
+    f =>
+      fs.lstatSync(path.join(folder, f)).isFile() &&
+      path.basename(f, path.extname(f)) === basename
+  );
+
   if (
     !wasIndex &&
+    !filePathWithExtension &&
     fs.existsSync(filePath) &&
     fs.lstatSync(filePath).isDirectory()
   ) {
     return resolveExtensionAndIndex(path.join(filePath, "index"), true);
   }
-
-  const basename = path.basename(filePath);
-  const folder = path.dirname(filePath);
-  const files = fs.readdirSync(folder);
-  const filePathWithExtension = files.find(
-    f => path.basename(f, path.extname(f)) === basename
-  );
 
   const newPath = filePathWithExtension
     ? path.join(folder, filePathWithExtension)

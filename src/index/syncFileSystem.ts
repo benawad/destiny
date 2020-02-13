@@ -1,4 +1,4 @@
-import { OldGraph } from "./Graph";
+import { OldGraph } from "./shared/Graph";
 import fs from "fs";
 import path from "path";
 import mkdirp from "mkdirp";

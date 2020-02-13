@@ -1,4 +1,4 @@
-import { Graph } from "./Graph";
+import { Graph } from "./shared/Graph";
 
 export function findEntryPoints(graph: Graph) {
   const importedFiles = new Set(Object.values(graph).flat());
