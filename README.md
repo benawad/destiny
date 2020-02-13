@@ -1,6 +1,6 @@
 # butler-cli
 
-Prettier for file structures
+Prettier for File Structures
 
 ## What does this do?
 
