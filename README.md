@@ -23,7 +23,7 @@ The end result is a "prettified" file structure.
 ## How to run it
 
 ```
-npx butler-cli src
+npx butler-cli path/to/src
 ```
 
 ## Contributing
