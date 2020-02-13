@@ -27,6 +27,10 @@ The end result is a "prettified" file structure.
 npx butler-cli path/to/src
 ```
 
+## This tool might be useless
+
+It might be better to just name your folders.
+
 ## Contributing
 
 pull requests are welcome :)
