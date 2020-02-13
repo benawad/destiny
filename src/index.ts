@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { buildGraph } from "./index/buildGraph";
 import { findEntryPoints } from "./index/findEntryPoints";
 import { syncFileSystem } from "./index/syncFileSystem";

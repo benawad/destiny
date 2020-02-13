@@ -1,5 +1,8 @@
 {
-  "name": "file-structure-formatter",
+  "version": "0.0.1",
+  "name": "butler-cli",
+  "main": "dist/index.js",
+  "bin": "dist/index.js",
   "scripts": {
     "watch": "tsc -w",
     "start": "nodemon dist/index.js",
@@ -19,7 +22,6 @@
     "typescript": "^3.7.5"
   },
   "dependencies": {
-    "mkdirp": "^1.0.3",
-    "rimraf": "^3.0.2"
+    "mkdirp": "^1.0.3"
   }
 }
