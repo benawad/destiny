@@ -25,6 +25,7 @@ export function buildGraph(folderPath: string) {
       }
       // check if it's a file if it has an extension
       if (fs.lstatSync(fullPath).isFile()) {
+        totalFiles.push(start);
         findEdges(fullPath).forEach(edge => {
           const pathWithExtension = resolveExtensionAndIndex(
             importToAbsolutePath(edge[0], edge[1])
@@ -49,7 +50,6 @@ export function buildGraph(folderPath: string) {
         // console.log("recurse: ", fullPath);
         recurse(fullPath);
       }
-      totalFiles.push(file);
     }
   };
   recurse(folderPath);

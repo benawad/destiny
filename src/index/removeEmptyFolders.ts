@@ -1,4 +1,5 @@
 import fs from "fs";
+import path from "path";
 
 export const removeEmptyFolders = (p: string) => {
   const files = fs.readdirSync(p);
@@ -6,10 +7,11 @@ export const removeEmptyFolders = (p: string) => {
     fs.rmdirSync(p);
   }
   for (const file of files) {
-    if (fs.lstatSync(file).isDirectory()) {
-      removeEmptyFolders(file);
-      if (!fs.readdirSync(file).length) {
-        fs.rmdirSync(file);
+    const fullPath = path.join(p, file);
+    if (fs.lstatSync(fullPath).isDirectory()) {
+      removeEmptyFolders(fullPath);
+      if (!fs.readdirSync(fullPath).length) {
+        fs.rmdirSync(fullPath);
       }
     }
   }

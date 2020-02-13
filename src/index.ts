@@ -1,30 +1,38 @@
 import { buildGraph } from "./index/buildGraph";
-import { toFractalTree } from "./index/toFractalTree";
 import { findEntryPoints } from "./index/findEntryPoints";
 import { syncFileSystem } from "./index/syncFileSystem";
+import { toFractalTree } from "./index/toFractalTree";
 import { removeEmptyFolders } from "./index/removeEmptyFolders";
-import path = require("path");
+import { existsSync } from "fs";
 
 (() => {
-  console.log("hear");
-  // testing :
   process.argv = ["", "", "../../debugging/recyclerlistview/src"];
-  // const start = process.argv[2];
-  const start = path.join(__dirname, "../src");
   if (process.argv.length < 3) {
+    console.log("expected argument (path to your src folder)");
     return;
   }
 
-  const { graph, oldGraph } = buildGraph(start);
+  const start = process.argv[2];
+  if (!existsSync(start)) {
+    console.log("path does not exist: ", start);
+  }
+
+  const { graph, oldGraph, files } = buildGraph(start);
   const tree = toFractalTree(graph, findEntryPoints(graph));
-  console.log(graph);
-  console.log(tree);
-  // syncFileSystem(oldGraph, tree, path.join(__dirname, "../tmp/src"));
-  // syncFileSystem(oldGraph, tree, start);
-  // removeEmptyFolders(start);
-  // graphToFractalTree(
-  //   graph,
-  //   "../../debugging/recyclerlistview/src",
-  //   path.join(__dirname, "../tmp/src")
-  // );
+  syncFileSystem(oldGraph, tree, start);
+  removeEmptyFolders(start);
+  const usedFiles = new Set([
+    ...Object.keys(graph),
+    ...Object.values(graph).flat()
+  ]);
+  const unusedFiles: string[] = [];
+  files.forEach(file => {
+    if (!usedFiles.has(file)) {
+      unusedFiles.push(file);
+    }
+  });
+  if (unusedFiles.length) {
+    console.log("unused files:");
+    unusedFiles.forEach(f => console.log(f));
+  }
 })();
