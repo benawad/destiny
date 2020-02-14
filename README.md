@@ -10,6 +10,7 @@ Video explanation: https://www.youtube.com/watch?v=rGYbrIf-y58
 
 1. Scans a folder for all the files in it
 2. Creates a directed graph based on how the JavaScript/TypeScript files import each other
+![example directed graph](https://github.com/benawad/butler-cli/blob/master/assets/graph.png)
 3. Creates a fractal representation of the graph (following similar rules outlined here: https://hackernoon.com/fractal-a-react-app-structure-for-infinite-scale-4dab943092af)
 4. Moves existing files into the fractal structure
 5. Fixes imports
@@ -24,6 +25,7 @@ The end result is a "prettified" file structure.
 - BEFORE running this tool on your codebase, make sure you have commited to git or made a backup (I don't expect the tool to destroy your work (although it's possible), but just in case you don't like the results)
 - Haven't tested this on Windows so idk if it'll work, but I'm using the `path` module so it might.
 - Snapshot tests don't format correctly
+- Only works on JavaScript/TypeScript codebases (althought this concept could probably be extended to any language)
 
 ## How to run it
 
