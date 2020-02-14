@@ -4,6 +4,8 @@ Prettier for File Structures
 
 Video explanation: https://www.youtube.com/watch?v=rGYbrIf-y58
 
+![example transformation](https://github.com/benawad/butler-cli/blob/master/assets/example.png)
+
 ## What does this do?
 
 1. Scans a folder for all the files in it
