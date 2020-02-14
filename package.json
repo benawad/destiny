@@ -7,7 +7,7 @@
     "watch": "tsc -w",
     "start": "nodemon dist/index.js",
     "test": "jest --watch tests",
-		"lint": "eslint \"{src,test}/**/*.{ts,js}\"",
+    "lint": "eslint \"{src,test}/**/*.{ts,js}\"",
     "prepare": "tsc"
   },
   "devDependencies": {
