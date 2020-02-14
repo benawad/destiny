@@ -3,7 +3,7 @@ import path from "path";
 
 const t = (folder: string, g: any) => {
   it(folder, () => {
-    expect(buildGraph(path.join(__dirname, folder)).graph).toEqual(g);
+    expect(buildGraph(path.join(__dirname, "fixtures", folder)).graph).toEqual(g);
   });
 };
 

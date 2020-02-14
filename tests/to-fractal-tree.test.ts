@@ -5,7 +5,7 @@ import path from "path";
 
 const t = (folder: string, g2: any, entryPoints?: string[]) => {
   it(folder, () => {
-    const g1 = buildGraph(path.join(__dirname, folder)).graph;
+    const g1 = buildGraph(path.join(__dirname, "fixtures", folder)).graph;
     expect(toFractalTree(g1, entryPoints || findEntryPoints(g1))).toEqual(g2);
   });
 };
@@ -30,5 +30,14 @@ describe("toFractalTree", () => {
     "footer/index.js": "index/footer.js",
     "header/index.js": "index/header.js",
     "header/helper.js": "index/shared/helper.js"
+  });
+
+  t("spec-files", {
+    "index.js": "index.js",
+    "index.spec.js": "index.spec.js",
+    "level1.js": "index/level1.js",
+    "level1.spec.js": "index/level1.spec.js",
+    "level2.js": "index/level1/level2.js",
+    "level2.spec.js": "index/level1/level2.spec.js",
   });
 });
