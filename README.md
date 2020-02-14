@@ -1,6 +1,6 @@
 # butler-cli
 
-Prettier for file structures
+Prettier for File Structures
 
 ## What does this do?
 
@@ -19,12 +19,17 @@ The end result is a "prettified" file structure.
 - This is a work in progress and 100% has bugs of some kind in it
 - BEFORE running this tool on your codebase, make sure you have commited to git or made a backup (I don't expect the tool to destroy your work (although it's possible), but just in case you don't like the results)
 - Haven't tested this on Windows so idk if it'll work, but I'm using the `path` module so it might.
+- Snapshot tests don't format correctly
 
 ## How to run it
 
 ```
-npx butler-cli src
+npx butler-cli path/to/src
 ```
+
+## This tool might be useless
+
+It might be better to just name your folders.
 
 ## Contributing
 
