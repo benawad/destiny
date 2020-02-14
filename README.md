@@ -25,6 +25,7 @@ The end result is a "prettified" file structure.
 - BEFORE running this tool on your codebase, make sure you have commited to git or made a backup (I don't expect the tool to destroy your work (although it's possible), but just in case you don't like the results)
 - Haven't tested this on Windows so idk if it'll work, but I'm using the `path` module so it might.
 - Snapshot tests don't format correctly
+- Only works on JavaScript/TypeScript codebases (althought this concept could probably be extended to any language)
 
 ## How to run it
 
