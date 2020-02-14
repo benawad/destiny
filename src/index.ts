@@ -18,9 +18,9 @@ import { flatten } from "./shared/flatten";
     console.log("path does not exist: ", start);
   }
 
-  const { graph, oldGraph, files } = buildGraph(start);
+  const { graph, oldGraph, files, useForwardSlash } = buildGraph(start);
   const tree = toFractalTree(graph, findEntryPoints(graph));
-  syncFileSystem(oldGraph, tree, start);
+  syncFileSystem(oldGraph, tree, start, useForwardSlash);
   removeEmptyFolders(start);
   const usedFiles = new Set([
     ...Object.keys(graph),

@@ -10,6 +10,8 @@ export function buildGraph(folderPath: string) {
   const graph: Graph = {};
   const oldGraph: OldGraph = {};
   const totalFiles: string[] = [];
+  let numForwardSlashes = 0;
+  let numBackSlashes = 0;
   const recurse = (currentFolderPath: string) => {
     const files = fs.readdirSync(currentFolderPath);
     // console.log(currentFolderPath, files);
@@ -27,6 +29,12 @@ export function buildGraph(folderPath: string) {
       if (fs.lstatSync(fullPath).isFile()) {
         totalFiles.push(start);
         findEdges(fullPath).forEach(edge => {
+          if (edge[1].includes("/")) {
+            numForwardSlashes++;
+          } else if (edge[1].includes("\\")) {
+            numBackSlashes++;
+          }
+
           const pathWithExtension = resolveExtensionAndIndex(
             importToAbsolutePath(edge[0], edge[1])
           );
@@ -53,5 +61,10 @@ export function buildGraph(folderPath: string) {
     }
   };
   recurse(folderPath);
-  return { graph, files: totalFiles, oldGraph };
+  return {
+    graph,
+    files: totalFiles,
+    oldGraph,
+    useForwardSlash: numForwardSlashes >= numBackSlashes ? true : false
+  };
 }

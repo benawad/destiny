@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import mkdirp from "mkdirp";
 
-const makeImportPath = (p1: string, p2: string) => {
+const makeImportPath = (p1: string, p2: string, useForwardSlashes: boolean) => {
   const fullPath = path.relative(path.dirname(p1), p2);
   const ext = path.extname(fullPath);
   let newImport = path.join(
@@ -15,13 +15,20 @@ const makeImportPath = (p1: string, p2: string) => {
     newImport = "./" + newImport;
   }
 
+  if (useForwardSlashes) {
+    newImport = newImport.replace("\\", "/");
+  } else {
+    newImport = newImport.replace("/", "\\");
+  }
+
   return newImport;
 };
 
 export const syncFileSystem = (
   originalGraph: OldGraph,
   newStructure: Record<string, string>,
-  destination: string
+  destination: string,
+  useForwardSlashes: boolean
 ) => {
   Object.entries(newStructure).forEach(([k, newLocation]) => {
     // skip globals
@@ -46,7 +53,7 @@ export const syncFileSystem = (
       // console.log("replace: ", imp.text, newImport);
       oldText = oldText.replace(
         imp.text,
-        makeImportPath(newLocation, importLocation)
+        makeImportPath(newLocation, importLocation, useForwardSlashes)
       );
     });
     fs.writeFileSync(newFullLocation, oldText);
