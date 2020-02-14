@@ -2,6 +2,8 @@
 
 Prettier for File Structures
 
+Video explanation: https://www.youtube.com/watch?v=rGYbrIf-y58
+
 ## What does this do?
 
 1. Scans a folder for all the files in it

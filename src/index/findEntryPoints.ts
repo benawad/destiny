@@ -1,7 +1,8 @@
 import { Graph } from "./shared/Graph";
+import { flatten } from "../shared/flatten";
 
 export function findEntryPoints(graph: Graph) {
-  const importedFiles = new Set(Object.values(graph).flat());
+  const importedFiles = new Set(flatten(Object.values(graph)));
   const possibleEntryPoints = Object.keys(graph);
   const entryPoints = possibleEntryPoints.filter(
     file => !importedFiles.has(file)

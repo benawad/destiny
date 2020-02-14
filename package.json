@@ -1,12 +1,13 @@
 {
-  "version": "0.0.6",
+  "version": "0.0.8",
   "name": "butler-cli",
   "main": "dist/index.js",
   "bin": "dist/index.js",
   "scripts": {
     "watch": "tsc -w",
     "start": "nodemon dist/index.js",
-    "test": "jest --watch tests"
+    "test": "jest --watch tests",
+    "prepare": "tsc"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",

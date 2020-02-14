@@ -5,6 +5,7 @@ import { syncFileSystem } from "./index/syncFileSystem";
 import { toFractalTree } from "./index/toFractalTree";
 import { removeEmptyFolders } from "./index/removeEmptyFolders";
 import { existsSync } from "fs";
+import { flatten } from "./shared/flatten";
 
 (() => {
   if (process.argv.length < 3) {
@@ -23,7 +24,7 @@ import { existsSync } from "fs";
   removeEmptyFolders(start);
   const usedFiles = new Set([
     ...Object.keys(graph),
-    ...Object.values(graph).flat()
+    ...flatten(Object.values(graph))
   ]);
   const unusedFiles: string[] = [];
   files.forEach(file => {
