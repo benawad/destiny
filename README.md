@@ -2,7 +2,7 @@
 
 Prettier for File Structures
 
-https://www.youtube.com/watch?v=rGYbrIf-y58
+Video explanation: https://www.youtube.com/watch?v=rGYbrIf-y58
 
 ## What does this do?
 
