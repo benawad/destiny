@@ -24,5 +24,10 @@
   },
   "dependencies": {
     "mkdirp": "^1.0.3"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/tests/fixtures/"
+    ]
   }
 }
