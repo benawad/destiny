@@ -62,7 +62,7 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
       const newDestination = path.join(folderPath, folderName);
       for (const importFilePath of imports) {
         if (importFilePath in done) {
-          if (containsCycle) if (hasCycle(importFilePath, graph, new Set())) {
+          if (hasCycle(importFilePath, graph, new Set())) {
             containsCycle = true;
             console.log("Cycle detected");
           } else {
