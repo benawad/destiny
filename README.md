@@ -3,7 +3,7 @@
 Prettier for File Structures
 
 [![npm version](https://badge.fury.io/js/butler-cli.svg)](https://badge.fury.io/js/butler-cli)
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](benawad/butler-cli/issues)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/benawad/butler-cli/issues)
 
 ---
 
