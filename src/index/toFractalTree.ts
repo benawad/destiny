@@ -50,11 +50,11 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
     const location = filePath.includes("..")
       ? filePath
       : path.join(
-        folderPath,
-        folderName === "index" && upperFolder && upperFolder !== "."
-          ? upperFolder + path.extname(filePath)
-          : basenameWithExt
-      );
+          folderPath,
+          folderName === "index" && upperFolder && upperFolder !== "."
+            ? upperFolder + path.extname(filePath)
+            : basenameWithExt
+        );
     folderName = path.basename(location, path.extname(location));
     done[filePath] = location;
     const imports = graph[filePath];
