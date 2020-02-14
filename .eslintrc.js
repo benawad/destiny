@@ -41,6 +41,7 @@ module.exports = {
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+		// keep at the end
     "plugin:prettier/recommended",
   ],
   parserOptions: {
