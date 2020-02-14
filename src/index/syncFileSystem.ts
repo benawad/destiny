@@ -16,9 +16,11 @@ const makeImportPath = (p1: string, p2: string, useForwardSlashes: boolean) => {
   }
 
   if (useForwardSlashes) {
-    newImport = newImport.replace("\\", "/");
+    // Replace \ with /
+    newImport = newImport.replace(/\\/g, "/");
   } else {
-    newImport = newImport.replace("/", "\\");
+    // Replace / and \ with \\
+    newImport = newImport.replace(/\/|\\+/g, "\\\\");
   }
 
   return newImport;
