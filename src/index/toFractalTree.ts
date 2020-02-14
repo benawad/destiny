@@ -50,11 +50,11 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
     const location = filePath.includes("..")
       ? filePath
       : path.join(
-          folderPath,
-          folderName === "index" && upperFolder && upperFolder !== "."
-            ? upperFolder + path.extname(filePath)
-            : basenameWithExt
-        );
+        folderPath,
+        folderName === "index" && upperFolder && upperFolder !== "."
+          ? upperFolder + path.extname(filePath)
+          : basenameWithExt
+      );
     folderName = path.basename(location, path.extname(location));
     done[filePath] = location;
     const imports = graph[filePath];
@@ -62,8 +62,7 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
       const newDestination = path.join(folderPath, folderName);
       for (const importFilePath of imports) {
         if (importFilePath in done) {
-          if (containsCycle) {
-          } else if (hasCycle(importFilePath, graph, new Set())) {
+          if (hasCycle(importFilePath, graph, new Set())) {
             containsCycle = true;
             console.log("Cycle detected");
           } else {

@@ -1,7 +1,7 @@
 import fs from "fs";
 
 export function findEdges(filePath: string) {
-  const importRegex = /^[^\/\n\r].+(?:from\s+["'](\.[^'"]*)["'])|(?:(?:require|import)\(["'](\.[^'"]*)["']\))/gm;
+  const importRegex = /^[^/\n\r].+(?:from\s+["'](\.[^'"]*)["'])|(?:(?:require|import)\(["'](\.[^'"]*)["']\))/gm;
   const text = fs.readFileSync(filePath, { encoding: "utf8" }).toString();
   const edges: Array<[string, string]> = [];
   let m;
