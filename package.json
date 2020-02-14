@@ -7,6 +7,7 @@
     "watch": "tsc -w",
     "start": "nodemon dist/index.js",
     "test": "jest --watch tests",
+		"lint": "eslint \"{src,test}/**/*.{ts,js}\"",
     "prepare": "tsc"
   },
   "devDependencies": {
@@ -17,7 +18,10 @@
     "@types/mkdirp": "^1.0.0",
     "@types/node": "^13.7.0",
     "@types/rimraf": "^2.0.3",
+    "@typescript-eslint/eslint-plugin": "^2.19.2",
+    "@typescript-eslint/parser": "^2.19.2",
     "babel-jest": "^25.1.0",
+    "eslint": "^6.8.0",
     "jest": "^25.1.0",
     "nodemon": "^2.0.2",
     "typescript": "^3.7.5"
