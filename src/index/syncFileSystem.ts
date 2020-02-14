@@ -11,6 +11,10 @@ const makeImportPath = (p1: string, p2: string) => {
     path.basename(fullPath, ext === ".json" ? undefined : ext)
   );
 
+  if (process.platform === "win32") {
+    newImport = newImport.replace(/\\/g, "/");
+  }
+
   if (!newImport.startsWith(".")) {
     newImport = "./" + newImport;
   }
