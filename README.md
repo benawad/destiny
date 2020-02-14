@@ -2,6 +2,11 @@
 
 Prettier for File Structures
 
+[![npm version](https://badge.fury.io/js/butler-cli.svg)](https://badge.fury.io/js/butler-cli)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/benawad/butler-cli/issues)
+
+---
+
 Video explanation: https://www.youtube.com/watch?v=rGYbrIf-y58
 
 ![example transformation](https://github.com/benawad/butler-cli/blob/master/assets/example.png)
@@ -10,7 +15,7 @@ Video explanation: https://www.youtube.com/watch?v=rGYbrIf-y58
 
 1. Scans a folder for all the files in it
 2. Creates a directed graph based on how the JavaScript/TypeScript files import each other
-![example directed graph](https://github.com/benawad/butler-cli/blob/master/assets/graph.png)
+   ![example directed graph](https://github.com/benawad/butler-cli/blob/master/assets/graph.png)
 3. Creates a fractal representation of the graph (following similar rules outlined here: https://hackernoon.com/fractal-a-react-app-structure-for-infinite-scale-4dab943092af)
 4. Moves existing files into the fractal structure
 5. Fixes imports
