@@ -18,7 +18,7 @@ cli
       process.exit(1);
     }
 
-    formatFileStructure(start);
+    await formatFileStructure(start);
   })
   // keep at the end
   .parse(process.argv);
