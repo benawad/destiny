@@ -6,8 +6,6 @@ import { Graph, OldGraph } from "./shared/Graph";
 import { resolveExtensionAndIndex } from "./buildGraph/resolveExtensionAndIndex";
 import { importToAbsolutePath } from "./buildGraph/importToAbsolutePath";
 
-const isTestFile = (f: string) => /\.test\.|\.spec\./.test(f);
-
 export function buildGraph(
   folderPath: string,
   throwIfCannotBeResolved = false
@@ -27,12 +25,10 @@ export function buildGraph(
       // console.log(file);
       const fullPath = path.resolve(path.join(currentFolderPath, file));
       const start = path.relative(folderPath, fullPath);
-      const isTestOrSpec = isTestFile(start);
       if (!(start in oldGraph)) {
         oldGraph[start] = {
           oldLocation: fullPath,
           imports: [],
-          reversed: isTestOrSpec,
         };
       }
       // check if it's a file if it has an extension
@@ -62,11 +58,10 @@ export function buildGraph(
             end = path.relative(folderPath, pathWithExtension);
           }
 
-          // flip edge if the file is a .test.js or .spec.js file
-          addEdge(isTestOrSpec ? [end, start] : [start, end], graph);
+          addEdge([start, end], graph);
 
-          oldGraph[isTestOrSpec ? end : start].imports.push({
-            text: isTestOrSpec ? edge[0] : edge[1],
+          oldGraph[start].imports.push({
+            text: edge[1],
             resolved: end,
           });
         });

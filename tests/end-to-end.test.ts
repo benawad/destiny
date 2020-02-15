@@ -2,6 +2,7 @@ import fs from "fs-extra";
 import path from "path";
 import { formatFileStructure } from "../src/index/formatFileStructure";
 import { buildGraph } from "../src/index/formatFileStructure/buildGraph";
+import treeDir from "tree-node-cli";
 
 const tmpPath = path.join(__dirname, "tmp");
 
@@ -13,27 +14,24 @@ afterAll(() => {
   fs.removeSync(tmpPath);
 });
 
-interface Node {
-  filePath: string;
-  contents: string;
-}
-
 const treeDirWithContents = (dir: string) => {
   const files = fs.readdirSync(dir);
-  const nodes: Node[] = [];
+  let tree: Record<string, string> = {};
   for (const file of files) {
     const filePath = path.join(dir, file);
     if (fs.lstatSync(filePath).isDirectory()) {
-      nodes.push(...treeDirWithContents(filePath));
+      tree = {
+        ...tree,
+        ...treeDirWithContents(filePath),
+      };
     } else {
-      nodes.push({
-        filePath: path.relative(tmpPath, filePath),
-        contents: fs.readFileSync(filePath).toString(),
-      });
+      tree[path.relative(tmpPath, filePath)] = fs
+        .readFileSync(filePath)
+        .toString();
     }
   }
 
-  return nodes;
+  return tree;
 };
 
 describe("end-to-end", () => {
@@ -47,7 +45,11 @@ describe("end-to-end", () => {
       await formatFileStructure(copyPath);
       // make sure no imports broke
       buildGraph(copyPath, true);
-      expect(treeDirWithContents(copyPath)).toMatchSnapshot();
+      expect(treeDir(copyPath)).toMatchSnapshot();
+      const treeContents = treeDirWithContents(copyPath);
+      Object.keys(treeContents).forEach(k => {
+        expect(treeContents[k]).toMatchSnapshot(k);
+      });
     });
   }
 });

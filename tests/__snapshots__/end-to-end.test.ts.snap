@@ -1,119 +1,140 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`end-to-end index-cycle 1`] = `
-Array [
-  Object {
-    "contents": "import { five } from \\"../../index\\";
+"index-cycle
+├── index
+│   ├── login
+│   │   └── search.js
+│   ├── login.js
+│   ├── routes
+│   │   └── home.js
+│   └── routes.js
+└── index.js"
+`;
 
-export const six = five + 1;
-",
-    "filePath": "index-cycle/index/login/search.js",
-  },
-  Object {
-    "contents": "import { six } from \\"./login/search\\";
+exports[`end-to-end index-cycle: index-cycle/index.js 1`] = `
+"export { five } from \\"./index/routes\\";
+export { seven } from \\"./index/login\\";
+"
+`;
+
+exports[`end-to-end index-cycle: index-cycle/index/login.js 1`] = `
+"import { six } from \\"./login/search\\";
 
 export const seven = six + 1;
-",
-    "filePath": "index-cycle/index/login.js",
-  },
-  Object {
-    "contents": "export const five = 5;
-",
-    "filePath": "index-cycle/index/routes/home.js",
-  },
-  Object {
-    "contents": "export * from \\"./routes/home\\";
-",
-    "filePath": "index-cycle/index/routes.js",
-  },
-  Object {
-    "contents": "export { five } from \\"./index/routes\\";
-export { seven } from \\"./index/login\\";
-",
-    "filePath": "index-cycle/index.js",
-  },
-]
+"
+`;
+
+exports[`end-to-end index-cycle: index-cycle/index/login/search.js 1`] = `
+"import { five } from \\"../../index\\";
+
+export const six = five + 1;
+"
+`;
+
+exports[`end-to-end index-cycle: index-cycle/index/routes.js 1`] = `
+"export * from \\"./routes/home\\";
+"
+`;
+
+exports[`end-to-end index-cycle: index-cycle/index/routes/home.js 1`] = `
+"export const five = 5;
+"
 `;
 
 exports[`end-to-end sharing 1`] = `
-Array [
-  Object {
-    "contents": "import { five } from \\"./shared/helper\\";
+"sharing
+├── index
+│   ├── footer.js
+│   ├── header.js
+│   └── shared
+│       └── helper.js
+└── index.js"
+`;
+
+exports[`end-to-end sharing: sharing/index.js 1`] = `
+"export * from \\"./index/footer\\";
+export * from \\"./index/header\\";
+"
+`;
+
+exports[`end-to-end sharing: sharing/index/footer.js 1`] = `
+"import { five } from \\"./shared/helper\\";
 
 export const seven = five + 2;
-",
-    "filePath": "sharing/index/footer.js",
-  },
-  Object {
-    "contents": "import { five } from \\"./shared/helper\\";
+"
+`;
+
+exports[`end-to-end sharing: sharing/index/header.js 1`] = `
+"import { five } from \\"./shared/helper\\";
 export const six = five + 1;
-",
-    "filePath": "sharing/index/header.js",
-  },
-  Object {
-    "contents": "export const five = 5;
-",
-    "filePath": "sharing/index/shared/helper.js",
-  },
-  Object {
-    "contents": "export * from \\"./index/footer\\";
-export * from \\"./index/header\\";
-",
-    "filePath": "sharing/index.js",
-  },
-]
+"
+`;
+
+exports[`end-to-end sharing: sharing/index/shared/helper.js 1`] = `
+"export const five = 5;
+"
 `;
 
 exports[`end-to-end simple 1`] = `
-Array [
-  Object {
-    "contents": "export const five = 5;
-",
-    "filePath": "simple/index/routes/home.js",
-  },
-  Object {
-    "contents": "export * from \\"./routes/home\\";
-",
-    "filePath": "simple/index/routes.js",
-  },
-  Object {
-    "contents": "import { five } from \\"./index/routes\\";
-",
-    "filePath": "simple/index.js",
-  },
-]
+"simple
+├── index
+│   ├── routes
+│   │   └── home.js
+│   └── routes.js
+└── index.js"
+`;
+
+exports[`end-to-end simple: simple/index.js 1`] = `
+"import { five } from \\"./index/routes\\";
+"
+`;
+
+exports[`end-to-end simple: simple/index/routes.js 1`] = `
+"export * from \\"./routes/home\\";
+"
+`;
+
+exports[`end-to-end simple: simple/index/routes/home.js 1`] = `
+"export const five = 5;
+"
 `;
 
 exports[`end-to-end spec-files 1`] = `
-Array [
-  Object {
-    "contents": "require(\\"./index\\");
-",
-    "filePath": "spec-files/index/index.spec.js",
-  },
-  Object {
-    "contents": "require(\\"./level1\\");
-",
-    "filePath": "spec-files/index/level1/level1.spec.js",
-  },
-  Object {
-    "contents": "require(\\"./level2\\");
-",
-    "filePath": "spec-files/index/level1/level2/level2.spec.js",
-  },
-  Object {
-    "contents": "",
-    "filePath": "spec-files/index/level1/level2.js",
-  },
-  Object {
-    "contents": "require(\\"./level1/level2\\");
-",
-    "filePath": "spec-files/index/level1.js",
-  },
-  Object {
-    "contents": "require(\\"./index/level1\\");
-",
-    "filePath": "spec-files/index.js",
-  },
-]
+"spec-files
+├── index
+│   ├── level1
+│   │   ├── level2.js
+│   │   └── level2.spec.js
+│   ├── level1.js
+│   └── level1.spec.js
+├── index.js
+└── index.spec.js"
+`;
+
+exports[`end-to-end spec-files: spec-files/index.js 1`] = `
+"require(\\"./index/level1\\");
+"
+`;
+
+exports[`end-to-end spec-files: spec-files/index.spec.js 1`] = `
+"require(\\"./index\\");
+"
+`;
+
+exports[`end-to-end spec-files: spec-files/index/level1.js 1`] = `
+"require(\\"./level1/level2\\");
+"
+`;
+
+exports[`end-to-end spec-files: spec-files/index/level1.spec.js 1`] = `
+"require(\\"./level1\\");
+"
+`;
+
+exports[`end-to-end spec-files: spec-files/index/level1/level2.js 1`] = `""`;
+
+exports[`end-to-end spec-files: spec-files/index/level1/level2.spec.js 1`] = `
+"require(\\"./level2\\");
+"
 `;
