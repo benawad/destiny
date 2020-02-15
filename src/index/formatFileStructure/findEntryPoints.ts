@@ -1,5 +1,5 @@
 import { Graph } from "./shared/Graph";
-import { isTestFile } from "./isTestFile";
+import { isTestFile } from "./shared/isTestFile";
 
 const invertGraph = (graph: Graph) => {
   const invertedGraph: Graph = {};

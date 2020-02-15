@@ -3,7 +3,7 @@ import { findEntryPoints } from "./formatFileStructure/findEntryPoints";
 import { syncFileSystem } from "./formatFileStructure/syncFileSystem";
 import { toFractalTree } from "./formatFileStructure/toFractalTree";
 import { removeEmptyFolders } from "./formatFileStructure/removeEmptyFolders";
-import { flatten } from "./shared/flatten";
+import { flatten } from "./formatFileStructure/flatten";
 export const formatFileStructure = async (start: string) => {
   const { graph, oldGraph, files, useForwardSlash } = buildGraph(start);
   const tree = toFractalTree(graph, findEntryPoints(graph));

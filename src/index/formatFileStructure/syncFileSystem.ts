@@ -44,7 +44,7 @@ export const syncFileSystem = async ({
         } catch {}
       }
       if (shouldGitMv) {
-        await git.mv(oldLocation, newFullLocation);
+        await git.mv(oldLocation, resolvedNewLocation);
       } else {
         // move
         fs.renameSync(oldLocation, newFullLocation);
