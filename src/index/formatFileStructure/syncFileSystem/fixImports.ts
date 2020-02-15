@@ -1,7 +1,7 @@
 import fs from "fs-extra";
 import { makeImportPath } from "./fixImports/makeImportPath";
 import { OldGraph } from "../shared/Graph";
-export function fixImports(
+export function oldFixImports(
   newFullLocation: string,
   imports: OldGraph[0]["imports"],
   newStructure: Record<string, string>,

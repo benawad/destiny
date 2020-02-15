@@ -1,20 +1,22 @@
 import { buildGraph } from "./formatFileStructure/buildGraph";
 import { findEntryPoints } from "./formatFileStructure/findEntryPoints";
-import { syncFileSystem } from "./formatFileStructure/syncFileSystem";
+import { moveFiles } from "./formatFileStructure/moveFiles";
 import { toFractalTree } from "./formatFileStructure/toFractalTree";
 import { removeEmptyFolders } from "./formatFileStructure/removeEmptyFolders";
 import { flatten } from "./formatFileStructure/flatten";
-export const formatFileStructure = async (start: string) => {
-  const { graph, oldGraph, files, useForwardSlash } = buildGraph(start);
+import { fixImports } from "./fixImports";
+
+export const formatFileStructure = async (
+  startingFiles: string[],
+  filesToFixImports: string[]
+) => {
+  const { graph, files, useForwardSlash, parentFolder } = buildGraph(
+    startingFiles
+  );
   const tree = toFractalTree(graph, findEntryPoints(graph));
-  await syncFileSystem({
-    originalGraph: oldGraph,
-    newStructure: tree,
-    destination: start,
-    useForwardSlashes: useForwardSlash,
-    startingFolder: start,
-  });
-  removeEmptyFolders(start);
+  await fixImports(filesToFixImports, parentFolder, tree, useForwardSlash);
+  await moveFiles(tree, parentFolder);
+  removeEmptyFolders(parentFolder);
   const usedFiles = new Set([
     ...Object.keys(graph),
     ...flatten(Object.values(graph)),

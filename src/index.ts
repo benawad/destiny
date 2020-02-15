@@ -13,17 +13,9 @@ cli
   .action(path => {
     if (path === "help") return;
 
-    glob(path, (err, files) => {
-      if (err || !files.length) {
-        console.log("Not able to resolve the given path.");
-        console.error(err);
-        process.exit(1);
-      }
-
-      files.forEach(async file => {
-        await formatFileStructure(file);
-      });
-    });
+    const filesToStructure = glob.sync(path);
+    const filesToFixImports = filesToStructure;
+    formatFileStructure(filesToStructure, filesToFixImports);
   })
   // keep at the end
   .parse(process.argv);

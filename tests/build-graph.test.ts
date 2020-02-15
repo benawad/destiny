@@ -1,11 +1,14 @@
 import { buildGraph } from "../src/index/formatFileStructure/buildGraph";
 import path from "path";
+import glob from "glob";
 
 const t = (folder: string, g: any) => {
   it(folder, () => {
-    expect(buildGraph(path.join(__dirname, "fixtures", folder)).graph).toEqual(
-      g
-    );
+    expect(
+      buildGraph(
+        glob.sync(path.join(__dirname, "fixtures", folder, "/**/*.js"))
+      ).graph
+    ).toEqual(g);
   });
 };
 
