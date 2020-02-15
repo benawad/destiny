@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { existsSync } from "fs";
 import commander from "commander";
+import glob from "glob";
 import { formatFileStructure } from "./index/formatFileStructure";
 
 export const cli = new commander.Command();
@@ -10,15 +10,20 @@ cli
   .name("butler")
   .description("Prettier for File Structures")
   .arguments("<path>")
-  .action(async start => {
-    if (start === "help") return;
+  .action(path => {
+    if (path === "help") return;
 
-    if (!existsSync(start)) {
-      console.log("path does not exist: ", start);
-      process.exit(1);
-    }
+    glob(path, (err, files) => {
+      if (err || !files.length) {
+        console.log("Not able to resolve the given path.");
+        console.error(err);
+        process.exit(1);
+      }
 
-    await formatFileStructure(start);
+      files.forEach(async file => {
+        await formatFileStructure(file);
+      });
+    });
   })
   // keep at the end
   .parse(process.argv);
