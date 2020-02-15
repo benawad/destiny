@@ -2,37 +2,32 @@ import { OldGraph } from "./shared/Graph";
 import fs from "fs";
 import path from "path";
 import mkdirp from "mkdirp";
+import Git from "simple-git/promise";
+import { makeImportPath } from "./syncFileSystem/makeImportPath";
 
-const makeImportPath = (p1: string, p2: string, useForwardSlashes: boolean) => {
-  const fullPath = path.relative(path.dirname(p1), p2);
-  const ext = path.extname(fullPath);
-  let newImport = path.join(
-    path.dirname(fullPath),
-    path.basename(fullPath, ext === ".json" ? undefined : ext)
-  );
-
-  if (!newImport.startsWith(".")) {
-    newImport = "./" + newImport;
-  }
-
-  if (useForwardSlashes) {
-    // Replace \ with /
-    newImport = newImport.replace(/\\/g, "/");
-  } else {
-    // Replace / and \ with \\
-    newImport = newImport.replace(/\/|\\+/g, "\\\\");
-  }
-
-  return newImport;
-};
-
-export const syncFileSystem = (
-  originalGraph: OldGraph,
-  newStructure: Record<string, string>,
-  destination: string,
-  useForwardSlashes: boolean
-) => {
-  Object.entries(newStructure).forEach(([k, newLocation]) => {
+export const syncFileSystem = async ({
+  originalGraph,
+  newStructure,
+  destination,
+  useForwardSlashes,
+  startingFolder,
+}: {
+  originalGraph: OldGraph;
+  newStructure: Record<string, string>;
+  destination: string;
+  useForwardSlashes: boolean;
+  startingFolder: string;
+}) => {
+  const git = Git(startingFolder);
+  let isRepo = false;
+  let notAdded;
+  try {
+    isRepo = await git.checkIsRepo();
+    if (isRepo) {
+      notAdded = (await git.status()).not_added.map(x => path.resolve(x));
+    }
+  } catch {}
+  for (const [k, newLocation] of Object.entries(newStructure)) {
     // skip globals
     if (k.includes("..")) {
       return;
@@ -41,11 +36,18 @@ export const syncFileSystem = (
     const newFullLocation = path.join(destination, newLocation);
     // make folders
     mkdirp.sync(path.dirname(newFullLocation));
-    // move
-    fs.renameSync(oldLocation, newFullLocation);
+    const resolvedNewLocation = path.resolve(newFullLocation);
+    if (oldLocation !== resolvedNewLocation) {
+      if (isRepo && !notAdded?.includes(resolvedNewLocation)) {
+        await git.mv(oldLocation, newFullLocation);
+      } else {
+        // move
+        fs.renameSync(oldLocation, newFullLocation);
+      }
+    }
 
     if (!imports.length) {
-      return;
+      continue;
     }
 
     // fix imports
@@ -59,5 +61,5 @@ export const syncFileSystem = (
       );
     });
     fs.writeFileSync(newFullLocation, oldText);
-  });
+  }
 };

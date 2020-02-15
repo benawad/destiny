@@ -8,6 +8,7 @@ module.exports = {
     "space-before-blocks": [2, "always"],
     "no-mixed-spaces-and-tabs": [2, "smart-tabs"],
     "no-cond-assign": 0,
+    "no-empty": 0,
     "object-shorthand": [2, "always"],
     "no-const-assign": 2,
     "no-class-assign": 2,
@@ -22,7 +23,7 @@ module.exports = {
     "arrow-spacing": 2,
     "no-inner-declarations": 0,
     "require-atomic-updates": "off",
-    "quotes": "off",
+    quotes: "off",
     "@typescript-eslint/quotes": ["error", "double"],
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
@@ -37,7 +38,7 @@ module.exports = {
     es6: true,
     browser: true,
     node: true,
-    jest: true
+    jest: true,
   },
   extends: [
     "eslint:recommended",
@@ -56,6 +57,5 @@ module.exports = {
         "@typescript-eslint/no-var-requires": "off",
       },
     },
-  ]
+  ],
 };
-

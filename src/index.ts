@@ -7,7 +7,7 @@ import { removeEmptyFolders } from "./index/removeEmptyFolders";
 import { existsSync } from "fs";
 import { flatten } from "./shared/flatten";
 
-(() => {
+(async () => {
   if (process.argv.length < 3) {
     console.log("expected argument (path to your src folder)");
     return;
@@ -20,7 +20,13 @@ import { flatten } from "./shared/flatten";
 
   const { graph, oldGraph, files, useForwardSlash } = buildGraph(start);
   const tree = toFractalTree(graph, findEntryPoints(graph));
-  syncFileSystem(oldGraph, tree, start, useForwardSlash);
+  await syncFileSystem({
+    originalGraph: oldGraph,
+    newStructure: tree,
+    destination: start,
+    useForwardSlashes: useForwardSlash,
+    startingFolder: start,
+  });
   removeEmptyFolders(start);
   const usedFiles = new Set([
     ...Object.keys(graph),
