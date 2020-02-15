@@ -43,7 +43,7 @@ export const t = (folderPath: string, rootPath: string) => {
     const files = glob.sync(path.join(rootCopyPath, "/**/*.js"));
     await formatFileStructure(files, files);
     // make sure no imports broke
-    buildGraph(glob.sync(path.join(copyPath, "/**/*.js")), true);
+    buildGraph(glob.sync(path.join(copyPath, "/**/*.js")));
     expect(treeDir(rootCopyPath)).toMatchSnapshot();
     const treeContents = treeDirWithContents(copyPath);
     Object.keys(treeContents).forEach(k => {

@@ -6,7 +6,7 @@ import { findSharedParent } from "./toFractalTree/findSharedParent";
 import resolve from "resolve";
 
 // assumes files are absolute
-export function buildGraph(files: string[], throwIfCannotBeResolved = false) {
+export function buildGraph(files: string[]) {
   const parentFolder = findSharedParent(files);
   const graph: Graph = {};
   const oldGraph: OldGraph = {};
@@ -36,18 +36,7 @@ export function buildGraph(files: string[], throwIfCannotBeResolved = false) {
         basedir: path.dirname(edge[0]),
       });
 
-      let end;
-      if (!pathWithExtension) {
-        const msg = "Could not resolve import: " + edge;
-        if (throwIfCannotBeResolved) {
-          throw new Error(msg);
-        } else {
-          console.log(msg);
-        }
-        return;
-      } else {
-        end = path.relative(parentFolder, pathWithExtension);
-      }
+      const end = path.relative(parentFolder, pathWithExtension);
 
       addEdge([start, end], graph);
 
