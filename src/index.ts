@@ -24,7 +24,7 @@ import { flatten } from "./shared/flatten";
   removeEmptyFolders(start);
   const usedFiles = new Set([
     ...Object.keys(graph),
-    ...flatten(Object.values(graph))
+    ...flatten(Object.values(graph)),
   ]);
   const unusedFiles: string[] = [];
   files.forEach(file => {

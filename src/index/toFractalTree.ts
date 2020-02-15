@@ -1,40 +1,7 @@
 import { Graph } from "./shared/Graph";
 import path from "path";
-
-const hasCycle = (node: string, graph: Graph, visited: Set<string>) => {
-  if (visited.has(node)) {
-    return true;
-  }
-
-  const edges = graph[node];
-
-  if (!edges || !edges.length) {
-    return false;
-  }
-  visited.add(node);
-  for (const edge of edges) {
-    if (hasCycle(edge, graph, visited)) {
-      return true;
-    }
-  }
-
-  return false;
-};
-
-const findSharedParent = (paths: string[]) => {
-  const parts: string[][] = paths.map(x => x.split("/"));
-  const parentPath: string[] = [];
-
-  for (let i = 0; i < parts[0].length; i++) {
-    const v = parts[0][i];
-    if (!parts.every(part => part.length > i && part[i] === v)) {
-      break;
-    }
-    parentPath.push(v);
-  }
-
-  return parentPath.join("/");
-};
+import { hasCycle } from "./hasCycle";
+import { findSharedParent } from "./findSharedParent";
 
 export function toFractalTree(graph: Graph, entryPoints: string[]) {
   const done: Record<string, string> = {};
@@ -62,9 +29,10 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
       const newDestination = path.join(folderPath, folderName);
       for (const importFilePath of imports) {
         if (importFilePath in done) {
-          if (hasCycle(importFilePath, graph, new Set())) {
+          const cycle = hasCycle(importFilePath, graph, new Set());
+          if (cycle) {
             containsCycle = true;
-            console.log("Cycle detected");
+            console.log("Cycle detected:", cycle.join(" -> "));
           } else {
             if (!(importFilePath in deps)) {
               deps[importFilePath] = [];

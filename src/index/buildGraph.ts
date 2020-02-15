@@ -55,7 +55,6 @@ export function buildGraph(folderPath: string) {
           });
         });
       } else {
-        // console.log("recurse: ", fullPath);
         recurse(fullPath);
       }
     }
