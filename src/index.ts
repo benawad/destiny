@@ -11,6 +11,7 @@ import { formatFileStructure } from "./index/formatFileStructure";
   const start = process.argv[2];
   if (!existsSync(start)) {
     console.log("path does not exist: ", start);
+    return;
   }
 
   formatFileStructure(start);
