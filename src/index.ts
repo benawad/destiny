@@ -15,7 +15,7 @@ cli
 
     glob(path, (err, files) => {
       if (err || !files.length) {
-        console.log("Not able able to resolve the given path.");
+        console.log("Not able to resolve the given path.");
         console.error(err);
         process.exit(1);
       }
