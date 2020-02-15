@@ -1,11 +1,6 @@
 #!/usr/bin/env node
-import { buildGraph } from "./index/buildGraph";
-import { findEntryPoints } from "./index/findEntryPoints";
-import { syncFileSystem } from "./index/syncFileSystem";
-import { toFractalTree } from "./index/toFractalTree";
-import { removeEmptyFolders } from "./index/removeEmptyFolders";
 import { existsSync } from "fs";
-import { flatten } from "./shared/flatten";
+import { formatFileStructure } from "./formatFileStructure";
 
 (async () => {
   if (process.argv.length < 3) {
@@ -18,28 +13,5 @@ import { flatten } from "./shared/flatten";
     console.log("path does not exist: ", start);
   }
 
-  const { graph, oldGraph, files, useForwardSlash } = buildGraph(start);
-  const tree = toFractalTree(graph, findEntryPoints(graph));
-  await syncFileSystem({
-    originalGraph: oldGraph,
-    newStructure: tree,
-    destination: start,
-    useForwardSlashes: useForwardSlash,
-    startingFolder: start,
-  });
-  removeEmptyFolders(start);
-  const usedFiles = new Set([
-    ...Object.keys(graph),
-    ...flatten(Object.values(graph)),
-  ]);
-  const unusedFiles: string[] = [];
-  files.forEach(file => {
-    if (!usedFiles.has(file)) {
-      unusedFiles.push(file);
-    }
-  });
-  if (unusedFiles.length) {
-    console.log("unused files:");
-    unusedFiles.forEach(f => console.log(f));
-  }
+  formatFileStructure(start);
 })();

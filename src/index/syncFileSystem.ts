@@ -1,7 +1,6 @@
 import { OldGraph } from "./shared/Graph";
-import fs from "fs";
+import fs from "fs-extra";
 import path from "path";
-import mkdirp from "mkdirp";
 import Git from "simple-git/promise";
 import { makeImportPath } from "./syncFileSystem/makeImportPath";
 
@@ -35,7 +34,7 @@ export const syncFileSystem = async ({
     const { oldLocation, imports } = originalGraph[k];
     const newFullLocation = path.join(destination, newLocation);
     // make folders
-    mkdirp.sync(path.dirname(newFullLocation));
+    fs.ensureDirSync(path.dirname(newFullLocation));
     const resolvedNewLocation = path.resolve(newFullLocation);
     if (oldLocation !== resolvedNewLocation) {
       if (isRepo && !notAdded?.includes(resolvedNewLocation)) {

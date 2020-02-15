@@ -14,7 +14,7 @@ describe("toFractalTree", () => {
   t("simple", {
     "index.js": "index.js",
     "routes.js": "index/routes.js",
-    "home.js": "index/routes/home.js"
+    "home.js": "index/routes/home.js",
   });
 
   t("index-cycle", {
@@ -22,22 +22,22 @@ describe("toFractalTree", () => {
     "routes/index.js": "index/routes.js",
     "login/index.js": "index/login.js",
     "home/index.js": "index/routes/home.js",
-    "utils/search.js": "index/login/search.js"
+    "utils/search.js": "index/login/search.js",
   });
 
   t("sharing", {
     "index.js": "index.js",
     "footer/index.js": "index/footer.js",
     "header/index.js": "index/header.js",
-    "header/helper.js": "index/shared/helper.js"
+    "header/helper.js": "index/shared/helper.js",
   });
 
   t("spec-files", {
     "index.js": "index.js",
-    "index.spec.js": "index.spec.js",
+    "index.spec.js": "index/index.spec.js",
     "level1.js": "index/level1.js",
-    "level1.spec.js": "index/level1.spec.js",
+    "level1.spec.js": "index/level1/level1.spec.js",
     "level2.js": "index/level1/level2.js",
-    "level2.spec.js": "index/level1/level2.spec.js",
+    "level2.spec.js": "index/level1/level2/level2.spec.js",
   });
 });

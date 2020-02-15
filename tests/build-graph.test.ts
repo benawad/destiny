@@ -23,10 +23,8 @@ describe("build graph", () => {
   });
 
   t("spec-files", {
-    "index.js": ["level1.js"],
-    "index.spec.js": ["index.js"],
-    "level1.spec.js": ["level1.js"],
-    "level1.js": ["level2.js"],
-    "level2.spec.js": ["level2.js"],
+    "index.js": ["level1.js", "index.spec.js"],
+    "level1.js": ["level2.js", "level1.spec.js"],
+    "level2.js": ["level2.spec.js"],
   });
 });
