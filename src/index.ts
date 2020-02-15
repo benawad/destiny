@@ -1,33 +1,84 @@
 #!/usr/bin/env node
-import commander from "commander";
+
+import chalk from "chalk";
 import glob from "glob";
+
 import { formatFileStructure } from "./index/formatFileStructure";
+import { version } from "../package.json";
 
-export const cli = new commander.Command();
+const { argv, env } = process;
+const defaults = {
+  options: {
+    help: false,
+    version: false,
+  },
+  paths: [],
+};
 
-cli
-  .version("0.0.11")
-  .name("butler")
-  .description("Prettier for File Structures")
-  .arguments("<path>")
-  .action(path => {
-    if (path === "help") return;
+type ParsedArgs = {
+  options: { help: boolean; version: boolean };
+  paths: string[];
+};
 
+const printVersion = () => console.log("v" + version);
+const printHelp = (exitCode: number) => {
+  console.log(
+    chalk`{blue butler} - Prettier for file structures.
+
+{bold USAGE}
+
+  {blue butler} [option...] [{underline path}]
+
+  The {underline path} argument can consist of either a {bold file path} or a {bold glob}.
+
+{bold OPTIONS}
+
+  -V, --version            output version number
+  -h, --help               output usage information
+  `
+  );
+
+  return process.exit(exitCode);
+};
+
+const parseArgs = (args: any[]): ParsedArgs =>
+  args.reduce((acc, arg) => {
+    switch (arg) {
+      case "-h":
+      case "--help":
+        acc.options.help = true;
+        break;
+      case "-V":
+      case "--version":
+        acc.options.version = true;
+        break;
+      default:
+        acc.paths.push(arg);
+    }
+
+    return acc;
+  }, defaults);
+
+const run = (args: any[]) => {
+  const { options, paths } = parseArgs(args);
+
+  if (options.help) return printHelp(0);
+  if (options.version) return printVersion();
+  if (paths.length === 0) return printHelp(1);
+
+  paths.forEach(path => {
     glob(path, (err, files) => {
-      if (err || !files.length) {
-        console.log("Not able to resolve the given path.");
+      if (err || files.length === 0) {
+        console.log("Unable to resolve path: " + path);
         console.error(err);
         process.exit(1);
       }
 
-      files.forEach(async file => {
-        await formatFileStructure(file);
-      });
+      files.forEach(async file => await formatFileStructure(file));
     });
-  })
-  // keep at the end
-  .parse(process.argv);
+  });
+};
 
-if (process.argv.length < 3) {
-  cli.help();
+if (env.NODE_ENV !== "test") {
+  run(argv.slice(2, argv.length));
 }
