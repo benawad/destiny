@@ -51,7 +51,7 @@ export function buildGraph(folderPath: string) {
 
           oldGraph[start].imports.push({
             text: edge[1],
-            resolved: end
+            resolved: end,
           });
         });
       } else {
@@ -65,6 +65,6 @@ export function buildGraph(folderPath: string) {
     graph,
     files: totalFiles,
     oldGraph,
-    useForwardSlash: numForwardSlashes >= numBackSlashes ? true : false
+    useForwardSlash: numForwardSlashes >= numBackSlashes ? true : false,
   };
 }

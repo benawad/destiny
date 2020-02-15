@@ -1,1 +1,1 @@
-require('./level1');
+require("./level1");
