@@ -2,10 +2,13 @@ import { toFractalTree } from "../src/index/formatFileStructure/toFractalTree";
 import { buildGraph } from "../src/index/formatFileStructure/buildGraph";
 import { findEntryPoints } from "../src/index/formatFileStructure/findEntryPoints";
 import path from "path";
+import glob from "glob";
 
 const t = (folder: string, g2: any, entryPoints?: string[]) => {
   it(folder, () => {
-    const g1 = buildGraph(path.join(__dirname, "fixtures", folder)).graph;
+    const g1 = buildGraph(
+      glob.sync(path.join(__dirname, "fixtures", folder, "/**/*.js"))
+    ).graph;
     expect(toFractalTree(g1, entryPoints || findEntryPoints(g1))).toEqual(g2);
   });
 };

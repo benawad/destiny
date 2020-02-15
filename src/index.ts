@@ -66,16 +66,11 @@ const run = (args: any[]) => {
   if (options.version) return printVersion();
   if (paths.length === 0) return printHelp(1);
 
-  paths.forEach(path => {
-    glob(path, (err, files) => {
-      if (err || files.length === 0) {
-        console.log("Unable to resolve path: " + path);
-        console.error(err);
-        process.exit(1);
-      }
 
-      files.forEach(async file => await formatFileStructure(file));
-    });
+paths.forEach(path => {
+    const filesToStructure = glob.sync(path);
+    const filesToFixImports = filesToStructure;
+    formatFileStructure(filesToStructure, filesToFixImports);
   });
 };
 

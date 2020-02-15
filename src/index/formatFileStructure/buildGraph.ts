@@ -1,77 +1,65 @@
-import fs from "fs";
 import path from "path";
 import { findEdges } from "./buildGraph/findEdges";
 import { addEdge } from "./buildGraph/addEdge";
 import { Graph, OldGraph } from "./shared/Graph";
-import { resolveExtensionAndIndex } from "./buildGraph/resolveExtensionAndIndex";
-import { importToAbsolutePath } from "./buildGraph/importToAbsolutePath";
+import { findSharedParent } from "./toFractalTree/findSharedParent";
+import resolve from "resolve";
 
-export function buildGraph(
-  folderPath: string,
-  throwIfCannotBeResolved = false
-) {
+// assumes files are absolute
+export function buildGraph(files: string[], throwIfCannotBeResolved = false) {
+  const parentFolder = findSharedParent(files);
   const graph: Graph = {};
   const oldGraph: OldGraph = {};
   const totalFiles: string[] = [];
   let numForwardSlashes = 0;
   let numBackSlashes = 0;
-  const recurse = (currentFolderPath: string) => {
-    const files = fs.readdirSync(currentFolderPath);
-    // console.log(currentFolderPath, files);
-    for (const file of files) {
-      if (file === ".git") {
-        continue;
-      }
-      // console.log(file);
-      const fullPath = path.resolve(path.join(currentFolderPath, file));
-      const start = path.relative(folderPath, fullPath);
-      if (!(start in oldGraph)) {
-        oldGraph[start] = {
-          oldLocation: fullPath,
-          imports: [],
-        };
-      }
-      const stats = fs.lstatSync(fullPath);
-      if (stats.isFile()) {
-        totalFiles.push(start);
-        findEdges(fullPath).forEach(edge => {
-          if (edge[1].includes("/")) {
-            numForwardSlashes++;
-          } else if (edge[1].includes("\\")) {
-            numBackSlashes++;
-          }
-
-          const pathWithExtension = resolveExtensionAndIndex(
-            importToAbsolutePath(edge[0], edge[1])
-          );
-
-          let end;
-          if (!pathWithExtension) {
-            const msg = "Could not resolve import: " + edge;
-            if (throwIfCannotBeResolved) {
-              throw new Error(msg);
-            } else {
-              console.log(msg);
-            }
-            return;
-          } else {
-            end = path.relative(folderPath, pathWithExtension);
-          }
-
-          addEdge([start, end], graph);
-
-          oldGraph[start].imports.push({
-            text: edge[1],
-            resolved: end,
-          });
-        });
-      } else if (stats.isDirectory()) {
-        recurse(fullPath);
-      }
+  for (const file of files) {
+    if (file === ".git") {
+      continue;
     }
-  };
-  recurse(folderPath);
+    const start = path.relative(parentFolder, file);
+    if (!(start in oldGraph)) {
+      oldGraph[start] = {
+        oldLocation: file,
+        imports: [],
+      };
+    }
+    totalFiles.push(start);
+    findEdges(file).forEach(edge => {
+      if (edge[1].includes("/")) {
+        numForwardSlashes++;
+      } else if (edge[1].includes("\\")) {
+        numBackSlashes++;
+      }
+
+      const pathWithExtension = resolve.sync(edge[1], {
+        basedir: path.dirname(edge[0]),
+      });
+
+      let end;
+      if (!pathWithExtension) {
+        const msg = "Could not resolve import: " + edge;
+        if (throwIfCannotBeResolved) {
+          throw new Error(msg);
+        } else {
+          console.log(msg);
+        }
+        return;
+      } else {
+        end = path.relative(parentFolder, pathWithExtension);
+      }
+
+      addEdge([start, end], graph);
+
+      oldGraph[start].imports.push({
+        text: edge[1],
+        resolved: end,
+      });
+    });
+  }
+
   return {
+    parentFolder,
     graph,
     files: totalFiles,
     oldGraph,

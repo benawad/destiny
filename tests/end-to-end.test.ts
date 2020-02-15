@@ -3,6 +3,7 @@ import path from "path";
 import { formatFileStructure } from "../src/index/formatFileStructure";
 import { buildGraph } from "../src/index/formatFileStructure/buildGraph";
 import treeDir from "tree-node-cli";
+import glob from "glob";
 
 const tmpPath = path.join(__dirname, "tmp");
 
@@ -34,25 +35,28 @@ const treeDirWithContents = (dir: string) => {
   return tree;
 };
 
+export const t = (folderPath: string, rootPath: string) => {
+  it(path.basename(folderPath), async () => {
+    const copyPath = path.join(tmpPath, path.basename(folderPath));
+    fs.copySync(folderPath, copyPath);
+    const rootCopyPath = path.join(tmpPath, rootPath);
+    const files = glob.sync(path.join(rootCopyPath, "/**/*.js"));
+    await formatFileStructure(files, files);
+    // make sure no imports broke
+    buildGraph(glob.sync(path.join(copyPath, "/**/*.js")), true);
+    expect(treeDir(rootCopyPath)).toMatchSnapshot();
+    const treeContents = treeDirWithContents(copyPath);
+    Object.keys(treeContents).forEach(k => {
+      expect(treeContents[k]).toMatchSnapshot(k);
+    });
+  });
+};
+
 describe("end-to-end", () => {
   const fixturePath = path.join(__dirname, "fixtures");
   const testCases = fs.readdirSync(fixturePath);
-  for (const ogTestCase of testCases) {
-    const testCase =
-      ogTestCase === "globals" ? path.join("globals", "src") : ogTestCase;
-    it(testCase, async () => {
-      const testCasePath = path.join(fixturePath, ogTestCase);
-      fs.copySync(testCasePath, path.join(tmpPath, ogTestCase));
-      const ogCopyPath = path.join(tmpPath, ogTestCase);
-      const copyPath = path.join(tmpPath, testCase);
-      await formatFileStructure(copyPath);
-      // make sure no imports broke
-      buildGraph(ogCopyPath, true);
-      expect(treeDir(ogCopyPath)).toMatchSnapshot();
-      const treeContents = treeDirWithContents(ogCopyPath);
-      Object.keys(treeContents).forEach(k => {
-        expect(treeContents[k]).toMatchSnapshot(k);
-      });
-    });
+  for (const testCase of testCases) {
+    const folder = path.join(fixturePath, testCase);
+    t(folder, testCase === "globals" ? path.join(testCase, "src") : testCase);
   }
 });
