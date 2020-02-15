@@ -1,7 +1,7 @@
 import fs from "fs-extra";
 import path from "path";
-import { formatFileStructure } from "../src/formatFileStructure";
-import { buildGraph } from "../src/index/buildGraph";
+import { formatFileStructure } from "../src/index/formatFileStructure";
+import { buildGraph } from "../src/index/formatFileStructure/buildGraph";
 
 const tmpPath = path.join(__dirname, "tmp");
 
