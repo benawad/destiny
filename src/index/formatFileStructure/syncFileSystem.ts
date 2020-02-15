@@ -19,12 +19,8 @@ export const syncFileSystem = async ({
 }) => {
   const git = Git(startingFolder);
   let isRepo = false;
-  let modified;
   try {
     isRepo = await git.checkIsRepo();
-    if (isRepo) {
-      modified = (await git.status()).modified.map(x => path.resolve(x));
-    }
   } catch {}
   for (const [k, newLocation] of Object.entries(newStructure)) {
     // skip globals
@@ -37,7 +33,17 @@ export const syncFileSystem = async ({
     fs.ensureDirSync(path.dirname(newFullLocation));
     const resolvedNewLocation = path.resolve(newFullLocation);
     if (oldLocation !== resolvedNewLocation) {
-      if (isRepo && modified && modified.includes(resolvedNewLocation)) {
+      let shouldGitMv = false;
+      if (isRepo) {
+        // check if file is tracked in git
+        try {
+          await git
+            .silent(true)
+            .raw(["ls-files", "--error-unmatch", oldLocation]);
+          shouldGitMv = true;
+        } catch {}
+      }
+      if (shouldGitMv) {
         await git.mv(oldLocation, newFullLocation);
       } else {
         // move
