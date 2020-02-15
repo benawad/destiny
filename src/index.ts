@@ -1,18 +1,28 @@
 #!/usr/bin/env node
 import { existsSync } from "fs";
+import commander from "commander";
 import { formatFileStructure } from "./index/formatFileStructure";
 
-(async () => {
-  if (process.argv.length < 3) {
-    console.log("expected argument (path to your src folder)");
-    return;
-  }
+export const cli = new commander.Command();
 
-  const start = process.argv[2];
-  if (!existsSync(start)) {
-    console.log("path does not exist: ", start);
-    return;
-  }
+cli
+  .version("0.0.11")
+  .name("butler")
+  .description("Prettier for File Structures")
+  .arguments("<path>")
+  .action(async start => {
+    if (start === "help") return;
 
-  formatFileStructure(start);
-})();
+    if (!existsSync(start)) {
+      console.log("path does not exist: ", start);
+      process.exit(1);
+    }
+
+    formatFileStructure(start);
+  })
+  // keep at the end
+  .parse(process.argv);
+
+if (process.argv.length < 3) {
+  cli.help();
+}
