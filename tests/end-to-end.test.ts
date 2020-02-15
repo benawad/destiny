@@ -37,13 +37,14 @@ const treeDirWithContents = (dir: string) => {
 
 export const t = (folderPath: string, rootPath: string) => {
   it(path.basename(folderPath), async () => {
-    const copyPath = path.join(tmpPath, folderPath);
+    const copyPath = path.join(tmpPath, path.basename(folderPath));
     fs.copySync(folderPath, copyPath);
-    const files = glob.sync(path.join(copyPath, "/**/*.js"));
+    const rootCopyPath = path.join(tmpPath, rootPath);
+    const files = glob.sync(path.join(rootCopyPath, "/**/*.js"));
     await formatFileStructure(files, files);
     // make sure no imports broke
-    buildGraph(files, true);
-    expect(treeDir(rootPath)).toMatchSnapshot();
+    buildGraph(glob.sync(path.join(copyPath, "/**/*.js")), true);
+    expect(treeDir(rootCopyPath)).toMatchSnapshot();
     const treeContents = treeDirWithContents(copyPath);
     Object.keys(treeContents).forEach(k => {
       expect(treeContents[k]).toMatchSnapshot(k);
@@ -56,6 +57,6 @@ describe("end-to-end", () => {
   const testCases = fs.readdirSync(fixturePath);
   for (const testCase of testCases) {
     const folder = path.join(fixturePath, testCase);
-    t(folder, testCase === "globals" ? path.join(folder, "src") : folder);
+    t(folder, testCase === "globals" ? path.join(testCase, "src") : testCase);
   }
 });

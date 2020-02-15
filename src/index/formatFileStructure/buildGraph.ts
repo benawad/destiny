@@ -2,9 +2,8 @@ import path from "path";
 import { findEdges } from "./buildGraph/findEdges";
 import { addEdge } from "./buildGraph/addEdge";
 import { Graph, OldGraph } from "./shared/Graph";
-import { resolveExtensionAndIndex } from "./buildGraph/resolveExtensionAndIndex";
-import { importToAbsolutePath } from "./buildGraph/importToAbsolutePath";
 import { findSharedParent } from "./toFractalTree/findSharedParent";
+import resolve from "resolve";
 
 // assumes files are absolute
 export function buildGraph(files: string[], throwIfCannotBeResolved = false) {
@@ -33,9 +32,9 @@ export function buildGraph(files: string[], throwIfCannotBeResolved = false) {
         numBackSlashes++;
       }
 
-      const pathWithExtension = resolveExtensionAndIndex(
-        importToAbsolutePath(edge[0], edge[1])
-      );
+      const pathWithExtension = resolve.sync(edge[1], {
+        basedir: path.dirname(edge[0]),
+      });
 
       let end;
       if (!pathWithExtension) {

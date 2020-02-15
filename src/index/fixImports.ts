@@ -17,6 +17,13 @@ export const fixImports = (
     }
 
     const basedir = path.dirname(file);
+    let newFilePath = newStructure[path.relative(parentFolder, file)];
+
+    if (newFilePath) {
+      newFilePath = path.resolve(path.join(parentFolder, newFilePath));
+    } else {
+      newFilePath = file;
+    }
 
     const ogText = readFileSync(file).toString();
     // deep copy
@@ -31,7 +38,11 @@ export const fixImports = (
 
       newText = newText.replace(
         imp[1],
-        makeImportPath(file, path.resolve(newPath), useForwardSlashes)
+        makeImportPath(
+          newFilePath,
+          path.resolve(path.join(parentFolder, newPath)),
+          useForwardSlashes
+        )
       );
     }
     if (newText !== ogText) {
