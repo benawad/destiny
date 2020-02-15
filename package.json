@@ -8,7 +8,7 @@
     "start": "nodemon dist/index.js",
     "test": "jest --watch tests",
     "lint": "eslint \"{src,test}/**/*.{ts,js}\"",
-    "prepare": "tsc"
+    "prepublishOnly": "tsc"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
@@ -46,7 +46,7 @@
     }
   },
   "lint-staged": {
-    "*.ts": "eslint --cache --fix",
-    "*.{ts}": "prettier --write"
+    "*.{ts}": "prettier --write",
+    "*.ts": "eslint --cache --fix"
   }
 }

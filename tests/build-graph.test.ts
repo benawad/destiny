@@ -12,14 +12,14 @@ const t = (folder: string, g: any) => {
 describe("build graph", () => {
   t("simple", {
     "index.js": ["routes.js"],
-    "routes.js": ["home.js"]
+    "routes.js": ["home.js"],
   });
 
   t("index-cycle", {
     "index.js": ["routes/index.js", "login/index.js"],
     "routes/index.js": ["home/index.js"],
     "login/index.js": ["utils/search.js"],
-    "utils/search.js": ["index.js"]
+    "utils/search.js": ["index.js"],
   });
 
   t("spec-files", {
@@ -27,6 +27,6 @@ describe("build graph", () => {
     "index.spec.js": ["index.js"],
     "level1.spec.js": ["level1.js"],
     "level1.js": ["level2.js"],
-    "level2.spec.js": ["level2.js"]
+    "level2.spec.js": ["level2.js"],
   });
 });
