@@ -2,7 +2,9 @@
   "version": "0.0.11",
   "name": "butler-cli",
   "main": "dist/index.js",
-  "bin": "dist/index.js",
+  "bin": {
+    "butler": "dist/index.js"
+  },
   "scripts": {
     "watch": "tsc -w",
     "start": "nodemon dist/index.js",
