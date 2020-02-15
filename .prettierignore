@@ -1,0 +1,4 @@
+/.yarn/**
+/dist/**
+/node_modules/**
+/tmp/**
