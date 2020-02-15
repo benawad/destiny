@@ -1,4 +1,4 @@
-import { buildGraph } from "../src/index/buildGraph";
+import { buildGraph } from "../src/index/formatFileStructure/buildGraph";
 import path from "path";
 
 const t = (folder: string, g: any) => {
