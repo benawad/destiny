@@ -46,23 +46,5 @@
     "fs-extra": "^8.1.0",
     "glob": "^7.1.6",
     "simple-git": "^1.131.0"
-  },
-  "jest": {
-    "testPathIgnorePatterns": [
-      "/tests/fixtures/",
-      "/test/tmp/"
-    ],
-    "coveragePathIgnorePatterns": [
-      "/tests/tmp/"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{ts}": "prettier --write",
-    "*.ts": "eslint --cache --fix"
   }
 }
