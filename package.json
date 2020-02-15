@@ -31,6 +31,7 @@
     "prettier": "^1.19.1",
     "typescript": "^3.7.5"
   },
+  "license": "MIT",
   "dependencies": {
     "mkdirp": "^1.0.3"
   },
@@ -38,6 +39,11 @@
     "testPathIgnorePatterns": [
       "/tests/fixtures/"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && tsc && node dist/index.js src"
+    }
   },
   "lint-staged": {
     "*.ts": "eslint --cache --fix",
