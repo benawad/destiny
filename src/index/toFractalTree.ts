@@ -1,7 +1,7 @@
 import { Graph } from "./shared/Graph";
 import path from "path";
-import { hasCycle } from "./hasCycle";
-import { findSharedParent } from "./findSharedParent";
+import { hasCycle } from "./toFractalTree/hasCycle";
+import { findSharedParent } from "./toFractalTree/findSharedParent";
 
 export function toFractalTree(graph: Graph, entryPoints: string[]) {
   const done: Record<string, string> = {};

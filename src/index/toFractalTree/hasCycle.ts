@@ -1,4 +1,4 @@
-import { Graph } from "./shared/Graph";
+import { Graph } from "../shared/Graph";
 export const hasCycle = (
   node: string,
   graph: Graph,
