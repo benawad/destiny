@@ -1,0 +1,119 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`end-to-end index-cycle 1`] = `
+Array [
+  Object {
+    "contents": "import { five } from \\"../../index\\";
+
+export const six = five + 1;
+",
+    "filePath": "index-cycle/index/login/search.js",
+  },
+  Object {
+    "contents": "import { six } from \\"./login/search\\";
+
+export const seven = six + 1;
+",
+    "filePath": "index-cycle/index/login.js",
+  },
+  Object {
+    "contents": "export const five = 5;
+",
+    "filePath": "index-cycle/index/routes/home.js",
+  },
+  Object {
+    "contents": "export * from \\"./routes/home\\";
+",
+    "filePath": "index-cycle/index/routes.js",
+  },
+  Object {
+    "contents": "export { five } from \\"./index/routes\\";
+export { seven } from \\"./index/login\\";
+",
+    "filePath": "index-cycle/index.js",
+  },
+]
+`;
+
+exports[`end-to-end sharing 1`] = `
+Array [
+  Object {
+    "contents": "import { five } from \\"./shared/helper\\";
+
+export const seven = five + 2;
+",
+    "filePath": "sharing/index/footer.js",
+  },
+  Object {
+    "contents": "import { five } from \\"./shared/helper\\";
+export const six = five + 1;
+",
+    "filePath": "sharing/index/header.js",
+  },
+  Object {
+    "contents": "export const five = 5;
+",
+    "filePath": "sharing/index/shared/helper.js",
+  },
+  Object {
+    "contents": "export * from \\"./index/footer\\";
+export * from \\"./index/header\\";
+",
+    "filePath": "sharing/index.js",
+  },
+]
+`;
+
+exports[`end-to-end simple 1`] = `
+Array [
+  Object {
+    "contents": "export const five = 5;
+",
+    "filePath": "simple/index/routes/home.js",
+  },
+  Object {
+    "contents": "export * from \\"./routes/home\\";
+",
+    "filePath": "simple/index/routes.js",
+  },
+  Object {
+    "contents": "import { five } from \\"./index/routes\\";
+",
+    "filePath": "simple/index.js",
+  },
+]
+`;
+
+exports[`end-to-end spec-files 1`] = `
+Array [
+  Object {
+    "contents": "require(\\"./index\\");
+",
+    "filePath": "spec-files/index/index.spec.js",
+  },
+  Object {
+    "contents": "require(\\"./level1\\");
+",
+    "filePath": "spec-files/index/level1/level1.spec.js",
+  },
+  Object {
+    "contents": "require(\\"./level2\\");
+",
+    "filePath": "spec-files/index/level1/level2/level2.spec.js",
+  },
+  Object {
+    "contents": "",
+    "filePath": "spec-files/index/level1/level2.js",
+  },
+  Object {
+    "contents": "require(\\"./level1/level2\\");
+",
+    "filePath": "spec-files/index/level1.js",
+  },
+  Object {
+    "contents": "require(\\"./index/level1\\");
+",
+    "filePath": "spec-files/index.js",
+  },
+]
+`;

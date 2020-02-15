@@ -1,11 +1,12 @@
 import fs from "fs-extra";
 import path from "path";
 import { formatFileStructure } from "../src/formatFileStructure";
+import { buildGraph } from "../src/index/buildGraph";
 
 const tmpPath = path.join(__dirname, "tmp");
 
 beforeAll(() => {
-  fs.mkdirSync(tmpPath);
+  fs.ensureDir(tmpPath);
 });
 
 afterAll(() => {
@@ -22,11 +23,11 @@ const treeDirWithContents = (dir: string) => {
   const nodes: Node[] = [];
   for (const file of files) {
     const filePath = path.join(dir, file);
-    if (fs.lstatSync(file).isDirectory()) {
+    if (fs.lstatSync(filePath).isDirectory()) {
       nodes.push(...treeDirWithContents(filePath));
     } else {
       nodes.push({
-        filePath,
+        filePath: path.relative(tmpPath, filePath),
         contents: fs.readFileSync(filePath).toString(),
       });
     }
@@ -41,9 +42,11 @@ describe("end-to-end", () => {
   for (const testCase of testCases) {
     it(testCase, async () => {
       const testCasePath = path.join(fixturePath, testCase);
-      fs.copySync(testCasePath, tmpPath);
+      fs.copySync(testCasePath, path.join(tmpPath, testCase));
       const copyPath = path.join(tmpPath, testCase);
       await formatFileStructure(copyPath);
+      // make sure no imports broke
+      buildGraph(copyPath, true);
       expect(treeDirWithContents(copyPath)).toMatchSnapshot();
     });
   }

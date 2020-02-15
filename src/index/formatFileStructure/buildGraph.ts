@@ -8,7 +8,10 @@ import { importToAbsolutePath } from "./buildGraph/importToAbsolutePath";
 
 const isTestFile = (f: string) => /\.test\.|\.spec\./.test(f);
 
-export function buildGraph(folderPath: string) {
+export function buildGraph(
+  folderPath: string,
+  throwIfCannotBeResolved = false
+) {
   const graph: Graph = {};
   const oldGraph: OldGraph = {};
   const totalFiles: string[] = [];
@@ -24,8 +27,13 @@ export function buildGraph(folderPath: string) {
       // console.log(file);
       const fullPath = path.resolve(path.join(currentFolderPath, file));
       const start = path.relative(folderPath, fullPath);
+      const isTestOrSpec = isTestFile(start);
       if (!(start in oldGraph)) {
-        oldGraph[start] = { oldLocation: fullPath, imports: [] };
+        oldGraph[start] = {
+          oldLocation: fullPath,
+          imports: [],
+          reversed: isTestOrSpec,
+        };
       }
       // check if it's a file if it has an extension
       if (fs.lstatSync(fullPath).isFile()) {
@@ -43,20 +51,23 @@ export function buildGraph(folderPath: string) {
 
           let end;
           if (!pathWithExtension) {
-            console.log("Could not resolve import: ", edge);
+            const msg = "Could not resolve import: " + edge;
+            if (throwIfCannotBeResolved) {
+              throw new Error(msg);
+            } else {
+              console.log(msg);
+            }
             return;
           } else {
             end = path.relative(folderPath, pathWithExtension);
           }
 
           // flip edge if the file is a .test.js or .spec.js file
-          const isTestOrSpec = isTestFile(start);
           addEdge(isTestOrSpec ? [end, start] : [start, end], graph);
 
           oldGraph[isTestOrSpec ? end : start].imports.push({
             text: isTestOrSpec ? edge[0] : edge[1],
             resolved: end,
-            reversed: isTestOrSpec,
           });
         });
       } else {

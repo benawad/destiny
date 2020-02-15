@@ -3,6 +3,7 @@ export type OldGraph = Record<
   string,
   {
     oldLocation: string;
-    imports: Array<{ text: string; resolved: string; reversed: boolean }>;
+    imports: Array<{ text: string; resolved: string }>;
+    reversed: boolean;
   }
 >;

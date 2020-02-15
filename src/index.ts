@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { existsSync } from "fs";
-import { formatFileStructure } from "./formatFileStructure";
+import { formatFileStructure } from "./index/formatFileStructure";
 
 (async () => {
   if (process.argv.length < 3) {

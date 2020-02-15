@@ -1,8 +1,8 @@
-import { buildGraph } from "./index/buildGraph";
-import { findEntryPoints } from "./index/findEntryPoints";
-import { syncFileSystem } from "./index/syncFileSystem";
-import { toFractalTree } from "./index/toFractalTree";
-import { removeEmptyFolders } from "./index/removeEmptyFolders";
+import { buildGraph } from "./formatFileStructure/buildGraph";
+import { findEntryPoints } from "./formatFileStructure/findEntryPoints";
+import { syncFileSystem } from "./formatFileStructure/syncFileSystem";
+import { toFractalTree } from "./formatFileStructure/toFractalTree";
+import { removeEmptyFolders } from "./formatFileStructure/removeEmptyFolders";
 import { flatten } from "./shared/flatten";
 export const formatFileStructure = async (start: string) => {
   const { graph, oldGraph, files, useForwardSlash } = buildGraph(start);

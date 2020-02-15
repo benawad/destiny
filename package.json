@@ -6,7 +6,7 @@
   "scripts": {
     "watch": "tsc -w",
     "start": "nodemon dist/index.js",
-    "test": "jest --watch tests",
+    "test": "jest tests",
     "lint": "eslint \"{src,test}/**/*.{ts,js}\"",
     "prepublishOnly": "tsc"
   },
@@ -39,7 +39,11 @@
   },
   "jest": {
     "testPathIgnorePatterns": [
-      "/tests/fixtures/"
+      "/tests/fixtures/",
+      "/test/tmp/"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/tests/tmp/"
     ]
   },
   "husky": {
