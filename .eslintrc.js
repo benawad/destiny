@@ -24,14 +24,6 @@ module.exports = {
     "require-atomic-updates": "off",
     "quotes": "off",
     "@typescript-eslint/quotes": ["error", "double"],
-    "@typescript-eslint/indent": [
-      "error",
-      2,
-      {
-        flatTernaryExpressions: false,
-        ignoredNodes: ["TSTypeParameterInstantiation"],
-      }
-    ],
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-explicit-any": "off",
@@ -49,6 +41,8 @@ module.exports = {
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    // keep at the end
+    "plugin:prettier/recommended",
   ],
   parserOptions: {
     ecmaVersion: 9,
