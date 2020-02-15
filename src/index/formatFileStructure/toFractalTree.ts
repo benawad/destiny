@@ -2,15 +2,21 @@ import { Graph } from "./shared/Graph";
 import path from "path";
 import { hasCycle } from "./toFractalTree/hasCycle";
 import { findSharedParent } from "./toFractalTree/findSharedParent";
+import { isTestFile } from "./isTestFile";
 
 export function toFractalTree(graph: Graph, entryPoints: string[]) {
   const done: Record<string, string> = {};
   const deps: Record<string, string[]> = {};
   let containsCycle = false;
+  const testFiles = new Set<string>();
 
   const fn = (filePath: string, folderPath: string, graph: Graph) => {
-    let folderName = path.basename(filePath, path.extname(filePath));
     const basenameWithExt = path.basename(filePath);
+    if (isTestFile(basenameWithExt)) {
+      testFiles.add(filePath);
+      return;
+    }
+    let folderName = path.basename(filePath, path.extname(filePath));
     const upperFolder = path.dirname(filePath);
     // ../package.json
     // keep globals where they are
@@ -23,6 +29,7 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
             : basenameWithExt
         );
     folderName = path.basename(location, path.extname(location));
+    // do test files later
     done[filePath] = location;
     const imports = graph[filePath];
     if (imports && imports.length) {
@@ -66,6 +73,26 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
         done[k] = path.join(parent, "shared", filename);
       }
     });
+  }
+
+  if (testFiles.size) {
+    const globalTests = [];
+    for (const testFile of testFiles) {
+      // assuming this is the main thing your testing
+      const [firstRelativeImport] = graph[testFile];
+      if (!firstRelativeImport) {
+        globalTests.push(testFile);
+        continue;
+      }
+
+      const fileToTestPath = done[firstRelativeImport];
+      if (fileToTestPath) {
+        done[testFile] = path.join(
+          path.dirname(fileToTestPath),
+          path.basename(testFile)
+        );
+      }
+    }
   }
 
   return done;

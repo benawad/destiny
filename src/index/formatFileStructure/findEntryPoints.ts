@@ -1,12 +1,32 @@
 import { Graph } from "./shared/Graph";
-import { flatten } from "../shared/flatten";
+import { isTestFile } from "./isTestFile";
+
+const invertGraph = (graph: Graph) => {
+  const invertedGraph: Graph = {};
+  Object.keys(graph).forEach(k => {
+    graph[k].forEach(v => {
+      if (!(v in invertedGraph)) {
+        invertedGraph[v] = [];
+      }
+
+      invertedGraph[v].push(k);
+    });
+  });
+
+  return invertedGraph;
+};
 
 export function findEntryPoints(graph: Graph) {
-  const importedFiles = new Set(flatten(Object.values(graph)));
+  const invertedGraph = invertGraph(graph);
   const possibleEntryPoints = Object.keys(graph);
-  const entryPoints = possibleEntryPoints.filter(
-    file => !importedFiles.has(file)
-  );
+  const entryPoints = possibleEntryPoints.filter(file => {
+    const importedBy = invertedGraph[file];
+    if (!importedBy || !importedBy.length) {
+      return true;
+    }
+
+    return importedBy.every(x => isTestFile(x));
+  });
 
   if (entryPoints.length) {
     return entryPoints;

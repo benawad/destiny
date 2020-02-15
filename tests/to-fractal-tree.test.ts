@@ -34,10 +34,10 @@ describe("toFractalTree", () => {
 
   t("spec-files", {
     "index.js": "index.js",
-    "index.spec.js": "index/index.spec.js",
+    "index.spec.js": "index.spec.js",
     "level1.js": "index/level1.js",
-    "level1.spec.js": "index/level1/level1.spec.js",
+    "level1.spec.js": "index/level1.spec.js",
     "level2.js": "index/level1/level2.js",
-    "level2.spec.js": "index/level1/level2/level2.spec.js",
+    "level2.spec.js": "index/level1/level2.spec.js",
   });
 });

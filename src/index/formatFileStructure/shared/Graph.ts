@@ -4,6 +4,5 @@ export type OldGraph = Record<
   {
     oldLocation: string;
     imports: Array<{ text: string; resolved: string }>;
-    reversed: boolean;
   }
 >;

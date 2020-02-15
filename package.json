@@ -9,6 +9,7 @@
     "watch": "tsc -w",
     "start": "nodemon dist/index.js",
     "test": "jest tests",
+    "tr": "jest",
     "lint": "eslint \"{src,test}/**/*.{ts,js}\"",
     "prepublishOnly": "tsc"
   },
@@ -32,6 +33,7 @@
     "lint-staged": ">=10",
     "nodemon": "^2.0.2",
     "prettier": "^1.19.1",
+    "tree-node-cli": "^1.2.5",
     "typescript": "^3.7.5"
   },
   "license": "MIT",

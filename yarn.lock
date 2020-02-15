@@ -5191,6 +5191,13 @@ tr46@^1.0.1:
   dependencies:
     punycode "^2.1.0"
 
+tree-node-cli@^1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/tree-node-cli/-/tree-node-cli-1.2.5.tgz#afd75437976bbf2cc0c52b9949798e7530e8fd8c"
+  integrity sha512-Yhv4bfLa3WYdJLS4FkCj0h72duPGMUjC6Ld8eBlT9BA3CfjeQyHNBfgtzQvDrw1OkQva2JSpUyslZHuweCRtGQ==
+  dependencies:
+    commander "^2.15.1"
+
 tslib@^1.8.1, tslib@^1.9.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
