@@ -1,5 +1,30 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`end-to-end globals/src 1`] = `
+"globals
+├── global.js
+└── src
+    ├── index
+    │   └── helper.js
+    └── index.js"
+`;
+
+exports[`end-to-end globals/src: globals/global.js 1`] = `
+"export const bob = 5;
+"
+`;
+
+exports[`end-to-end globals/src: globals/src/index.js 1`] = `
+"require(\\"./index/helper\\");
+"
+`;
+
+exports[`end-to-end globals/src: globals/src/index/helper.js 1`] = `
+"require(\\"../../global\\");
+export const five = 5;
+"
+`;
+
 exports[`end-to-end index-cycle 1`] = `
 "index-cycle
 ├── index

@@ -37,16 +37,19 @@ const treeDirWithContents = (dir: string) => {
 describe("end-to-end", () => {
   const fixturePath = path.join(__dirname, "fixtures");
   const testCases = fs.readdirSync(fixturePath);
-  for (const testCase of testCases) {
+  for (const ogTestCase of testCases) {
+    const testCase =
+      ogTestCase === "globals" ? path.join("globals", "src") : ogTestCase;
     it(testCase, async () => {
-      const testCasePath = path.join(fixturePath, testCase);
-      fs.copySync(testCasePath, path.join(tmpPath, testCase));
+      const testCasePath = path.join(fixturePath, ogTestCase);
+      fs.copySync(testCasePath, path.join(tmpPath, ogTestCase));
+      const ogCopyPath = path.join(tmpPath, ogTestCase);
       const copyPath = path.join(tmpPath, testCase);
       await formatFileStructure(copyPath);
       // make sure no imports broke
-      buildGraph(copyPath, true);
-      expect(treeDir(copyPath)).toMatchSnapshot();
-      const treeContents = treeDirWithContents(copyPath);
+      buildGraph(ogCopyPath, true);
+      expect(treeDir(ogCopyPath)).toMatchSnapshot();
+      const treeContents = treeDirWithContents(ogCopyPath);
       Object.keys(treeContents).forEach(k => {
         expect(treeContents[k]).toMatchSnapshot(k);
       });

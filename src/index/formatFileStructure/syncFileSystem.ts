@@ -45,8 +45,6 @@ export const syncFileSystem = async ({
       }
     }
 
-    // @todo handle reversed
-    // may need to rethink the approach
     if (!imports.length) {
       continue;
     }

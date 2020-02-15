@@ -31,8 +31,8 @@ export function buildGraph(
           imports: [],
         };
       }
-      // check if it's a file if it has an extension
-      if (fs.lstatSync(fullPath).isFile()) {
+      const stats = fs.lstatSync(fullPath);
+      if (stats.isFile()) {
         totalFiles.push(start);
         findEdges(fullPath).forEach(edge => {
           if (edge[1].includes("/")) {
@@ -65,7 +65,7 @@ export function buildGraph(
             resolved: end,
           });
         });
-      } else {
+      } else if (stats.isDirectory()) {
         recurse(fullPath);
       }
     }
