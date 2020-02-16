@@ -4,7 +4,7 @@ import { moveFiles } from "./formatFileStructure/moveFiles";
 import { toFractalTree } from "./formatFileStructure/toFractalTree";
 import { removeEmptyFolders } from "./formatFileStructure/removeEmptyFolders";
 import { fixImports } from "./formatFileStructure/fixImports";
-import { RootOption } from "./RootOption";
+import { RootOption } from "./shared/RootOption";
 
 /*
   rootDirFiles: [
