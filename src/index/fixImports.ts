@@ -1,8 +1,8 @@
 import { readFileSync, writeFileSync } from "fs-extra";
-import resolve from "resolve";
 import { findEdges } from "./formatFileStructure/buildGraph/findEdges";
 import path from "path";
 import { makeImportPath } from "./formatFileStructure/syncFileSystem/fixImports/makeImportPath";
+import { customResolve } from "../customResolve";
 
 export const fixImports = (
   files: string[],
@@ -29,7 +29,7 @@ export const fixImports = (
     // deep copy
     let newText = ogText.repeat(1);
     for (const imp of imports) {
-      const absPath = resolve.sync(imp[1], { basedir });
+      const absPath = customResolve(imp[1], basedir);
       const pathInGraph = path.relative(parentFolder, absPath);
       const newPath = newStructure[pathInGraph];
       if (!newPath) {

@@ -3,9 +3,8 @@ import { findEdges } from "./buildGraph/findEdges";
 import { addEdge } from "./buildGraph/addEdge";
 import { Graph, OldGraph } from "./shared/Graph";
 import { findSharedParent } from "./toFractalTree/findSharedParent";
-import resolve from "resolve";
+import { customResolve } from "../../customResolve";
 
-// assumes files are absolute
 export function buildGraph(files: string[]) {
   const parentFolder = findSharedParent(files);
   const graph: Graph = {};
@@ -13,10 +12,11 @@ export function buildGraph(files: string[]) {
   const totalFiles: string[] = [];
   let numForwardSlashes = 0;
   let numBackSlashes = 0;
-  for (const file of files) {
+  for (let file of files) {
     if (file === ".git") {
       continue;
     }
+    file = path.resolve(file);
     const start = path.relative(parentFolder, file);
     if (!(start in oldGraph)) {
       oldGraph[start] = {
@@ -32,9 +32,7 @@ export function buildGraph(files: string[]) {
         numBackSlashes++;
       }
 
-      const pathWithExtension = resolve.sync(edge[1], {
-        basedir: path.dirname(edge[0]),
-      });
+      const pathWithExtension = customResolve(edge[1], edge[0]);
 
       const end = path.relative(parentFolder, pathWithExtension);
 
