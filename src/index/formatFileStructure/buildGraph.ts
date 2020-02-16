@@ -32,7 +32,7 @@ export function buildGraph(files: string[]) {
         numBackSlashes++;
       }
 
-      const pathWithExtension = customResolve(edge[1], edge[0]);
+      const pathWithExtension = customResolve(edge[1], path.dirname(edge[0]));
 
       const end = path.relative(parentFolder, pathWithExtension);
 
