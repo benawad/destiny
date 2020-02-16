@@ -76,6 +76,11 @@ const run = (args: any[]) => {
       return;
     }
 
+    if (!filesToStructure.length) {
+      console.log("Could not find any files for: ", path);
+      return;
+    }
+
     console.log("Files to structure:");
     console.log(filesToStructure);
     formatFileStructure(filesToStructure, filesToFixImports);
