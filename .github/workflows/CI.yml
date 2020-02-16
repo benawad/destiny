@@ -1,0 +1,32 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  Tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        node-version: [8, 10, 12, 13]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    steps:
+    - run: git config --global core.autocrlf false
+    - uses: actions/checkout@v1
+    - uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: install
+    - uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: test
+  Format:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-node@v1
+    - uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: install
+    - uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: format:prettier
