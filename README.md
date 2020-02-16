@@ -41,6 +41,10 @@ npx destiny src/**/*.*
 
 It might be better to just name your folders.
 
+## Why did you name it destiny?
+
+![The name could be "Destiny" maybe. Like the file was meant to be there.](https://github.com/benawad/destiny/blob/master/assets/name.png)
+
 ## Contributing
 
 pull requests are welcome :)
