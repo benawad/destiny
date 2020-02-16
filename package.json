@@ -1,13 +1,13 @@
 {
   "version": "0.0.11",
   "name": "butler-cli",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "bin": {
-    "butler": "dist/index.js"
+    "butler": "dist/src/index.js"
   },
   "scripts": {
     "watch": "tsc -w",
-    "start": "nodemon dist/index.js",
+    "start": "nodemon dist/src/index.js",
     "test": "jest tests",
     "tr": "jest",
     "format": "run-s format:*",

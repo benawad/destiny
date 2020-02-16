@@ -9,7 +9,10 @@ export const makeImportPath = (
   const ext = path.extname(fullPath);
   let newImport = path.join(
     path.dirname(fullPath),
-    path.basename(fullPath, ext === ".json" ? undefined : ext)
+    path.basename(
+      fullPath,
+      ![".js", ".jsx", ".ts", ".tsx"].includes(ext) ? undefined : ext
+    )
   );
   if (!newImport.startsWith(".")) {
     newImport = "./" + newImport;

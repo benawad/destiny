@@ -66,10 +66,11 @@ const run = (args: any[]) => {
   if (options.version) return printVersion();
   if (paths.length === 0) return printHelp(1);
 
-
-paths.forEach(path => {
+  paths.forEach(path => {
     const filesToStructure = glob.sync(path);
     const filesToFixImports = filesToStructure;
+    console.log("Files to structure:");
+    console.log(filesToStructure);
     formatFileStructure(filesToStructure, filesToFixImports);
   });
 };
