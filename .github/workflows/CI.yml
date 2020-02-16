@@ -13,20 +13,18 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: install
-    - uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: test
+    - run: npm i -g yarn
+    - name: yarn install and test
+      run: |
+        yarn
+        yarn test
   Format:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
     - uses: actions/setup-node@v1
-    - uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: install
-    - uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: format:prettier
+    - run: npm i -g yarn
+    - name: yarn install and format
+      run: |
+        yarn
+        yarn format:prettier
