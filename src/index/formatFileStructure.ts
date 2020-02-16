@@ -20,6 +20,9 @@ export const formatFileStructure = async (
   const unusedFiles: string[] = [];
   const rootOptions: RootOption[] = [];
   for (const startingFiles of rootDirFiles) {
+    if (!startingFiles.length) {
+      continue;
+    }
     const { graph, files, useForwardSlash, parentFolder } = buildGraph(
       startingFiles
     );

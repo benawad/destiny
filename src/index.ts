@@ -75,13 +75,27 @@ const pathsToFiles = (paths: string[]) => {
       if (!globFiles.length) {
         throw new Error("Could not find any files for: " + p);
       }
-      files.push(globFiles);
+      files.push(
+        globFiles.filter(x => {
+          if (lstatSync(x).isFile()) {
+            return true;
+          } else {
+            console.log("Skipping non files: ", x);
+            return false;
+          }
+        })
+      );
     } else if (!existsSync(p)) {
       throw new Error("Unable to resolve the path: " + p);
-    } else if (lstatSync(p).isDirectory()) {
-      paths.push(path.join(p, "/**/*.*"));
     } else {
-      files.push([p]);
+      const stats = lstatSync(p);
+      if (stats.isDirectory()) {
+        paths.push(path.join(p, "/**/*.*"));
+      } else if (stats.isFile()) {
+        files.push([p]);
+      } else {
+        console.log("Skipping: ", p);
+      }
     }
   }
 
@@ -103,8 +117,8 @@ export const run = async (args: any[]) => {
     return;
   }
 
-  console.log("Files to structure:");
-  console.log(filesToStructure);
+  // console.log("Files to structure:");
+  // console.log(filesToStructure);
   await formatFileStructure(filesToStructure, filesToFixImports);
 };
 
