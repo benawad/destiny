@@ -3,7 +3,6 @@ import { findEntryPoints } from "./formatFileStructure/findEntryPoints";
 import { moveFiles } from "./formatFileStructure/moveFiles";
 import { toFractalTree } from "./formatFileStructure/toFractalTree";
 import { removeEmptyFolders } from "./formatFileStructure/removeEmptyFolders";
-import { flatten } from "./formatFileStructure/flatten";
 import { fixImports } from "./formatFileStructure/fixImports";
 import { RootOption } from "./RootOption";
 
@@ -31,7 +30,7 @@ export const formatFileStructure = async (
     });
     const usedFiles = new Set([
       ...Object.keys(graph),
-      ...flatten(Object.values(graph)),
+      ...Object.values(graph).flat(),
     ]);
     files.forEach(file => {
       if (!usedFiles.has(file)) {
