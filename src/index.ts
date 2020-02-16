@@ -23,11 +23,11 @@ type ParsedArgs = {
 const printVersion = () => console.log("v" + version);
 const printHelp = (exitCode: number) => {
   console.log(
-    chalk`{blue butler} - Prettier for file structures.
+    chalk`{blue destiny} - Prettier for file structures.
 
 {bold USAGE}
 
-  {blue butler} [option...] [{underline path}]
+  {blue destiny} [option...] [{underline path}]
 
   The {underline path} argument can consist of either a {bold file path} or a {bold glob}.
 
