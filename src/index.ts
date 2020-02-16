@@ -5,6 +5,7 @@ import glob from "glob";
 
 import { formatFileStructure } from "./index/formatFileStructure";
 import { version } from "../package.json";
+import { existsSync } from "fs-extra";
 
 const { argv, env } = process;
 const defaults = {
@@ -69,6 +70,12 @@ const run = (args: any[]) => {
   paths.forEach(path => {
     const filesToStructure = glob.sync(path);
     const filesToFixImports = filesToStructure;
+
+    if (!existsSync(path)) {
+      console.log("Unable to resolve the path:", path);
+      return;
+    }
+
     console.log("Files to structure:");
     console.log(filesToStructure);
     formatFileStructure(filesToStructure, filesToFixImports);
