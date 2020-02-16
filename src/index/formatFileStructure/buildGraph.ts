@@ -1,9 +1,9 @@
 import path from "path";
-import { findEdges } from "./buildGraph/findEdges";
+import { findEdges } from "./shared/findEdges";
 import { addEdge } from "./buildGraph/addEdge";
 import { Graph, OldGraph } from "./shared/Graph";
-import { findSharedParent } from "./toFractalTree/findSharedParent";
-import { customResolve } from "../../customResolve";
+import { findSharedParent } from "./shared/findSharedParent";
+import { customResolve } from "./shared/customResolve";
 
 export function buildGraph(files: string[]) {
   const parentFolder = findSharedParent(files);

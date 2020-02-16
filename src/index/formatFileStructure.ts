@@ -4,7 +4,7 @@ import { moveFiles } from "./formatFileStructure/moveFiles";
 import { toFractalTree } from "./formatFileStructure/toFractalTree";
 import { removeEmptyFolders } from "./formatFileStructure/removeEmptyFolders";
 import { flatten } from "./formatFileStructure/flatten";
-import { fixImports } from "./fixImports";
+import { fixImports } from "./formatFileStructure/fixImports";
 
 export const formatFileStructure = async (
   startingFiles: string[],
