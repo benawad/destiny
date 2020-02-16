@@ -14,13 +14,13 @@ export const moveFiles = async (
   for (const [k, newLocation] of Object.entries(newStructure)) {
     // skip globals
     if (k.includes("..")) {
-      return;
+      continue;
     }
     const oldAbsLocation = path.resolve(path.join(parentFolder, k));
     const newAbsLocation = path.resolve(path.join(parentFolder, newLocation));
-    // make folders
-    fs.ensureDirSync(path.dirname(newAbsLocation));
     if (oldAbsLocation !== newAbsLocation) {
+      // make folders
+      fs.ensureDirSync(path.dirname(newAbsLocation));
       let shouldGitMv = false;
       if (isRepo) {
         // check if file is tracked in git
