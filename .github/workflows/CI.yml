@@ -16,6 +16,7 @@ jobs:
     - run: npm i -g yarn
     - name: yarn install and test
       run: |
+        yarn config set ignore-engines true
         yarn
         yarn test
   Format:
@@ -26,5 +27,6 @@ jobs:
     - run: npm i -g yarn
     - name: yarn install and format
       run: |
+        yarn config set ignore-engines true
         yarn
         yarn format:prettier
