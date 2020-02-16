@@ -5,28 +5,45 @@ import { toFractalTree } from "./formatFileStructure/toFractalTree";
 import { removeEmptyFolders } from "./formatFileStructure/removeEmptyFolders";
 import { flatten } from "./formatFileStructure/flatten";
 import { fixImports } from "./formatFileStructure/fixImports";
+import { RootOption } from "./RootOption";
 
+/*
+  rootDirFiles: [
+    ['pages/index.js', 'pages/register.js'],
+    ['utils/search.js', 'utils/helper.js']
+  ]
+*/
 export const formatFileStructure = async (
-  startingFiles: string[],
+  rootDirFiles: string[][],
   filesToFixImports: string[]
 ) => {
-  const { graph, files, useForwardSlash, parentFolder } = buildGraph(
-    startingFiles
-  );
-  const tree = toFractalTree(graph, findEntryPoints(graph));
-  await fixImports(filesToFixImports, parentFolder, tree, useForwardSlash);
-  await moveFiles(tree, parentFolder);
-  removeEmptyFolders(parentFolder);
-  const usedFiles = new Set([
-    ...Object.keys(graph),
-    ...flatten(Object.values(graph)),
-  ]);
   const unusedFiles: string[] = [];
-  files.forEach(file => {
-    if (!usedFiles.has(file)) {
-      unusedFiles.push(file);
-    }
-  });
+  const rootOptions: RootOption[] = [];
+  for (const startingFiles of rootDirFiles) {
+    const { graph, files, useForwardSlash, parentFolder } = buildGraph(
+      startingFiles
+    );
+    const tree = toFractalTree(graph, findEntryPoints(graph));
+    rootOptions.push({
+      tree,
+      useForwardSlash,
+      parentFolder,
+    });
+    const usedFiles = new Set([
+      ...Object.keys(graph),
+      ...flatten(Object.values(graph)),
+    ]);
+    files.forEach(file => {
+      if (!usedFiles.has(file)) {
+        unusedFiles.push(file);
+      }
+    });
+  }
+  await fixImports(filesToFixImports, rootOptions);
+  for (const { tree, parentFolder } of rootOptions) {
+    await moveFiles(tree, parentFolder);
+    removeEmptyFolders(parentFolder);
+  }
   if (unusedFiles.length) {
     console.log("unused files:");
     unusedFiles.forEach(f => console.log(f));

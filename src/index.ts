@@ -5,7 +5,10 @@ import glob from "glob";
 
 import { formatFileStructure } from "./index/formatFileStructure";
 import { version } from "../package.json";
-import { existsSync } from "fs-extra";
+import { existsSync, lstatSync } from "fs-extra";
+import path from "path";
+import { flatten } from "./index/formatFileStructure/flatten";
+// import { existsSync } from "fs-extra";
 
 const { argv, env } = process;
 const defaults = {
@@ -60,6 +63,27 @@ const parseArgs = (args: any[]): ParsedArgs =>
     return acc;
   }, defaults);
 
+const pathsToFiles = (paths: string[]) => {
+  const files: string[][] = [];
+  for (const p of paths) {
+    if (glob.hasMagic(p)) {
+      const globFiles = glob.sync(p);
+      if (!globFiles.length) {
+        throw new Error("Could not find any files for: " + p);
+      }
+      files.push(globFiles);
+    } else if (!existsSync(p)) {
+      throw new Error("Unable to resolve the path:" + p);
+    } else if (lstatSync(p).isDirectory()) {
+      paths.push(path.join(p, "/**/*.*"));
+    } else {
+      files.push([p]);
+    }
+  }
+
+  return files;
+};
+
 const run = (args: any[]) => {
   const { options, paths } = parseArgs(args);
 
@@ -67,24 +91,17 @@ const run = (args: any[]) => {
   if (options.version) return printVersion();
   if (paths.length === 0) return printHelp(1);
 
-  paths.forEach(path => {
-    const filesToStructure = glob.sync(path);
-    const filesToFixImports = filesToStructure;
+  const filesToStructure = pathsToFiles(paths);
+  const filesToFixImports = flatten(filesToStructure);
 
-    if (!existsSync(path)) {
-      console.log("Unable to resolve the path:", path);
-      return;
-    }
+  if (!filesToStructure.length) {
+    console.log("Could not find any files to structure");
+    return;
+  }
 
-    if (!filesToStructure.length) {
-      console.log("Could not find any files for: ", path);
-      return;
-    }
-
-    console.log("Files to structure:");
-    console.log(filesToStructure);
-    formatFileStructure(filesToStructure, filesToFixImports);
-  });
+  console.log("Files to structure:");
+  console.log(filesToStructure);
+  formatFileStructure(filesToStructure, filesToFixImports);
 };
 
 if (env.NODE_ENV !== "test") {

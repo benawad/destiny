@@ -3,13 +3,39 @@ import { findEdges } from "./shared/findEdges";
 import path from "path";
 import { makeImportPath } from "./fixImports/makeImportPath";
 import { customResolve } from "./shared/customResolve";
+import { RootOption } from "../RootOption";
 
-export const fixImports = (
-  files: string[],
-  parentFolder: string,
-  newStructure: Record<string, string>,
-  useForwardSlashes: boolean
+const getNewFilePath = (file: string, rootOptions: RootOption[]) => {
+  for (const { tree, parentFolder } of rootOptions) {
+    const key = path.relative(parentFolder, file);
+    if (key in tree) {
+      return path.resolve(path.join(parentFolder, tree[key]));
+    }
+  }
+
+  return file;
+};
+
+const getNewImportPath = (
+  absImportPath: string,
+  newFilePath: string,
+  rootOptions: RootOption[]
 ) => {
+  for (const { tree, parentFolder, useForwardSlash } of rootOptions) {
+    const key = path.relative(parentFolder, absImportPath);
+    if (key in tree) {
+      return makeImportPath(
+        newFilePath,
+        path.resolve(path.join(parentFolder, tree[key])),
+        useForwardSlash
+      );
+    }
+  }
+
+  return null;
+};
+
+export const fixImports = (files: string[], rootOptions: RootOption[]) => {
   for (const file of files) {
     const imports = findEdges(file);
     if (!imports.length) {
@@ -17,33 +43,18 @@ export const fixImports = (
     }
 
     const basedir = path.dirname(file);
-    let newFilePath = newStructure[path.relative(parentFolder, file)];
-
-    if (newFilePath) {
-      newFilePath = path.resolve(path.join(parentFolder, newFilePath));
-    } else {
-      newFilePath = file;
-    }
+    const newFilePath = getNewFilePath(file, rootOptions);
 
     const ogText = readFileSync(file).toString();
     // deep copy
     let newText = ogText.repeat(1);
     for (const imp of imports) {
       const absPath = customResolve(imp[1], basedir);
-      const pathInGraph = path.relative(parentFolder, absPath);
-      const newPath = newStructure[pathInGraph];
-      if (!newPath) {
-        continue;
-      }
+      const newImportText = getNewImportPath(absPath, newFilePath, rootOptions);
 
-      newText = newText.replace(
-        imp[1],
-        makeImportPath(
-          newFilePath,
-          path.resolve(path.join(parentFolder, newPath)),
-          useForwardSlashes
-        )
-      );
+      if (newImportText) {
+        newText = newText.replace(imp[1], newImportText);
+      }
     }
     if (newText !== ogText) {
       writeFileSync(file, newText);
