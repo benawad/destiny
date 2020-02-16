@@ -65,7 +65,11 @@ const parseArgs = (args: any[]): ParsedArgs =>
 
 const pathsToFiles = (paths: string[]) => {
   const files: string[][] = [];
-  for (const p of paths) {
+  while (paths.length) {
+    const p = paths.pop();
+    if (!p) {
+      continue;
+    }
     if (glob.hasMagic(p)) {
       const globFiles = glob.sync(p);
       if (!globFiles.length) {
@@ -73,7 +77,7 @@ const pathsToFiles = (paths: string[]) => {
       }
       files.push(globFiles);
     } else if (!existsSync(p)) {
-      throw new Error("Unable to resolve the path:" + p);
+      throw new Error("Unable to resolve the path: " + p);
     } else if (lstatSync(p).isDirectory()) {
       paths.push(path.join(p, "/**/*.*"));
     } else {
@@ -84,7 +88,7 @@ const pathsToFiles = (paths: string[]) => {
   return files;
 };
 
-const run = (args: any[]) => {
+export const run = async (args: any[]) => {
   const { options, paths } = parseArgs(args);
 
   if (options.help) return printHelp(0);
@@ -101,7 +105,7 @@ const run = (args: any[]) => {
 
   console.log("Files to structure:");
   console.log(filesToStructure);
-  formatFileStructure(filesToStructure, filesToFixImports);
+  await formatFileStructure(filesToStructure, filesToFixImports);
 };
 
 if (env.NODE_ENV !== "test") {

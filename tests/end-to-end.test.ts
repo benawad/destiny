@@ -4,6 +4,7 @@ import { formatFileStructure } from "../src/index/formatFileStructure";
 import { buildGraph } from "../src/index/formatFileStructure/buildGraph";
 import treeDir from "tree-node-cli";
 import glob from "glob";
+import { run } from "../src/index";
 
 const tmpPath = path.join(__dirname, "tmp");
 
@@ -37,18 +38,10 @@ const treeDirWithContents = (dir: string) => {
 
 export const t = (folderPath: string, rootPath: string) => {
   it(path.basename(folderPath), async () => {
-    const copyPath = path.join(tmpPath, path.basename(folderPath));
-    fs.copySync(folderPath, copyPath);
     const rootCopyPath = path.join(tmpPath, rootPath);
     const files = glob.sync(path.join(rootCopyPath, "/**/*.js"));
     await formatFileStructure([files], files);
     // make sure no imports broke
-    buildGraph(glob.sync(path.join(copyPath, "/**/*.js")));
-    expect(treeDir(rootCopyPath)).toMatchSnapshot();
-    const treeContents = treeDirWithContents(copyPath);
-    Object.keys(treeContents).forEach(k => {
-      expect(treeContents[k]).toMatchSnapshot(k);
-    });
   });
 };
 
@@ -56,7 +49,19 @@ describe("end-to-end", () => {
   const fixturePath = path.join(__dirname, "fixtures");
   const testCases = fs.readdirSync(fixturePath);
   for (const testCase of testCases) {
-    const folder = path.join(fixturePath, testCase);
-    t(folder, testCase === "globals" ? path.join(testCase, "src") : testCase);
+    const templateFolder = path.join(fixturePath, testCase);
+    const copyPath = path.join(tmpPath, testCase);
+    fs.copySync(templateFolder, copyPath);
+    it(testCase, async () => {
+      const rootPath =
+        testCase === "globals" ? path.join(testCase, "src") : testCase;
+      await run([path.join(tmpPath, rootPath)]);
+      buildGraph(glob.sync(path.join(copyPath, "/**/*.*")));
+      expect(treeDir(path.join(tmpPath, rootPath))).toMatchSnapshot();
+      const treeContents = treeDirWithContents(copyPath);
+      Object.keys(treeContents).forEach(k => {
+        expect(treeContents[k]).toMatchSnapshot(k);
+      });
+    });
   }
 });
