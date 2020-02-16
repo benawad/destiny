@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from "fs-extra";
 import { findEdges } from "./formatFileStructure/buildGraph/findEdges";
 import path from "path";
-import { makeImportPath } from "./formatFileStructure/syncFileSystem/fixImports/makeImportPath";
+import { makeImportPath } from "../makeImportPath";
 import { customResolve } from "../customResolve";
 
 export const fixImports = (
