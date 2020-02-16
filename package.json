@@ -5,6 +5,9 @@
   "bin": {
     "destiny": "dist/src/index.js"
   },
+  "engines": {
+    "node": ">= 10"
+  },
   "scripts": {
     "watch": "tsc -w",
     "start": "nodemon dist/src/index.js",
