@@ -297,6 +297,47 @@ import \\"@testing-library/jest-dom/extend-expect\\";
 "
 `;
 
+exports[`end-to-end duplicates 1`] = `
+"duplicates
+├── index
+│   ├── dir2-file.js
+│   ├── dir3-sub-file.js
+│   ├── dir4-sub-file.js
+│   ├── dir5
+│   │   ├── dir5-sub2-file.js
+│   │   └── file.js
+│   ├── dir5.js
+│   └── file.js
+└── index.js"
+`;
+
+exports[`end-to-end duplicates: duplicates/index.js 1`] = `
+"require(\\"./index/file\\");
+require(\\"./index/dir2-file\\");
+require(\\"./index/dir3-sub-file\\");
+require(\\"./index/dir4-sub-file\\");
+require(\\"./index/dir5\\");
+"
+`;
+
+exports[`end-to-end duplicates: duplicates/index/dir2-file.js 1`] = `""`;
+
+exports[`end-to-end duplicates: duplicates/index/dir3-sub-file.js 1`] = `""`;
+
+exports[`end-to-end duplicates: duplicates/index/dir4-sub-file.js 1`] = `""`;
+
+exports[`end-to-end duplicates: duplicates/index/dir5.js 1`] = `
+"require('./dir5/file');
+require('./dir5/dir5-sub2-file');
+"
+`;
+
+exports[`end-to-end duplicates: duplicates/index/dir5/dir5-sub2-file.js 1`] = `""`;
+
+exports[`end-to-end duplicates: duplicates/index/dir5/file.js 1`] = `""`;
+
+exports[`end-to-end duplicates: duplicates/index/file.js 1`] = `""`;
+
 exports[`end-to-end globals 1`] = `
 "src
 ├── index

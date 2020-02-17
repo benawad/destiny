@@ -39,6 +39,8 @@ describe("build graph", () => {
       "dir2/file.js",
       "dir3/sub/file.js",
       "dir4/sub/file.js",
+      "dir5/index.js",
     ],
+    "dir5/index.js": ["dir5/sub1/file.js", "dir5/sub2/file.js"],
   });
 });

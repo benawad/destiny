@@ -19,7 +19,7 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
     let folderName = path.basename(filePath, path.extname(filePath));
     const upperFolder = path.basename(path.dirname(filePath));
     const isGlobal = filePath.includes("..");
-    const location = isGlobal
+    let location = isGlobal
       ? filePath
       : path.join(
           folderPath,
@@ -27,6 +27,11 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
             ? upperFolder + path.extname(filePath)
             : basenameWithExt
         );
+
+    // Check for duplicates
+    if (Object.values(done).includes(location)) {
+      location = path.join(folderPath, filePath.replace(/\//g, "-"));
+    }
     folderName = path.basename(location, path.extname(location));
     // ../package.json
     // don't need to move global files
