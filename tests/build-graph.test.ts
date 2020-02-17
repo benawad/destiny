@@ -32,4 +32,13 @@ describe("build graph", () => {
     "level1.spec.js": ["level1.js"],
     "level2.spec.js": ["level2.js"],
   });
+
+  t("duplicates", {
+    "index.js": [
+      "dir1/file.js",
+      "dir2/file.js",
+      "dir3/sub/file.js",
+      "dir4/sub/file.js",
+    ],
+  });
 });
