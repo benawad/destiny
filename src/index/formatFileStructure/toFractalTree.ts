@@ -17,10 +17,9 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
       return;
     }
     let folderName = path.basename(filePath, path.extname(filePath));
-    const upperFolder = path.dirname(filePath);
-    // ../package.json
-    // keep globals where they are
-    const location = filePath.includes("..")
+    const upperFolder = path.basename(path.dirname(filePath));
+    const isGlobal = filePath.includes("..");
+    const location = isGlobal
       ? filePath
       : path.join(
           folderPath,
@@ -29,8 +28,11 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
             : basenameWithExt
         );
     folderName = path.basename(location, path.extname(location));
-    // do test files later
-    done[filePath] = location;
+    // ../package.json
+    // don't need to move global files
+    if (!isGlobal) {
+      done[filePath] = location;
+    }
     const imports = graph[filePath];
     if (imports && imports.length) {
       const newDestination = path.join(folderPath, folderName);
@@ -67,10 +69,19 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
 
   if (!containsCycle) {
     Object.entries(deps).forEach(([k, v]) => {
-      if (v.length > 1) {
+      if (v.length > 1 && !k.includes("..")) {
         const parent = findSharedParent(v);
         const filename = path.basename(k);
-        done[k] = path.join(parent, "shared", filename);
+        const upperFolder = path.basename(path.dirname(k));
+        done[k] = path.join(
+          parent,
+          "shared",
+          path.basename(filename, path.extname(filename)) === "index" &&
+            upperFolder &&
+            upperFolder !== "."
+            ? upperFolder + path.extname(filename)
+            : filename
+        );
       }
     });
   }

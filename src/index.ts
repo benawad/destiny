@@ -5,7 +5,7 @@ import glob from "glob";
 
 import { formatFileStructure } from "./index/formatFileStructure";
 import { version } from "../package.json";
-import { existsSync, lstatSync } from "fs-extra";
+import { existsSync, lstatSync, readdirSync } from "fs-extra";
 import path from "path";
 import { flatten } from "./index/formatFileStructure/flatten";
 // import { existsSync } from "fs-extra";
@@ -15,12 +15,13 @@ const defaults = {
   options: {
     help: false,
     version: false,
+    detectRoots: false,
   },
   paths: [],
 };
 
 type ParsedArgs = {
-  options: { help: boolean; version: boolean };
+  options: { help: boolean; version: boolean; detectRoots: boolean };
   paths: string[];
 };
 
@@ -39,6 +40,7 @@ const printHelp = (exitCode: number) => {
 
   -V, --version            output version number
   -h, --help               output usage information
+  -dr, --detect-roots      structure after the first level
   `
   );
 
@@ -56,6 +58,10 @@ const parseArgs = (args: any[]): ParsedArgs =>
       case "--version":
         acc.options.version = true;
         break;
+      case "-dr":
+      case "--detect-roots":
+        acc.options.detectRoots = true;
+        break;
       default:
         acc.paths.push(arg);
     }
@@ -63,7 +69,7 @@ const parseArgs = (args: any[]): ParsedArgs =>
     return acc;
   }, defaults);
 
-const pathsToFiles = (paths: string[]) => {
+const pathsToFiles = (paths: string[], detectRoots: boolean) => {
   const files: string[][] = [];
   while (paths.length) {
     const p = paths.pop();
@@ -90,7 +96,12 @@ const pathsToFiles = (paths: string[]) => {
     } else {
       const stats = lstatSync(p);
       if (stats.isDirectory()) {
-        paths.push(path.join(p, "/**/*.*"));
+        if (detectRoots) {
+          paths.push(...readdirSync(path.resolve(p)).map(x => path.join(p, x)));
+          detectRoots = false;
+        } else {
+          paths.push(path.join(p, "/**/*.*"));
+        }
       } else if (stats.isFile()) {
         files.push([p]);
       } else {
@@ -109,7 +120,7 @@ export const run = async (args: any[]) => {
   if (options.version) return printVersion();
   if (paths.length === 0) return printHelp(1);
 
-  const filesToStructure = pathsToFiles(paths);
+  const filesToStructure = pathsToFiles(paths, options.detectRoots);
   const filesToFixImports = flatten(filesToStructure);
 
   if (!filesToStructure.length) {
