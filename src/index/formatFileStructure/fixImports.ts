@@ -3,7 +3,7 @@ import { findEdges } from "./shared/findEdges";
 import path from "path";
 import { makeImportPath } from "./fixImports/makeImportPath";
 import { customResolve } from "./shared/customResolve";
-import { RootOption } from "../RootOption";
+import { RootOption } from "../shared/RootOption";
 
 const getNewFilePath = (file: string, rootOptions: RootOption[]) => {
   for (const { tree, parentFolder } of rootOptions) {

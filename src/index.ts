@@ -7,7 +7,6 @@ import { formatFileStructure } from "./index/formatFileStructure";
 import { version } from "../package.json";
 import { existsSync, lstatSync, readdirSync } from "fs-extra";
 import path from "path";
-import { flatten } from "./index/formatFileStructure/flatten";
 // import { existsSync } from "fs-extra";
 
 const { argv, env } = process;
@@ -121,7 +120,7 @@ export const run = async (args: any[]) => {
   if (paths.length === 0) return printHelp(1);
 
   const filesToStructure = pathsToFiles(paths, options.detectRoots);
-  const filesToFixImports = flatten(filesToStructure);
+  const filesToFixImports = filesToStructure.flat();
 
   if (!filesToStructure.length) {
     console.log("Could not find any files to structure");
