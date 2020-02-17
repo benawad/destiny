@@ -11,7 +11,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "build": "npm-run-all clean -p 'build:* -- {@}' --",
-    "build:cjs": "babel src --extensions '.ts' --out-dir dist",
+    "build:cjs": "rollup -c",
     "format": "run-s format:*",
     "format:eslint": "npm run lint -- --fix",
     "format:prettier": "prettier --write '{**/*,*}.{js,json,md,ts,yaml}'",
