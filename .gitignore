@@ -1,4 +1,4 @@
-dist
+.eslintcache
+lib
 node_modules
 tmp
-.eslintcache
