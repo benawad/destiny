@@ -36,15 +36,6 @@ const treeDirWithContents = (dir: string) => {
   return tree;
 };
 
-export const t = (folderPath: string, rootPath: string) => {
-  it(path.basename(folderPath), async () => {
-    const rootCopyPath = path.join(tmpPath, rootPath);
-    const files = glob.sync(path.join(rootCopyPath, "/**/*.js"));
-    await formatFileStructure([files], files);
-    // make sure no imports broke
-  });
-};
-
 describe("end-to-end", () => {
   const fixturePath = path.join(__dirname, "fixtures");
   const testCases = fs.readdirSync(fixturePath);

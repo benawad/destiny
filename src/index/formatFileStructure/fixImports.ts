@@ -21,7 +21,9 @@ const getNewImportPath = (
   newFilePath: string,
   rootOptions: RootOption[]
 ) => {
+  let lastUseForwardSlash = true;
   for (const { tree, parentFolder, useForwardSlash } of rootOptions) {
+    lastUseForwardSlash = useForwardSlash;
     const key = path.relative(parentFolder, absImportPath);
     if (key in tree) {
       return makeImportPath(
@@ -32,7 +34,7 @@ const getNewImportPath = (
     }
   }
 
-  return null;
+  return makeImportPath(newFilePath, absImportPath, lastUseForwardSlash);
 };
 
 export const fixImports = (files: string[], rootOptions: RootOption[]) => {
