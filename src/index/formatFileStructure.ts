@@ -6,15 +6,9 @@ import { removeEmptyFolders } from "./formatFileStructure/removeEmptyFolders";
 import { fixImports } from "./formatFileStructure/fixImports";
 import { RootOption } from "./shared/RootOption";
 
-/*
-  rootDirFiles: [
-    ['pages/index.js', 'pages/register.js'],
-    ['utils/search.js', 'utils/helper.js']
-  ]
-*/
 export const formatFileStructure = async (
   rootDirFiles: string[][],
-  filesToFixImports: string[]
+  filesToEdit: string[]
 ) => {
   const unusedFiles: string[] = [];
   const rootOptions: RootOption[] = [];
@@ -26,26 +20,27 @@ export const formatFileStructure = async (
       startingFiles
     );
     const tree = toFractalTree(graph, findEntryPoints(graph));
+    const usedFiles = new Set(Object.entries(graph).flat(2));
+
     rootOptions.push({
       tree,
       useForwardSlash,
       parentFolder,
     });
-    const usedFiles = new Set([
-      ...Object.keys(graph),
-      ...Object.values(graph).flat(),
-    ]);
+
     files.forEach(file => {
       if (!usedFiles.has(file)) {
         unusedFiles.push(file);
       }
     });
   }
-  await fixImports(filesToFixImports, rootOptions);
+
+  await fixImports(filesToEdit, rootOptions);
   for (const { tree, parentFolder } of rootOptions) {
     await moveFiles(tree, parentFolder);
     removeEmptyFolders(parentFolder);
   }
+
   if (unusedFiles.length) {
     console.log("unused files:");
     unusedFiles.forEach(f => console.log(f));
