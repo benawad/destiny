@@ -18,8 +18,7 @@
     "lint": "eslint '{src,test}/**/*.{js,ts}'",
     "prepublishOnly": "npm run build",
     "start": "nodemon dist/index.js",
-    "test": "jest tests",
-    "tr": "jest",
+    "test": "jest",
     "watch": "npm run build -- --watch"
   },
   "devDependencies": {
