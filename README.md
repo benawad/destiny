@@ -11,6 +11,11 @@ Motivation: https://www.youtube.com/watch?v=rGYbrIf-y58
 
 ![example transformation](https://github.com/benawad/destiny/blob/master/assets/example.png)
 
+## Disclaimer
+
+Destiny is in early development there might be bugs & important missing features.
+If you find a bug or you have a feature request, don't hesitate [openning an issue](https://github.com/benawad/destiny/issues/new) or making a pull request.
+
 ## What does this do?
 
 1. Scans a folder for all the files in it
