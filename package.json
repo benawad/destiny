@@ -10,7 +10,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "build": "npm-run-all clean -p 'build:* {*}' --",
+    "build": "npm-run-all clean -p 'build:* -- {@}' --",
     "build:cjs": "babel src --extensions '.ts' --out-dir dist",
     "format": "run-s format:*",
     "format:eslint": "npm run lint -- --fix",
@@ -20,7 +20,7 @@
     "start": "nodemon dist/index.js",
     "test": "jest tests",
     "tr": "jest",
-    "watch": "npm-run-all -p 'build {*}' -- --watch"
+    "watch": "npm run build -- --watch"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
