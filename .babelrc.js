@@ -1,3 +1,5 @@
+const { NODE_ENV } = process.env;
+
 module.exports = {
   presets: [
     [
@@ -5,14 +7,12 @@ module.exports = {
       {
         corejs: 3,
         loose: true,
-        modules: "cjs",
+        modules: NODE_ENV === "test" ? "auto" : false,
         targets: { node: 10 },
         useBuiltIns: "usage",
       },
     ],
+    "@babel/typescript",
   ],
-  plugins: [
-    ["@babel/plugin-transform-typescript"],
-    ["@babel/transform-runtime"],
-  ],
+  plugins: [["@babel/transform-runtime"]],
 };
