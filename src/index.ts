@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import chalk from "chalk";
 import glob from "glob";
 
