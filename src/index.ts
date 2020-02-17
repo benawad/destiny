@@ -1,10 +1,11 @@
 import chalk from "chalk";
 import glob from "glob";
+import { existsSync, lstatSync, readdirSync } from "fs-extra";
+import path from "path";
 
 import { formatFileStructure } from "./index/formatFileStructure";
 import { version } from "../package.json";
-import { existsSync, lstatSync, readdirSync } from "fs-extra";
-import path from "path";
+import logger from "./shared/logger";
 
 const { argv, env } = process;
 const defaults = {
@@ -76,20 +77,20 @@ const getFilePaths = (paths: string[], detectRoots: boolean) => {
       const globFiles = glob.sync(filePath);
 
       if (globFiles.length === 0) {
-        throw new Error("Could not find any files for: " + filePath);
+        logger.error("Could not find any files for: " + filePath, 1);
       }
       files.push(
         globFiles.filter(x => {
           const isFile = lstatSync(x).isFile();
 
           if (!isFile) {
-            console.log("Skipping non file: ", x);
+            logger.warn(`Skipping non file: ${x}`);
           }
           return isFile;
         })
       );
     } else if (!existsSync(filePath)) {
-      throw new Error("Unable to resolve the path: " + filePath);
+      logger.error(`Unable to resolve the path: ${filePath}`);
     } else {
       const stats = lstatSync(filePath);
 
@@ -107,7 +108,7 @@ const getFilePaths = (paths: string[], detectRoots: boolean) => {
       } else if (stats.isFile()) {
         files.push([filePath]);
       } else {
-        console.log("Skipping: ", filePath);
+        logger.warn(`Skipping: ${filePath}`);
       }
     }
   }
@@ -122,11 +123,13 @@ export const run = async (args: any[]) => {
   if (options.version) return printVersion();
   if (paths.length === 0) return printHelp(1);
 
+  logger.info("Resolving files.");
+
   const filesToRestructure = getFilePaths(paths, options.detectRoots);
   const filesToEdit = filesToRestructure.flat();
 
   if (filesToRestructure.length === 0) {
-    console.log("Could not find any files to restructure");
+    logger.error("Could not find any files to restructure", 1);
     return;
   }
 
