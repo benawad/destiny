@@ -5,7 +5,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [8, 10, 12, 13]
+        node-version: [10]
         os: [ubuntu-latest, windows-latest, macOS-latest]
     steps:
     - run: git config --global core.autocrlf false
