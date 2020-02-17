@@ -7,7 +7,6 @@ import { formatFileStructure } from "./index/formatFileStructure";
 import { version } from "../package.json";
 import { existsSync, lstatSync, readdirSync } from "fs-extra";
 import path from "path";
-// import { existsSync } from "fs-extra";
 
 const { argv, env } = process;
 const defaults = {
@@ -68,43 +67,49 @@ const parseArgs = (args: any[]): ParsedArgs =>
     return acc;
   }, defaults);
 
-const pathsToFiles = (paths: string[], detectRoots: boolean) => {
+const getFilePaths = (paths: string[], detectRoots: boolean) => {
   const files: string[][] = [];
-  while (paths.length) {
-    const p = paths.pop();
-    if (!p) {
-      continue;
-    }
-    if (glob.hasMagic(p)) {
-      const globFiles = glob.sync(p);
-      if (!globFiles.length) {
-        throw new Error("Could not find any files for: " + p);
+
+  while (paths.length > 0) {
+    const filePath = paths.pop();
+
+    if (!filePath) continue;
+    if (glob.hasMagic(filePath)) {
+      const globFiles = glob.sync(filePath);
+
+      if (globFiles.length === 0) {
+        throw new Error("Could not find any files for: " + filePath);
       }
       files.push(
         globFiles.filter(x => {
-          if (lstatSync(x).isFile()) {
-            return true;
-          } else {
-            console.log("Skipping non files: ", x);
-            return false;
+          const isFile = lstatSync(x).isFile();
+
+          if (!isFile) {
+            console.log("Skipping non file: ", x);
           }
+          return isFile;
         })
       );
-    } else if (!existsSync(p)) {
-      throw new Error("Unable to resolve the path: " + p);
+    } else if (!existsSync(filePath)) {
+      throw new Error("Unable to resolve the path: " + filePath);
     } else {
-      const stats = lstatSync(p);
+      const stats = lstatSync(filePath);
+
       if (stats.isDirectory()) {
         if (detectRoots) {
-          paths.push(...readdirSync(path.resolve(p)).map(x => path.join(p, x)));
+          paths.push(
+            ...readdirSync(path.resolve(filePath)).map(x =>
+              path.join(filePath, x)
+            )
+          );
           detectRoots = false;
         } else {
-          paths.push(path.join(p, "/**/*.*"));
+          paths.push(path.join(filePath, "/**/*.*"));
         }
       } else if (stats.isFile()) {
-        files.push([p]);
+        files.push([filePath]);
       } else {
-        console.log("Skipping: ", p);
+        console.log("Skipping: ", filePath);
       }
     }
   }
@@ -119,17 +124,15 @@ export const run = async (args: any[]) => {
   if (options.version) return printVersion();
   if (paths.length === 0) return printHelp(1);
 
-  const filesToStructure = pathsToFiles(paths, options.detectRoots);
-  const filesToFixImports = filesToStructure.flat();
+  const filesToRestructure = getFilePaths(paths, options.detectRoots);
+  const filesToEdit = filesToRestructure.flat();
 
-  if (!filesToStructure.length) {
-    console.log("Could not find any files to structure");
+  if (filesToRestructure.length === 0) {
+    console.log("Could not find any files to restructure");
     return;
   }
 
-  // console.log("Files to structure:");
-  // console.log(filesToStructure);
-  await formatFileStructure(filesToStructure, filesToFixImports);
+  await formatFileStructure(filesToRestructure, filesToEdit);
 };
 
 if (env.NODE_ENV !== "test") {
