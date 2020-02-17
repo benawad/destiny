@@ -13,8 +13,7 @@ Motivation: https://www.youtube.com/watch?v=rGYbrIf-y58
 
 ## Disclaimer
 
-Destiny is in early development there might be bugs & important missing features.
-If you find a bug or you have a feature request, don't hesitate [openning an issue](https://github.com/benawad/destiny/issues/new) or making a pull request.
+Destiny is in early development so you might encounter bugs or miss important features. If you find a bug or miss a feature, please don't hesitate to reach out via a pull request or [issue](https://github.com/benawad/destiny/issues/new).
 
 ## What does this do?
 
