@@ -17,7 +17,7 @@
     "format:prettier": "prettier --write '{**/*,*}.{js,json,md,ts,yaml}'",
     "lint": "eslint '{src,test}/**/*.{js,ts}'",
     "prepublishOnly": "npm run build",
-    "start": "nodemon lib/index.js",
+    "start": "nodemon lib/destiny.js",
     "test": "jest",
     "watch": "npm run build -- --watch"
   },
