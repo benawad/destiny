@@ -5,6 +5,7 @@ import { toFractalTree } from "./formatFileStructure/toFractalTree";
 import { removeEmptyFolders } from "./formatFileStructure/removeEmptyFolders";
 import { fixImports } from "./formatFileStructure/fixImports";
 import { RootOption } from "./shared/RootOption";
+import logger from "../shared/logger";
 
 export const formatFileStructure = async (
   rootDirFiles: string[][],
@@ -12,10 +13,14 @@ export const formatFileStructure = async (
 ) => {
   const unusedFiles: string[] = [];
   const rootOptions: RootOption[] = [];
+
   for (const startingFiles of rootDirFiles) {
     if (startingFiles.length <= 1) {
       continue;
     }
+
+    logger.info("Generating a graph and fractal tree.");
+
     const { graph, files, useForwardSlash, parentFolder } = buildGraph(
       startingFiles
     );
@@ -35,14 +40,19 @@ export const formatFileStructure = async (
     });
   }
 
+  logger.info("Fixing imports.");
   await fixImports(filesToEdit, rootOptions);
+
   for (const { tree, parentFolder } of rootOptions) {
+    logger.info("Moving files.");
     await moveFiles(tree, parentFolder);
     removeEmptyFolders(parentFolder);
   }
 
   if (unusedFiles.length) {
-    console.log("unused files:");
-    unusedFiles.forEach(f => console.log(f));
+    logger.warn("Unused files:");
+    unusedFiles.forEach(f => console.log(" ", f));
   }
+
+  logger.info("Successfully restructured!");
 };

@@ -3,6 +3,7 @@ import path from "path";
 import { hasCycle } from "./toFractalTree/hasCycle";
 import { findSharedParent } from "./shared/findSharedParent";
 import { isTestFile } from "./shared/isTestFile";
+import logger from "../../shared/logger";
 
 export function toFractalTree(graph: Graph, entryPoints: string[]) {
   const done: Record<string, string> = {};
@@ -41,7 +42,7 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
           const cycle = hasCycle(importFilePath, graph, new Set());
           if (cycle) {
             containsCycle = true;
-            console.log("Cycle detected:", cycle.join(" -> "));
+            logger.warn(`Cycle detected: ${cycle.join(" -> ")}`);
           } else {
             if (!(importFilePath in deps)) {
               deps[importFilePath] = [];
