@@ -29,11 +29,12 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
             : basenameWithExt
         );
 
-    // Check for duplicates
+    // Check for duplicates.
     if (Object.values(done).includes(location)) {
       location = path.join(folderPath, filePath.replace(/\//g, "-"));
-      console.log(`file renamed: ${filePath} -> ${location}`);
+      logger.info(`File renamed: ${filePath} -> ${location}`);
     }
+
     folderName = path.basename(location, path.extname(location));
     // ../package.json
     // don't need to move global files
@@ -64,7 +65,6 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
         }
         deps[importFilePath].push(location);
 
-        // console.log("import: ", importFilePath, newDestination);
         fn(importFilePath, newDestination, graph);
       }
     }
@@ -109,13 +109,14 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
           path.dirname(fileToTestPath),
           path.basename(testFile)
         );
-        // Check for duplicates
+
+        // Check for duplicates.
         if (Object.values(done).includes(location)) {
           location = path.join(
             path.dirname(fileToTestPath),
             testFile.replace(/\//g, "-")
           );
-          console.log(`file renamed: ${testFile} -> ${location}`);
+          logger.info(`File renamed: ${testFile} -> ${location}`);
         }
         done[testFile] = location;
       }
