@@ -3,6 +3,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import nodeResolve from "@rollup/plugin-node-resolve";
 import shebang from "rollup-plugin-add-shebang";
+import replace from "@rollup/plugin-replace";
 import { terser } from "rollup-plugin-terser";
 
 import pkg from "./package.json";
@@ -26,6 +27,7 @@ const defaults = {
   output: { exports: "named", indent: false },
   plugins: [
     nodeResolve({ extensions }),
+    replace({ "process.env.NODE_ENV": "'production'" }),
     commonjs(),
     json(),
     babel({ extensions, runtimeHelpers: true }),
