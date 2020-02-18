@@ -1,32 +1,21 @@
 name: ci
 on: [push, pull_request]
 jobs:
-  Tests:
+  tests:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         node-version: [10]
         os: [ubuntu-latest, macOS-latest]
     steps:
-    - run: git config --global core.autocrlf false
-    - uses: actions/checkout@v1
-    - uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm i -g yarn
-    - name: yarn install and test
-      run: |
-        yarn config set ignore-engines true
-        yarn
-        yarn test --verbose=false
-  Format:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-node@v1
-    - run: npm i -g yarn
-    - name: yarn install and format
-      run: |
-        yarn config set ignore-engines true
-        yarn
-        yarn format:prettier
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm i -g yarn
+      - name: yarn install and test
+        run: |
+          yarn config set ignore-engines true
+          yarn
+          yarn test --verbose=false
