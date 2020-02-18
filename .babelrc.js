@@ -1,5 +1,3 @@
-const { NODE_ENV } = process.env;
-
 module.exports = {
   presets: [
     [
@@ -7,7 +5,7 @@ module.exports = {
       {
         corejs: 3,
         loose: true,
-        modules: NODE_ENV === "test" ? "auto" : false,
+        modules: process.env.NODE_ENV === "test" ? "auto" : false,
         targets: { node: 10 },
         useBuiltIns: "usage",
       },

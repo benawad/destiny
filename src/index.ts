@@ -7,7 +7,7 @@ import { formatFileStructure } from "./index/formatFileStructure";
 import { version } from "../package.json";
 import logger from "./shared/logger";
 
-const { argv, env } = process;
+const { argv } = process;
 const defaults = {
   options: {
     help: false,
@@ -102,6 +102,7 @@ const getFilePaths = (paths: string[], detectRoots: boolean) => {
             )
           );
           detectRoots = false;
+          console.log(paths);
         } else {
           paths.push(path.join(filePath, "/**/*.*"));
         }
@@ -136,6 +137,6 @@ export const run = async (args: any[]) => {
   await formatFileStructure(filesToRestructure, filesToEdit);
 };
 
-if (env.NODE_ENV !== "test") {
+if (process.env.NODE_ENV !== "test") {
   run(argv.slice(2, argv.length));
 }

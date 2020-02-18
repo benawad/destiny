@@ -1,9 +1,7 @@
 import chalk from "chalk";
 
-const { NODE_ENV } = process.env;
-
 export const error = (err: Error | string, code = 0) => {
-  if (NODE_ENV === "test") return;
+  if (process.env.NODE_ENV === "test") return;
   if (err instanceof Error) {
     console.error(err);
   } else {
@@ -17,12 +15,12 @@ export const error = (err: Error | string, code = 0) => {
 };
 
 export const warn = (msg: string) => {
-  if (NODE_ENV === "test") return;
+  if (process.env.NODE_ENV === "test") return;
   console.log(chalk`{yellow.bold WARN:} ${msg}`);
 };
 
 export const info = (msg: string) => {
-  if (NODE_ENV === "test") return;
+  if (process.env.NODE_ENV === "test") return;
   console.log(chalk`{green.bold INFO:} ${msg}`);
 };
 
