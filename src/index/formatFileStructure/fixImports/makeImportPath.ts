@@ -11,18 +11,21 @@ export const makeImportPath = (
     path.dirname(fullPath),
     path.basename(
       fullPath,
-      ![".js", ".jsx", ".ts", ".tsx"].includes(ext) ? undefined : ext
+      [".js", ".jsx", ".ts", ".tsx"].includes(ext) ? ext : undefined
     )
   );
+
   if (!newImport.startsWith(".")) {
     newImport = "./" + newImport;
   }
+
   if (useForwardSlashes) {
-    // Replace \ with /
+    // Replace \ with /.
     newImport = newImport.replace(/\\/g, "/");
   } else {
-    // Replace / and \ with \\
+    // Replace / and \ with \\.
     newImport = newImport.replace(/\/|\\+/g, "\\\\");
   }
+
   return newImport;
 };
