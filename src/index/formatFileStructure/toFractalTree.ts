@@ -48,7 +48,7 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
           const cycle = hasCycle(importFilePath, graph, new Set());
           if (cycle) {
             containsCycle = true;
-            logger.warn(`Cycle detected: ${cycle.join(" -> ")}`);
+            logger.warn(`Dependency cycle detected: ${cycle.join(" -> ")}`);
           } else {
             if (!(importFilePath in deps)) {
               deps[importFilePath] = [];
