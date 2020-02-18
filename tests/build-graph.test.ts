@@ -42,5 +42,7 @@ describe("build graph", () => {
       "dir5/index.js",
     ],
     "dir5/index.js": ["dir5/sub1/file.js", "dir5/sub2/file.js"],
+    "dir5/sub1/file.spec.js": ["dir5/sub1/file.js"],
+    "dir5/sub2/file.spec.js": ["dir5/sub2/file.js"],
   });
 });

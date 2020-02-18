@@ -52,6 +52,8 @@ describe("toFractalTree", () => {
     "dir4/sub/file.js": "index/dir4-sub-file.js",
     "dir5/index.js": "index/dir5.js",
     "dir5/sub1/file.js": "index/dir5/file.js",
+    "dir5/sub1/file.spec.js": "index/dir5/file.spec.js",
     "dir5/sub2/file.js": "index/dir5/dir5-sub2-file.js",
+    "dir5/sub2/file.spec.js": "index/dir5/dir5-sub2-file.spec.js",
   });
 });

@@ -305,7 +305,9 @@ exports[`end-to-end duplicates 1`] = `
 │   ├── dir4-sub-file.js
 │   ├── dir5
 │   │   ├── dir5-sub2-file.js
-│   │   └── file.js
+│   │   ├── dir5-sub2-file.spec.js
+│   │   ├── file.js
+│   │   └── file.spec.js
 │   ├── dir5.js
 │   └── file.js
 └── index.js"
@@ -327,14 +329,24 @@ exports[`end-to-end duplicates: duplicates/index/dir3-sub-file.js 1`] = `""`;
 exports[`end-to-end duplicates: duplicates/index/dir4-sub-file.js 1`] = `""`;
 
 exports[`end-to-end duplicates: duplicates/index/dir5.js 1`] = `
-"require('./dir5/file');
-require('./dir5/dir5-sub2-file');
+"require(\\"./dir5/file\\");
+require(\\"./dir5/dir5-sub2-file\\");
 "
 `;
 
 exports[`end-to-end duplicates: duplicates/index/dir5/dir5-sub2-file.js 1`] = `""`;
 
+exports[`end-to-end duplicates: duplicates/index/dir5/dir5-sub2-file.spec.js 1`] = `
+"require(\\"./dir5-sub2-file\\");
+"
+`;
+
 exports[`end-to-end duplicates: duplicates/index/dir5/file.js 1`] = `""`;
+
+exports[`end-to-end duplicates: duplicates/index/dir5/file.spec.js 1`] = `
+"require(\\"./file\\");
+"
+`;
 
 exports[`end-to-end duplicates: duplicates/index/file.js 1`] = `""`;
 
