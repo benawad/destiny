@@ -50,8 +50,13 @@ export const formatFileStructure = async (
   }
 
   if (unusedFiles.length) {
-    logger.warn("Unused files:");
-    unusedFiles.forEach(f => console.log(" ", f));
+    logger.warn(
+      "Unused files:" +
+        "\n" +
+        [...unusedFiles, ...unusedFiles]
+          .map(file => " ".repeat(8) + file)
+          .join("\n")
+    );
   }
 
   logger.info("Successfully restructured!");
