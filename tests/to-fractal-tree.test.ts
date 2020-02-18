@@ -56,4 +56,9 @@ describe("toFractalTree", () => {
     "dir5/sub2/file.js": "index/dir5/dir5-sub2-file.js",
     "dir5/sub2/file.spec.js": "index/dir5/dir5-sub2-file.spec.js",
   });
+
+  t("commented-imports", {
+    "index.js": "index.js",
+    "existent.js": "index/existent.js",
+  });
 });
