@@ -1,7 +1,7 @@
 import fs from "fs";
 
 export function findEdges(filePath: string) {
-  const importRegex = /(?:(?:from|import)\s+["'](\.[^'"]*)["'])|(?:(?:require|import)\(["'](\.[^'"]*)["']\))/gm;
+  const importRegex = /(?:(?:from|import)\s+["'](\.[^'"]*)["'])|(?:(?:require|import)\s*\(["'](\.[^'"]*)["']\))/gm;
   const commentRegex = /\/\*[^]*?\*\/|^.*\/\/.*$/gm;
   const edges: Array<[string, string]> = [];
   const fileContent = fs
