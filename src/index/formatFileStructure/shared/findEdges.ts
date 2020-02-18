@@ -2,7 +2,11 @@ import fs from "fs";
 
 export function findEdges(filePath: string) {
   const importRegex = /^[^/\n\r]*.*(?:(?:from|import)\s+["'](\.[^'"]*)["'])|(?:(?:require|import)\(["'](\.[^'"]*)["']\))/gm;
-  const text = fs.readFileSync(filePath, { encoding: "utf8" }).toString();
+  const commentRegex = /\/\*[^]*?\*\/|^.*\/\/.*$/gm;
+  const text = fs
+    .readFileSync(filePath, { encoding: "utf8" })
+    .toString()
+    .replace(commentRegex, "");
   const edges: Array<[string, string]> = [];
   let m;
   while ((m = importRegex.exec(text)) !== null) {

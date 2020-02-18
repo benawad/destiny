@@ -45,4 +45,8 @@ describe("build graph", () => {
     "dir5/sub1/file.spec.js": ["dir5/sub1/file.js"],
     "dir5/sub2/file.spec.js": ["dir5/sub2/file.js"],
   });
+
+  t("commented-imports", {
+    "index.js": ["existent.js"],
+  });
 });

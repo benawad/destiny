@@ -1,5 +1,28 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`end-to-end commented-imports 1`] = `
+"commented-imports
+├── index
+│   └── existent.js
+└── index.js"
+`;
+
+exports[`end-to-end commented-imports: commented-imports/index.js 1`] = `
+"require(\\"./index/existent\\");
+// require(\\"./non-existent\\");
+// import non from \\"./non-existent\\";
+// export * from \\"./non-existent\\";
+
+/*
+require(\\"./non-existent\\");
+import non from \\"./non-existent\\";
+export * from \\"./non-existent\\";
+*/
+"
+`;
+
+exports[`end-to-end commented-imports: commented-imports/index/existent.js 1`] = `""`;
+
 exports[`end-to-end cra 1`] = `
 "cra
 ├── index
