@@ -1,20 +1,22 @@
 import fs from "fs";
 
 export function findEdges(filePath: string) {
-  const importRegex = /^[^/\n\r]*.*(?:(?:from|import)\s+["'](\.[^'"]*)["'])|(?:(?:require|import)\(["'](\.[^'"]*)["']\))/gm;
+  const importRegex = /(?:(?:from|import)\s+["'](\.[^'"]*)["'])|(?:(?:require|import)\s*\(["'](\.[^'"]*)["']\))/gm;
   const commentRegex = /\/\*[^]*?\*\/|^.*\/\/.*$/gm;
-  const text = fs
+  const edges: Array<[string, string]> = [];
+  const fileContent = fs
     .readFileSync(filePath, { encoding: "utf8" })
     .toString()
     .replace(commentRegex, "");
-  const edges: Array<[string, string]> = [];
-  let m;
-  while ((m = importRegex.exec(text)) !== null) {
-    // This is necessary to avoid infinite loops with zero-width matches
-    if (m.index === importRegex.lastIndex) {
+
+  let matches;
+  while ((matches = importRegex.exec(fileContent)) !== null) {
+    // This is necessary to avoid infinite loops with zero-width matches.
+    if (matches.index === importRegex.lastIndex) {
       importRegex.lastIndex++;
     }
-    edges.push([filePath, m[1] || m[2]]);
+    edges.push([filePath, matches[1] || matches[2]]);
   }
+
   return edges;
 }
