@@ -1,15 +1,38 @@
-import { Graph } from "./shared/Graph";
 import path from "path";
-import { hasCycle } from "./toFractalTree/hasCycle";
-import { findSharedParent } from "./shared/findSharedParent";
-import { isTestFile } from "./shared/isTestFile";
+
 import logger from "../../shared/logger";
+import { Graph } from "./shared/Graph";
+import { findSharedParent } from "./shared/findSharedParent";
+import { hasCycle } from "./toFractalTree/hasCycle";
+import { isTestFile } from "./shared/isTestFile";
 
 export function toFractalTree(graph: Graph, entryPoints: string[]) {
-  const done: Record<string, string> = {};
-  const deps: Record<string, string[]> = {};
-  let containsCycle = false;
+  const res: Record<string, string> = {};
+  const dependencies: Record<string, string[]> = {};
   const testFiles = new Set<string>();
+  let containsCycle = false;
+
+  const addDependency = (key: string, location: string) => {
+    if (!Array.isArray(dependencies[key])) {
+      dependencies[key] = [];
+    }
+    dependencies[key].push(location);
+  };
+
+  const checkDuplicates = (
+    location: string,
+    dirname: string,
+    filePath: string
+  ) => {
+    let newLocation;
+
+    if (Object.values(res).includes(location)) {
+      newLocation = path.join(dirname, filePath.replace(/\//g, "-"));
+      logger.info(`File renamed: ${filePath} -> ${newLocation}`);
+    }
+
+    return newLocation ?? location;
+  };
 
   const fn = (filePath: string, folderPath: string, graph: Graph) => {
     const basenameWithExt = path.basename(filePath);
@@ -29,42 +52,31 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
             : basenameWithExt
         );
 
-    // Check for duplicates.
-    if (Object.values(done).includes(location)) {
-      location = path.join(folderPath, filePath.replace(/\//g, "-"));
-      logger.info(`File renamed: ${filePath} -> ${location}`);
-    }
-
+    location = checkDuplicates(location, folderPath, filePath);
     folderName = path.basename(location, path.extname(location));
-    // ../package.json
-    // don't need to move global files
+
     if (!isGlobal) {
-      done[filePath] = location;
+      res[filePath] = location;
     }
     const imports = graph[filePath];
-    if (imports && imports.length) {
+
+    if (imports?.length > 0) {
       const newDestination = path.join(folderPath, folderName);
+
       for (const importFilePath of imports) {
-        if (importFilePath in done) {
+        if (importFilePath in res) {
           const cycle = hasCycle(importFilePath, graph, new Set());
+
           if (cycle) {
             containsCycle = true;
             logger.warn(`Dependency cycle detected: ${cycle.join(" -> ")}`);
           } else {
-            if (!(importFilePath in deps)) {
-              deps[importFilePath] = [];
-            }
-
-            deps[importFilePath].push(location);
+            addDependency(importFilePath, location);
           }
           continue;
         }
 
-        if (!(importFilePath in deps)) {
-          deps[importFilePath] = [];
-        }
-        deps[importFilePath].push(location);
-
+        addDependency(importFilePath, location);
         fn(importFilePath, newDestination, graph);
       }
     }
@@ -75,12 +87,13 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
   }
 
   if (!containsCycle) {
-    Object.entries(deps).forEach(([k, v]) => {
+    Object.entries(dependencies).forEach(([k, v]) => {
       if (v.length > 1 && !k.includes("..")) {
         const parent = findSharedParent(v);
         const filename = path.basename(k);
         const upperFolder = path.basename(path.dirname(k));
-        done[k] = path.join(
+
+        res[k] = path.join(
           parent,
           "shared",
           path.basename(filename, path.extname(filename)) === "index" &&
@@ -93,35 +106,32 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
     });
   }
 
-  if (testFiles.size) {
+  if (testFiles.size > 0) {
     const globalTests = [];
+
     for (const testFile of testFiles) {
-      // assuming this is the main thing your testing
       const [firstRelativeImport] = graph[testFile];
       if (!firstRelativeImport) {
         globalTests.push(testFile);
         continue;
       }
 
-      const fileToTestPath = done[firstRelativeImport];
-      if (fileToTestPath) {
+      const testFilePath = res[firstRelativeImport];
+      if (testFilePath) {
         let location = path.join(
-          path.dirname(fileToTestPath),
+          path.dirname(testFilePath),
           path.basename(testFile)
         );
 
-        // Check for duplicates.
-        if (Object.values(done).includes(location)) {
-          location = path.join(
-            path.dirname(fileToTestPath),
-            testFile.replace(/\//g, "-")
-          );
-          logger.info(`File renamed: ${testFile} -> ${location}`);
-        }
-        done[testFile] = location;
+        location = checkDuplicates(
+          location,
+          path.dirname(testFilePath),
+          testFile
+        );
+        res[testFile] = location;
       }
     }
   }
 
-  return done;
+  return res;
 }
