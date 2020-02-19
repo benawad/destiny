@@ -11,6 +11,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: yarn install
+        run: |
+          yarn config set ignore-engines true
+          yarn
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v2
         env:
