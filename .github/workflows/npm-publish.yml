@@ -1,16 +1,18 @@
 # https://github.com/marketplace/actions/action-for-semantic-release
 name: npm-publish
-on: [push]
-
+on:
+  push:
+    branches:
+      - master # Change this to your default branch
 jobs:
-  publish:
+  npm-publish:
+    name: npm-publish
     runs-on: ubuntu-latest
-    name: Publish
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Semantic Release
-      uses: cycjimmy/semantic-release-action@v2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
