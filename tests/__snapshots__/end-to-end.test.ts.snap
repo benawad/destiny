@@ -30,6 +30,7 @@ exports[`end-to-end cra 1`] = `
 │   │   ├── App.css
 │   │   └── logo.svg
 │   ├── App.js
+│   ├── App.stories.js
 │   ├── App.test.js
 │   ├── index.css
 │   └── serviceWorker.js
@@ -80,6 +81,21 @@ function App() {
 }
 
 export default App;
+"
+`;
+
+exports[`end-to-end cra: cra/index/App.stories.js 1`] = `
+"import React from \\"react\\";
+import App from \\"./App\\";
+
+export default {
+  title: \\"App\\",
+  component: App,
+};
+
+export function SomeStory() {
+  return <App />;
+}
 "
 `;
 
