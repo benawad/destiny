@@ -16,6 +16,7 @@
     "format:eslint": "npm run lint -- --fix",
     "format:prettier": "prettier --write '{**/*,*}.{js,json,md,ts,yaml}'",
     "lint": "eslint '{src,test}/**/*.{js,ts}'",
+    "prepare": "npm run build",
     "prepublishOnly": "npm run build",
     "start": "nodemon lib/destiny.js",
     "test": "jest",
