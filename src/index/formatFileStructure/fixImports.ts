@@ -55,7 +55,9 @@ export const fixImports = (files: string[], rootOptions: RootOption[]) => {
       const newImportText = getNewImportPath(absPath, newFilePath, rootOptions);
 
       if (newImportText) {
-        newText = newText.replace(imp[1], newImportText);
+        newText = newText
+          .replace(`'${imp[1]}'`, `'${newImportText}'`)
+          .replace(`"${imp[1]}"`, `"${newImportText}"`);
       }
     }
     if (newText !== ogText) {
