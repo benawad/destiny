@@ -1,18 +1,20 @@
 import fs from "fs";
 import path from "path";
 
-export const removeEmptyFolders = (p: string) => {
-  const files = fs.readdirSync(p);
-  if (!files) {
-    fs.rmdirSync(p);
+/** Recursively removes all empty folders. */
+export function removeEmptyFolders(directory: string): void {
+  const files = fs.readdirSync(directory);
+  if (!files) return fs.rmdirSync(directory);
+
+  for (const filePath of files) {
+    const fullPath = path.resolve(directory, filePath);
+
+    const isDirectory = fs.lstatSync(fullPath).isDirectory();
+    if (!isDirectory) continue;
+
+    removeEmptyFolders(fullPath);
+
+    const isEmpty = fs.readdirSync(fullPath).length === 0;
+    if (isEmpty) fs.rmdirSync(fullPath);
   }
-  for (const file of files) {
-    const fullPath = path.join(p, file);
-    if (fs.lstatSync(fullPath).isDirectory()) {
-      removeEmptyFolders(fullPath);
-      if (!fs.readdirSync(fullPath).length) {
-        fs.rmdirSync(fullPath);
-      }
-    }
-  }
-};
+}

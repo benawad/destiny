@@ -1,25 +1,24 @@
 import chalk from "chalk";
-import glob from "glob";
+import { cosmiconfigSync } from "cosmiconfig";
 import { existsSync, lstatSync, readdirSync } from "fs-extra";
-import path from "path";
 
+import getFilePaths from "./index/getFilePaths";
+import logger from "./shared/logger";
 import { formatFileStructure } from "./index/formatFileStructure";
 import { version } from "../package.json";
-import logger from "./shared/logger";
 
 const { argv } = process;
-const defaults = {
-  options: {
-    help: false,
-    version: false,
-    detectRoots: false,
-  },
-  paths: [],
+
+export type Options = {
+  detectRoots: boolean;
+  help: boolean;
+  version: boolean;
 };
 
-type ParsedArgs = {
-  options: { help: boolean; version: boolean; detectRoots: boolean };
-  paths: string[];
+const defaultOptions: Options = {
+  detectRoots: false,
+  help: false,
+  version: false,
 };
 
 const printVersion = () => console.log("v" + version);
@@ -44,89 +43,51 @@ const printHelp = (exitCode: number) => {
   return process.exit(exitCode);
 };
 
-const parseArgs = (args: any[]): ParsedArgs =>
-  args.reduce((acc, arg) => {
-    switch (arg) {
-      case "-h":
-      case "--help":
-        acc.options.help = true;
-        break;
-      case "-V":
-      case "--version":
-        acc.options.version = true;
-        break;
-      case "-dr":
-      case "--detect-roots":
-        acc.options.detectRoots = true;
-        break;
-      default:
-        acc.paths.push(arg);
-    }
-
-    return acc;
-  }, defaults);
-
-const getFilePaths = (paths: string[], detectRoots: boolean) => {
-  const files: string[][] = [];
-
-  while (paths.length > 0) {
-    const filePath = paths.pop();
-
-    if (!filePath) continue;
-    if (glob.hasMagic(filePath)) {
-      const globFiles = glob.sync(filePath);
-
-      if (globFiles.length === 0) {
-        logger.error("Could not find any files for: " + filePath, 1);
+const parseArgs = (
+  args: any[]
+): { options: Partial<Options>; paths: string[] } =>
+  args.reduce(
+    (acc, arg) => {
+      switch (arg) {
+        case "-h":
+        case "--help":
+          acc.options.help = true;
+          break;
+        case "-V":
+        case "--version":
+          acc.options.version = true;
+          break;
+        case "-dr":
+        case "--detect-roots":
+          acc.options.detectRoots = true;
+          break;
+        default:
+          acc.paths.push(arg);
       }
-      files.push(
-        globFiles.filter(x => {
-          const isFile = lstatSync(x).isFile();
 
-          if (!isFile) {
-            logger.warn(`Skipping non file: ${x}`);
-          }
-          return isFile;
-        })
-      );
-    } else if (!existsSync(filePath)) {
-      logger.error(`Unable to resolve the path: ${filePath}`);
-    } else {
-      const stats = lstatSync(filePath);
+      return acc;
+    },
+    { options: {}, paths: [] }
+  );
 
-      if (stats.isDirectory()) {
-        if (detectRoots) {
-          paths.push(
-            ...readdirSync(path.resolve(filePath)).map(x =>
-              path.join(filePath, x)
-            )
-          );
-          detectRoots = false;
-          console.log(paths);
-        } else {
-          paths.push(path.join(filePath, "/**/*.*"));
-        }
-      } else if (stats.isFile()) {
-        files.push([filePath]);
-      } else {
-        logger.warn(`Skipping: ${filePath}`);
-      }
-    }
-  }
-
-  return files;
-};
-
-export const run = async (args: any[]) => {
+export const run = async (args: string[]) => {
+  const config: Partial<Options> =
+    cosmiconfigSync("destiny").search()?.config ?? {};
   const { options, paths } = parseArgs(args);
 
-  if (options.help) return printHelp(0);
-  if (options.version) return printVersion();
+  const mergedOptions: Options = {
+    ...defaultOptions,
+    ...config,
+    ...options,
+  };
+
+  if (mergedOptions.help) return printHelp(0);
+  if (mergedOptions.version) return printVersion();
   if (paths.length === 0) return printHelp(1);
 
   logger.info("Resolving files.");
 
-  const filesToRestructure = getFilePaths(paths, options.detectRoots);
+  const filesToRestructure = getFilePaths(paths, mergedOptions);
   const filesToEdit = filesToRestructure.flat();
 
   if (filesToRestructure.length === 0) {
