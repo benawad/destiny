@@ -1,5 +1,6 @@
 import chalk from "chalk";
-import path from "path";
+import { cosmiconfigSync } from "cosmiconfig";
+import { existsSync, lstatSync, readdirSync } from "fs-extra";
 
 import getFilePaths from "./index/getFilePaths";
 import logger from "./shared/logger";
@@ -7,18 +8,17 @@ import { formatFileStructure } from "./index/formatFileStructure";
 import { version } from "../package.json";
 
 const { argv } = process;
-const defaults = {
-  options: {
-    help: false,
-    version: false,
-    detectRoots: false,
-  },
-  paths: [],
+
+type Options = {
+  detectRoots: boolean;
+  help: boolean;
+  version: boolean;
 };
 
-type ParsedArgs = {
-  options: { help: boolean; version: boolean; detectRoots: boolean };
-  paths: string[];
+const defaultOptions: Options = {
+  detectRoots: false,
+  help: false,
+  version: false,
 };
 
 const printVersion = () => console.log("v" + version);
@@ -43,38 +43,51 @@ const printHelp = (exitCode: number) => {
   return process.exit(exitCode);
 };
 
-const parseArgs = (args: any[]): ParsedArgs =>
-  args.reduce((acc, arg) => {
-    switch (arg) {
-      case "-h":
-      case "--help":
-        acc.options.help = true;
-        break;
-      case "-V":
-      case "--version":
-        acc.options.version = true;
-        break;
-      case "-dr":
-      case "--detect-roots":
-        acc.options.detectRoots = true;
-        break;
-      default:
-        acc.paths.push(arg);
-    }
+const parseArgs = (
+  args: any[]
+): { options: Partial<Options>; paths: string[] } =>
+  args.reduce(
+    (acc, arg) => {
+      switch (arg) {
+        case "-h":
+        case "--help":
+          acc.options.help = true;
+          break;
+        case "-V":
+        case "--version":
+          acc.options.version = true;
+          break;
+        case "-dr":
+        case "--detect-roots":
+          acc.options.detectRoots = true;
+          break;
+        default:
+          acc.paths.push(arg);
+      }
 
-    return acc;
-  }, defaults);
+      return acc;
+    },
+    { options: {}, paths: [] }
+  );
 
-export const run = async (args: any[]) => {
+export const run = async (args: string[]) => {
+  const config: Partial<Options> =
+    cosmiconfigSync("destiny").search()?.config ?? {};
   const { options, paths } = parseArgs(args);
 
-  if (options.help) return printHelp(0);
-  if (options.version) return printVersion();
+  const mergedOptions: Options = {
+    ...defaultOptions,
+    ...config,
+    ...options,
+  };
+
+  if (mergedOptions.help) return printHelp(0);
+  if (mergedOptions.version) return printVersion();
   if (paths.length === 0) return printHelp(1);
 
   logger.info("Resolving files.");
 
-  const filesToRestructure = getFilePaths(paths, options);
+  const filesToRestructure = getFilePaths(paths, mergedOptions.detectRoots);
   const filesToEdit = filesToRestructure.flat();
 
   if (filesToRestructure.length === 0) {
