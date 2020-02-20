@@ -19,35 +19,26 @@ function createInvertedGraph(graph: Graph) {
 export function findEntryPoints(graph: Graph) {
   const invertedGraph = createInvertedGraph(graph);
   const possibleEntryPoints = Object.keys(graph);
-  const entryPoints = possibleEntryPoints.filter(file => {
-    const importedBy = invertedGraph[file];
-    if (!importedBy || !importedBy.length) {
-      return true;
-    }
 
+  const entryPoints = possibleEntryPoints.filter(filePath => {
+    const importedBy = invertedGraph[filePath];
+    if (!importedBy || !importedBy.length) return true;
     return importedBy.every(x => isTestFile(x));
   });
 
-  if (entryPoints.length) {
-    return entryPoints;
-  }
+  if (entryPoints.length) return entryPoints;
 
   const levelMap: Record<number, string[]> = {};
 
-  possibleEntryPoints.forEach(k => {
-    const n = k.split("/").length;
-
-    if (!(n in levelMap)) {
-      levelMap[n] = [];
-    }
-
-    levelMap[n].push(k);
-  });
+  for (const entryPoint of possibleEntryPoints) {
+    const n = entryPoint.split("/").length;
+    const nMissing = !(n in levelMap);
+    if (nMissing) levelMap[n] = [];
+    levelMap[n].push(entryPoint);
+  }
 
   for (let i = 1; i < 10; i++) {
-    if (i in levelMap) {
-      return levelMap[i];
-    }
+    if (i in levelMap) return levelMap[i];
   }
 
   return [];
