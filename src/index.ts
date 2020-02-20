@@ -2,24 +2,33 @@ import chalk from "chalk";
 import glob from "glob";
 import { existsSync, lstatSync, readdirSync } from "fs-extra";
 import path from "path";
+import { cosmiconfigSync } from "cosmiconfig";
+import v8 from "v8";
 
 import { formatFileStructure } from "./index/formatFileStructure";
 import { version } from "../package.json";
 import logger from "./shared/logger";
 
 const { argv } = process;
-const defaults = {
+
+interface InternalFlags {
+  help: boolean;
+  version: boolean;
+}
+const defaultInternalFlags: InternalFlags = {
+  help: false,
+  version: false,
+};
+
+interface Config {
+  options: { detectRoots: boolean };
+  paths: string[];
+}
+const defaultConfig: Config = {
   options: {
-    help: false,
-    version: false,
     detectRoots: false,
   },
   paths: [],
-};
-
-type ParsedArgs = {
-  options: { help: boolean; version: boolean; detectRoots: boolean };
-  paths: string[];
 };
 
 const printVersion = () => console.log("v" + version);
@@ -44,27 +53,43 @@ const printHelp = (exitCode: number) => {
   return process.exit(exitCode);
 };
 
-const parseArgs = (args: any[]): ParsedArgs =>
-  args.reduce((acc, arg) => {
+const parseArgs = (
+  args: string[]
+): { parsedArgs: Config; parsedInternalFlags: InternalFlags } => {
+  const parsedArgs = args.reduce((acc, arg) => {
     switch (arg) {
-      case "-h":
-      case "--help":
-        acc.options.help = true;
-        break;
-      case "-V":
-      case "--version":
-        acc.options.version = true;
-        break;
       case "-dr":
       case "--detect-roots":
         acc.options.detectRoots = true;
         break;
       default:
+        if (arg.startsWith("--") || arg.startsWith("-")) break;
         acc.paths.push(arg);
     }
 
     return acc;
-  }, defaults);
+  }, v8.deserialize(v8.serialize(defaultConfig)));
+
+  const parsedInternalFlags = args.reduce((acc, arg) => {
+    switch (arg) {
+      case "-h":
+      case "--help":
+        acc.help = true;
+        break;
+      case "-V":
+      case "--version":
+        acc.version = true;
+        break;
+    }
+
+    return acc;
+  }, v8.deserialize(v8.serialize(defaultInternalFlags)));
+
+  return {
+    parsedArgs,
+    parsedInternalFlags,
+  };
+};
 
 const getFilePaths = (paths: string[], detectRoots: boolean) => {
   const files: string[][] = [];
@@ -116,11 +141,36 @@ const getFilePaths = (paths: string[], detectRoots: boolean) => {
   return files;
 };
 
-export const run = async (args: any[]) => {
-  const { options, paths } = parseArgs(args);
+const combineArgsAndConfigFile = (
+  args: Config,
+  config: Partial<Config> = {},
+  recursedDefConfig = defaultConfig
+): Config => {
+  for (const key in config) {
+    const argProp = args[key];
+    const confProp = config[key];
+    const defaultConfProp = recursedDefConfig[key];
 
-  if (options.help) return printHelp(0);
-  if (options.version) return printVersion();
+    if (confProp && confProp.constructor === Object) {
+      args[key] = combineArgsAndConfigFile(argProp, confProp, defaultConfProp);
+    } else if (JSON.stringify(argProp) === JSON.stringify(defaultConfProp)) {
+      args[key] = confProp;
+    }
+  }
+
+  return args;
+};
+
+export const run = async (args: string[]) => {
+  const { parsedArgs, parsedInternalFlags } = parseArgs(args);
+  const configFile = cosmiconfigSync("destiny").search();
+  const { paths, options } = combineArgsAndConfigFile(
+    parsedArgs,
+    configFile?.config
+  );
+
+  if (parsedInternalFlags.help) return printHelp(0);
+  if (parsedInternalFlags.version) return printVersion();
   if (paths.length === 0) return printHelp(1);
 
   logger.info("Resolving files.");
