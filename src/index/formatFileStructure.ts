@@ -7,6 +7,7 @@ import { fixImports } from "./formatFileStructure/fixImports";
 import { RootOption } from "./shared/RootOption";
 import logger from "../shared/logger";
 
+/** The main process when calling `destiny run [folder]` */
 export const formatFileStructure = async (
   rootDirFiles: string[][],
   filesToEdit: string[]
