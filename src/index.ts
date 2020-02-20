@@ -10,13 +10,11 @@ import { version } from "../package.json";
 const { argv } = process;
 
 export type Options = {
-  detectRoots: boolean;
   help: boolean;
   version: boolean;
 };
 
 const defaultOptions: Options = {
-  detectRoots: false,
   help: false,
   version: false,
 };
@@ -36,7 +34,6 @@ const printHelp = (exitCode: number) => {
 
   -V, --version            output version number
   -h, --help               output usage information
-  -dr, --detect-roots      structure after the first level
   `
   );
 
@@ -56,10 +53,6 @@ const parseArgs = (
         case "-V":
         case "--version":
           acc.options.version = true;
-          break;
-        case "-dr":
-        case "--detect-roots":
-          acc.options.detectRoots = true;
           break;
         default:
           acc.paths.push(arg);

@@ -1,9 +1,8 @@
 import glob from "glob";
 import path from "path";
-import { existsSync, lstatSync, readdirSync } from "fs-extra";
+import { existsSync, lstatSync } from "fs-extra";
 
 import logger from "../shared/logger";
-import { Options } from "../index";
 
 const isDirectory = (filePath: string) => lstatSync(filePath).isDirectory();
 const isFile = (filePath: string) => lstatSync(filePath).isFile();
@@ -20,8 +19,7 @@ const globSearch = (pattern: string) => {
 };
 
 /** Recursively get all file paths. */
-export const getFilePaths = (paths: string[], options: Options) => {
-  let { detectRoots } = options;
+export const getFilePaths = (paths: string[]) => {
   const files: string[][] = [];
 
   while (paths.length > 0) {
@@ -39,16 +37,7 @@ export const getFilePaths = (paths: string[], options: Options) => {
       if (isFile(filePath)) {
         files.push([filePath]);
       } else if (isDirectory(filePath)) {
-        if (detectRoots) {
-          const childDirectories = readdirSync(path.resolve(filePath))
-            .map(x => path.join(filePath, x))
-            .filter(x => isDirectory(x));
-
-          paths.push(...childDirectories);
-          detectRoots = false;
-        } else {
-          paths.push(path.join(filePath, "/**/*.*"));
-        }
+        paths.push(path.join(filePath, "/**/*.*"));
       }
     } else {
       logger.error(`Unable to resolve the path: ${filePath}`);
