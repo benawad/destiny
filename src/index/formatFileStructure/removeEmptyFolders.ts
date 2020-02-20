@@ -5,8 +5,6 @@ import path from "path";
  * @summary
  * Recursively removes all empty folders.
  *
- * @param directory the full path of a directory.
- *
  * @example
  * removeEmptyFolders('/home/user/documents/project/src')
  */
@@ -22,7 +20,7 @@ export function removeEmptyFolders(directory: string): void {
 
     removeEmptyFolders(fullPath);
 
-    const isEmpty = !fs.readdirSync(fullPath).length;
+    const isEmpty = fs.readdirSync(fullPath).length === 0;
     if (isEmpty) fs.rmdirSync(fullPath);
   }
 }
