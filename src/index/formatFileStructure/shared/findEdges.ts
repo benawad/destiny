@@ -1,5 +1,10 @@
 import fs from "fs";
 
+/**
+ * Finds all edges in the file,
+ * with an edge being the relative path of an import
+ * from the filePath.
+ */
 export function findEdges(filePath: string) {
   const importRegex = /(?:(?:from|import)\s+["'](\.[^'"]*)["'])|(?:(?:require|import)\s*\(["'](\.[^'"]*)["']\))/gm;
   const commentRegex = /\/\*[^]*?\*\/|^.*\/\/.*$/gm;
@@ -15,7 +20,9 @@ export function findEdges(filePath: string) {
     if (matches.index === importRegex.lastIndex) {
       importRegex.lastIndex++;
     }
-    edges.push([filePath, matches[1] || matches[2]]);
+    const importMatch = matches[1];
+    const requireMatch = matches[2];
+    edges.push([filePath, importMatch || requireMatch]);
   }
 
   return edges;
