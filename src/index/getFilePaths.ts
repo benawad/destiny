@@ -19,7 +19,7 @@ const globSearch = (pattern: string) => {
 };
 
 /** Recursively get all file paths. */
-export const getFilePaths = (paths: string[], _options: {}) => {
+export const getFilePaths = (paths: string[]) => {
   const files: string[][] = [];
 
   while (paths.length > 0) {

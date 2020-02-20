@@ -79,7 +79,7 @@ export const run = async (args: string[]) => {
 
   logger.info("Resolving files.");
 
-  const filesToRestructure = getFilePaths(paths, mergedOptions);
+  const filesToRestructure = getFilePaths(paths);
   const filesToEdit = filesToRestructure.flat();
 
   if (filesToRestructure.length === 0) {
