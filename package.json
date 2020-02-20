@@ -16,7 +16,7 @@
   ],
   "scripts": {
     "clean": "rimraf lib",
-    "check": "tsc --noEmit",
+    "check": "tsc",
     "build": "npm-run-all clean check -p 'build:* -- {@}' --",
     "build:cjs": "rollup -c",
     "format": "run-s format:*",
