@@ -1,10 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-/**
- * @summary
- * Recursively removes all empty folders.
- */
+/** Recursively removes all empty folders. */
 export function removeEmptyFolders(directory: string): void {
   const files = fs.readdirSync(directory);
   if (!files) return fs.rmdirSync(directory);
