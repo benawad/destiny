@@ -102,7 +102,6 @@ const getFilePaths = (paths: string[], detectRoots: boolean) => {
             )
           );
           detectRoots = false;
-          console.log(paths);
         } else {
           paths.push(path.join(filePath, "/**/*.*"));
         }

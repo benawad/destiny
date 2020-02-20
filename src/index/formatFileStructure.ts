@@ -57,5 +57,5 @@ export const formatFileStructure = async (
     );
   }
 
-  logger.info("Successfully restructured!");
+  logger.info("Restructure was successful!");
 };
