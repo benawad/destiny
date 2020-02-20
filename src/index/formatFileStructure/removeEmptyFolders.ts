@@ -22,7 +22,7 @@ export function removeEmptyFolders(directory: string): void {
 
     removeEmptyFolders(fullPath);
 
-    const isEmpty = !fs.readdirSync(fullPath).length;
+    const isEmpty = fs.readdirSync(fullPath).length === 0;
     if (isEmpty) fs.rmdirSync(fullPath);
   }
 }
