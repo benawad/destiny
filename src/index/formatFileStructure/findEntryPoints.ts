@@ -1,23 +1,23 @@
 import { Graph } from "./shared/Graph";
 import { isTestFile } from "./shared/isTestFile";
 
-const invertGraph = (graph: Graph) => {
+function createInvertedGraph(graph: Graph) {
   const invertedGraph: Graph = {};
-  Object.keys(graph).forEach(k => {
-    graph[k].forEach(v => {
-      if (!(v in invertedGraph)) {
-        invertedGraph[v] = [];
-      }
+  const starts = Object.keys(graph);
 
-      invertedGraph[v].push(k);
-    });
-  });
-
+  for (const start of starts) {
+    const ends = graph[start];
+    for (const end of ends) {
+      const endMissing = !(end in invertedGraph);
+      if (endMissing) invertedGraph[end] = [];
+      invertedGraph[end].push(start);
+    }
+  }
   return invertedGraph;
-};
+}
 
 export function findEntryPoints(graph: Graph) {
-  const invertedGraph = invertGraph(graph);
+  const invertedGraph = createInvertedGraph(graph);
   const possibleEntryPoints = Object.keys(graph);
   const entryPoints = possibleEntryPoints.filter(file => {
     const importedBy = invertedGraph[file];
