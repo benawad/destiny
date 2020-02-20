@@ -1,13 +1,19 @@
 {
-  "version": "0.0.0-development",
   "name": "destiny",
-  "main": "lib/destiny.js",
-  "bin": {
-    "destiny": "lib/destiny.js"
-  },
-  "engines": {
-    "node": ">= 10"
-  },
+  "version": "0.0.0-development",
+  "description": "Prettier for file structures",
+  "license": "MIT",
+  "homepage": "https://github.com/benawad/destiny",
+  "repository": "github:benawad/destiny",
+  "bugs": "https://github.com/benawad/destiny/issues",
+  "keywords": [
+    "auto",
+    "fractal",
+    "cli",
+    "file",
+    "prettier",
+    "structure"
+  ],
   "scripts": {
     "clean": "rimraf lib",
     "build": "npm-run-all clean -p 'build:* -- {@}' --",
@@ -20,8 +26,14 @@
     "prepublishOnly": "npm run build",
     "start": "nodemon lib/destiny.js",
     "test": "jest",
-    "watch": "npm run build -- --watch",
-    "semantic-release": "semantic-release"
+    "watch": "npm run build -- --watch"
+  },
+  "engines": {
+    "node": ">= 10"
+  },
+  "main": "lib/destiny.js",
+  "bin": {
+    "destiny": "lib/destiny.js"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
@@ -60,7 +72,6 @@
     "typescript": "^3.7.5",
     "semantic-release": "^17.0.4"
   },
-  "license": "MIT",
   "dependencies": {
     "@babel/runtime": "^7.8.4",
     "chalk": "^3.0.0",
@@ -69,9 +80,5 @@
     "glob": "^7.1.6",
     "resolve": "^1.15.1",
     "simple-git": "^1.131.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/benawad/butler-cli.git"
   }
 }
