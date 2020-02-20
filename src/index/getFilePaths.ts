@@ -3,6 +3,7 @@ import path from "path";
 import { existsSync, lstatSync, readdirSync } from "fs-extra";
 
 import logger from "../shared/logger";
+import { Options } from "../index";
 
 const isDirectory = (filePath: string) => lstatSync(filePath).isDirectory();
 const isFile = (filePath: string) => lstatSync(filePath).isFile();
@@ -19,10 +20,8 @@ const globSearch = (pattern: string) => {
 };
 
 /** Recursively get all file paths. */
-export const getFilePaths = (
-  paths: string[],
-  options = { detectRoots: false }
-) => {
+export const getFilePaths = (paths: string[], options: Options) => {
+  let { detectRoots } = options;
   const files: string[][] = [];
 
   while (paths.length > 0) {
@@ -40,13 +39,13 @@ export const getFilePaths = (
       if (isFile(filePath)) {
         files.push([filePath]);
       } else if (isDirectory(filePath)) {
-        if (options.detectRoots) {
+        if (detectRoots) {
           const childDirectories = readdirSync(path.resolve(filePath))
             .map(x => path.join(filePath, x))
             .filter(x => isDirectory(x));
 
           paths.push(...childDirectories);
-          options.detectRoots = false;
+          detectRoots = false;
         } else {
           paths.push(path.join(filePath, "/**/*.*"));
         }

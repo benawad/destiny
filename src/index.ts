@@ -9,7 +9,7 @@ import { version } from "../package.json";
 
 const { argv } = process;
 
-type Options = {
+export type Options = {
   detectRoots: boolean;
   help: boolean;
   version: boolean;
@@ -87,7 +87,7 @@ export const run = async (args: string[]) => {
 
   logger.info("Resolving files.");
 
-  const filesToRestructure = getFilePaths(paths, mergedOptions.detectRoots);
+  const filesToRestructure = getFilePaths(paths, mergedOptions);
   const filesToEdit = filesToRestructure.flat();
 
   if (filesToRestructure.length === 0) {
