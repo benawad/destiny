@@ -12,8 +12,8 @@ export function removeEmptyFolders(directory: string): void {
   const files = fs.readdirSync(directory);
   if (!files) return fs.rmdirSync(directory);
 
-  for (const base of files) {
-    const fullPath = path.resolve(directory, base);
+  for (const filePath of files) {
+    const fullPath = path.resolve(directory, filePath);
 
     const isDirectory = fs.lstatSync(fullPath).isDirectory();
     if (!isDirectory) continue;
