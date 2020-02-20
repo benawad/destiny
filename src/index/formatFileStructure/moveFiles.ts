@@ -16,7 +16,6 @@ export const moveFiles = async (
     const oldAbsolutePath = path.resolve(parentFolder, oldPath);
     const newAbsolutePath = path.resolve(parentFolder, newPath);
 
-    console.log({ oldAbsolutePath, newAbsolutePath });
     const isSamePath = oldAbsolutePath === newAbsolutePath;
     if (isSamePath) continue;
 
