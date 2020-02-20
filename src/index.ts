@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import path from "path";
 
-import getFilePaths from "./getFilePaths";
+import getFilePaths from "./index/getFilePaths";
 import logger from "./shared/logger";
 import { formatFileStructure } from "./index/formatFileStructure";
 import { version } from "../package.json";

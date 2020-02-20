@@ -2,7 +2,7 @@ import glob from "glob";
 import path from "path";
 import { existsSync, lstatSync, readdirSync } from "fs-extra";
 
-import logger from "./shared/logger";
+import logger from "../shared/logger";
 
 const isDirectory = (filePath: string) => lstatSync(filePath).isDirectory();
 const isFile = (filePath: string) => lstatSync(filePath).isFile();
