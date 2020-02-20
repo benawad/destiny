@@ -1,6 +1,5 @@
 import chalk from "chalk";
 import { cosmiconfigSync } from "cosmiconfig";
-import { existsSync, lstatSync, readdirSync } from "fs-extra";
 
 import getFilePaths from "./index/getFilePaths";
 import logger from "./shared/logger";
