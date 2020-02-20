@@ -41,11 +41,11 @@ export const getFilePaths = (
         files.push([filePath]);
       } else if (isDirectory(filePath)) {
         if (options.detectRoots) {
-          paths.push(
-            ...readdirSync(path.resolve(filePath)).map(x =>
-              path.join(filePath, x)
-            )
-          );
+          const childDirectories = readdirSync(path.resolve(filePath))
+            .map(x => path.join(filePath, x))
+            .filter(x => isDirectory(x));
+
+          paths.push(...childDirectories);
           options.detectRoots = false;
         } else {
           paths.push(path.join(filePath, "/**/*.*"));
