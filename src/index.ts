@@ -1,13 +1,12 @@
 import chalk from "chalk";
-import glob from "glob";
-import { existsSync, lstatSync, readdirSync } from "fs-extra";
 import path from "path";
 import { cosmiconfigSync } from "cosmiconfig";
 import v8 from "v8";
 
+import getFilePaths from "./index/getFilePaths";
+import logger from "./shared/logger";
 import { formatFileStructure } from "./index/formatFileStructure";
 import { version } from "../package.json";
-import logger from "./shared/logger";
 
 const { argv } = process;
 
@@ -91,56 +90,6 @@ const parseArgs = (
   };
 };
 
-const getFilePaths = (paths: string[], detectRoots: boolean) => {
-  const files: string[][] = [];
-
-  while (paths.length > 0) {
-    const filePath = paths.pop();
-
-    if (!filePath) continue;
-    if (glob.hasMagic(filePath)) {
-      const globFiles = glob.sync(filePath);
-
-      if (globFiles.length === 0) {
-        logger.error("Could not find any files for: " + filePath, 1);
-      }
-      files.push(
-        globFiles.filter(x => {
-          const isFile = lstatSync(x).isFile();
-
-          if (!isFile) {
-            logger.warn(`Skipping non file: ${x}`);
-          }
-          return isFile;
-        })
-      );
-    } else if (!existsSync(filePath)) {
-      logger.error(`Unable to resolve the path: ${filePath}`);
-    } else {
-      const stats = lstatSync(filePath);
-
-      if (stats.isDirectory()) {
-        if (detectRoots) {
-          paths.push(
-            ...readdirSync(path.resolve(filePath)).map(x =>
-              path.join(filePath, x)
-            )
-          );
-          detectRoots = false;
-        } else {
-          paths.push(path.join(filePath, "/**/*.*"));
-        }
-      } else if (stats.isFile()) {
-        files.push([filePath]);
-      } else {
-        logger.warn(`Skipping: ${filePath}`);
-      }
-    }
-  }
-
-  return files;
-};
-
 const combineArgsAndConfigFile = (
   args: Config,
   config: Partial<Config> = {},
@@ -175,7 +124,7 @@ export const run = async (args: string[]) => {
 
   logger.info("Resolving files.");
 
-  const filesToRestructure = getFilePaths(paths, options.detectRoots);
+  const filesToRestructure = getFilePaths(paths, options);
   const filesToEdit = filesToRestructure.flat();
 
   if (filesToRestructure.length === 0) {
