@@ -11,21 +11,18 @@ export const formatFileStructure = async (
   rootDirFiles: string[][],
   filesToEdit: string[]
 ) => {
-  const unusedFiles: string[] = [];
   const rootOptions: RootOption[] = [];
+  const unusedFiles: string[] = [];
 
+  logger.info("Generating a graph and fractal tree.");
   for (const startingFiles of rootDirFiles) {
-    if (startingFiles.length <= 1) {
-      continue;
-    }
-
-    logger.info("Generating a graph and fractal tree.");
+    if (startingFiles.length <= 1) continue;
 
     const { graph, files, useForwardSlash, parentFolder } = buildGraph(
       startingFiles
     );
-    const tree = toFractalTree(graph, findEntryPoints(graph));
-    const usedFiles = new Set(Object.entries(graph).flat(2));
+    const entryPoints = findEntryPoints(graph);
+    const tree = toFractalTree(graph, entryPoints);
 
     rootOptions.push({
       tree,
@@ -33,11 +30,14 @@ export const formatFileStructure = async (
       parentFolder,
     });
 
-    files.forEach(file => {
-      if (!usedFiles.has(file)) {
-        unusedFiles.push(file);
-      }
-    });
+    // This pattern allows skips over deeply nested paths,
+    // returning only paths that exist at this level.
+    const usedFiles = new Set<string>(Object.entries(graph).flat(2));
+
+    for (const file of files) {
+      const isUnusedFile = !usedFiles.has(file);
+      if (isUnusedFile) unusedFiles.push(file);
+    }
   }
 
   logger.info("Fixing imports.");
@@ -50,12 +50,11 @@ export const formatFileStructure = async (
   }
 
   if (unusedFiles.length) {
-    logger.warn(
-      "Unused files:" +
-        "\n" +
-        [...unusedFiles].map(file => " ".repeat(8) + file).join("\n")
-    );
+    const unusedFilesMulti = unusedFiles.map(indent).join("\n");
+    logger.warn("Unused files:" + "\n" + unusedFilesMulti);
   }
 
   logger.info("Successfully restructured!");
 };
+
+const indent = (value: any) => " ".repeat(8) + value;
