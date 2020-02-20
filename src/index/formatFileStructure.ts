@@ -53,9 +53,7 @@ export const formatFileStructure = async (
     logger.warn(
       "Unused files:" +
         "\n" +
-        [...unusedFiles, ...unusedFiles]
-          .map(file => " ".repeat(8) + file)
-          .join("\n")
+        [...unusedFiles].map(file => " ".repeat(8) + file).join("\n")
     );
   }
 
