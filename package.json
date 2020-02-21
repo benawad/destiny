@@ -15,10 +15,10 @@
     "structure"
   ],
   "scripts": {
-    "clean": "rimraf lib",
-    "check": "tsc",
     "build": "npm-run-all clean check -p 'build:* -- {@}' --",
     "build:cjs": "rollup -c",
+    "check": "tsc",
+    "clean": "rimraf lib",
     "format": "run-s format:*",
     "format:eslint": "npm run lint -- --fix",
     "format:prettier": "prettier --write '{**/*,*}.{js,json,md,ts,yaml}'",
