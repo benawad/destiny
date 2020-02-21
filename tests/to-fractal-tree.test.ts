@@ -1,8 +1,8 @@
 import { toFractalTree } from "../src/index/formatFileStructure/toFractalTree";
 import { buildGraph } from "../src/index/formatFileStructure/buildGraph";
 import { findEntryPoints } from "../src/index/formatFileStructure/findEntryPoints";
-import path from "path";
-import glob from "glob";
+import * as path from "path";
+import * as glob from "glob";
 
 const t = (folder: string, g2: any, entryPoints?: string[]) => {
   it(folder, () => {
