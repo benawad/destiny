@@ -1,21 +1,18 @@
 import { Graph } from "../shared/Graph";
 
+/** Recursively checks if the node has circular dependencies with it's structure. */
 export const hasCycle = (
   node: string,
   graph: Graph,
-  visited: Set<string>
+  visited: Set<string> = new Set()
 ): string[] | null => {
-  const edges = graph[node];
+  const edges = graph[node] || [];
 
-  if (visited.has(node)) {
-    return [...visited, node];
-  }
+  if (visited.has(node)) return [...visited, node];
   visited.add(node);
 
-  if (edges == null || edges.length === 0) return null;
   for (const edge of edges) {
     const cycle = hasCycle(edge, graph, new Set(visited));
-
     if (cycle) return cycle;
   }
 
