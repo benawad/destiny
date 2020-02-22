@@ -42,7 +42,7 @@ export const formatFileStructure = async (
   }
 
   logger.info("Fixing imports.");
-  await fixImports(filesToEdit, rootOptions);
+  fixImports(filesToEdit, rootOptions);
 
   for (const { tree, parentFolder } of rootOptions) {
     logger.info("Moving files.");
