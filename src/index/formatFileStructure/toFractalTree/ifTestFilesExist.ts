@@ -1,9 +1,8 @@
-import { FractalTree } from "../toFractalTree";
-
 import path from "path";
 
 import { checkDuplicatesInTree } from "./checkDuplicatesInTree";
 import { Graph } from "../shared/Graph";
+import { FractalTree } from "./createFractalProperties";
 
 export function ifTestFilesExist(
   testFiles: Set<string>,

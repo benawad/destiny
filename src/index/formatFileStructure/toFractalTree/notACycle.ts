@@ -1,6 +1,6 @@
 import path from "path";
 import { findSharedParent } from "../shared/findSharedParent";
-import { DependenciesTree, FractalTree } from "../toFractalTree";
+import { DependenciesTree, FractalTree } from "./createFractalProperties";
 
 export function notACycle(
   dependencyIndex: DependenciesTree,

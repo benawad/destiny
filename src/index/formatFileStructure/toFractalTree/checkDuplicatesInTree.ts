@@ -1,6 +1,6 @@
 import path from "path";
 import logger from "../../../shared/logger";
-import { FractalTree } from "../toFractalTree";
+import { FractalTree } from "./createFractalProperties";
 
 export interface CheckDuplicatesParams {
   tree: FractalTree;

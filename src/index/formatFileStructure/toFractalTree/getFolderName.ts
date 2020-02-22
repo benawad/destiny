@@ -1,7 +1,7 @@
-import { FractalTree } from "../toFractalTree";
 import path from "path";
 import { checkDuplicatesInTree } from "./checkDuplicatesInTree";
 import { indexConditional } from "./notACycle";
+import { FractalTree } from "./createFractalProperties";
 
 export interface GetPathPropertiesParams {
   tree: FractalTree;
