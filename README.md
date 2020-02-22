@@ -4,6 +4,7 @@ Prettier for File Structures
 
 [![npm version](https://badge.fury.io/js/destiny.svg)](https://badge.fury.io/js/destiny)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/benawad/destiny/issues)
+[![](https://github.com/benawad/destiny/workflows/ci/badge.svg)](https://github.com/benawad/destiny/actions?query=workflow%3Aci)
 
 ---
 

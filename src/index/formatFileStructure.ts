@@ -50,12 +50,16 @@ export const formatFileStructure = async (
     removeEmptyFolders(parentFolder);
   }
 
-  if (unusedFiles.length) {
-    const unusedFilesMulti = unusedFiles.map(indent).join("\n");
-    logger.warn("Unused files:" + "\n" + unusedFilesMulti);
+
+  if (unusedFiles.length > 0) {
+    logger.warn(
+      `Found ${unusedFiles.length} unused files:` +
+        "\n" +
+        unusedFiles.map(file => " ".repeat(8) + file).join("\n")
+    );
   }
 
-  logger.info("Successfully restructured!");
+  logger.info("Restructure was successful!");
 };
 
 const indent = (value: any) => " ".repeat(8) + value;
