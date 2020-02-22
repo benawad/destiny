@@ -2,10 +2,15 @@ import path from "path";
 import logger from "../../../shared/logger";
 import { Graph } from "../shared/Graph";
 import { isTestFile } from "../shared/isTestFile";
-import { DependenciesTree, FractalTree } from "../toFractalTree";
 import { getPathProperties } from "./getFolderName";
 import { hasCycle } from "./hasCycle";
 import { createAddDependency } from "./createAddDependency";
+
+/** Property is the name, value is the name. */
+export type FractalTree = Record<string, string>;
+
+/** A list of dependencies for each fileName. */
+export type DependenciesTree = Record<string, string[]>;
 
 /** An entry point to recursively create properties. */
 export function createFractalProperties(graph: Graph, entryPoints: string[]) {

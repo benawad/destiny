@@ -3,12 +3,6 @@ import { createFractalProperties } from "./toFractalTree/createFractalProperties
 import { ifTestFilesExist } from "./toFractalTree/ifTestFilesExist";
 import { notACycle } from "./toFractalTree/notACycle";
 
-/** Property is the name, value is the name. */
-export type FractalTree = Record<string, string>;
-
-/** A list of dependencies for each fileName. */
-export type DependenciesTree = Record<string, string[]>;
-
 export function toFractalTree(graph: Graph, entryPoints: string[]) {
   // tree is what is returned
 
