@@ -22,7 +22,7 @@ export function findEdges(filePath: string) {
     }
     const importMatch = matches[1];
     const requireMatch = matches[2];
-    edges.push([filePath, importMatch || requireMatch]);
+    edges.push([filePath, importMatch ?? requireMatch]);
   }
 
   return edges;
