@@ -1,6 +1,5 @@
 import path from "path";
 
-/** Creates a new import path from `path1` to `path2`.  */
 export const makeImportPath = (
   fromPath: string,
   toPath: string,
