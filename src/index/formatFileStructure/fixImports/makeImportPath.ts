@@ -1,5 +1,11 @@
 import path from "path";
 
+function getExtensionFromImport(relativePath: string) {
+  const ext = path.extname(relativePath);
+  const includeExtension = [".js", ".jsx", ".ts", ".tsx"].includes(ext);
+  return includeExtension ? ext : undefined;
+}
+
 export const makeImportPath = (
   fromPath: string,
   toPath: string,
@@ -31,9 +37,3 @@ export const makeImportPath = (
 
   return newImport;
 };
-
-function getExtensionFromImport(relativePath: string) {
-  const ext = path.extname(relativePath);
-  const includeExtension = [".js", ".jsx", ".ts", ".tsx"].includes(ext);
-  return includeExtension ? ext : undefined;
-}
