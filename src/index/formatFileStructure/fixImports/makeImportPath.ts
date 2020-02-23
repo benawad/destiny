@@ -17,12 +17,18 @@ export const makeImportPath = (
 
   // ensures import is relative
   const notRelative = !newImport.startsWith(".");
-  if (notRelative) newImport = "./" + newImport;
+  if (notRelative) {
+    newImport = "./" + newImport;
+  }
 
   // Replace / and \ with \\.
-  if (!useForwardSlashes) newImport = newImport.replace(/\/|\\+/g, "\\\\");
+  if (!useForwardSlashes) {
+    newImport = newImport.replace(/\/|\\+/g, "\\\\");
+  }
   // Replace \ with /.
-  else newImport = newImport.replace(/\\/g, "/");
+  else {
+    newImport = newImport.replace(/\\/g, "/");
+  }
 
   return newImport;
 };
