@@ -53,9 +53,8 @@ function createNewContentsFromImports({
 function getNewFilePath(file: string, rootOptions: RootOption[]) {
   for (const { tree, parentFolder } of rootOptions) {
     const key = path.relative(parentFolder, file);
-    const keyless = !(key in tree);
-    if (keyless) continue;
-    return path.resolve(path.join(parentFolder, tree[key]));
+    if (!(key in tree)) continue;
+    return path.resolve(parentFolder, tree[key]);
   }
   return file;
 }
