@@ -4,7 +4,6 @@ import { ifTestFilesExist } from "./toFractalTree/ifTestFilesExist";
 import { notACycle } from "./toFractalTree/notACycle";
 
 export function toFractalTree(graph: Graph, entryPoints: string[]) {
-
   const {
     containsCycle,
     dependencies,
