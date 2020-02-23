@@ -3,13 +3,13 @@ import { isTestFile } from "./shared/isTestFile";
 
 function createInvertedGraph(graph: Graph) {
   const invertedGraph: Graph = {};
-  const starts = Object.keys(graph);
+  const iterableGraph = Object.entries(graph);
 
-  for (const start of starts) {
-    const ends = graph[start];
+  for (const [start, ends] of iterableGraph) {
     for (const end of ends) {
-      const endMissing = !(end in invertedGraph);
-      if (endMissing) invertedGraph[end] = [];
+      if (!(end in invertedGraph)) {
+        invertedGraph[end] = [];
+      }
       invertedGraph[end].push(start);
     }
   }
