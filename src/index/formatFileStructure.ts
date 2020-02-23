@@ -21,6 +21,7 @@ export const formatFileStructure = async (
     const { graph, files, useForwardSlash, parentFolder } = buildGraph(
       startingFiles
     );
+
     const entryPoints = findEntryPoints(graph);
     const tree = toFractalTree(graph, entryPoints);
 

@@ -34,7 +34,7 @@ export const moveFiles = async (
         .catch(() => false);
     };
 
-    const shouldGitMv = git.checkIsRepo() && checkLsFiles();
+    const shouldGitMv = git.checkIsRepo() && (await checkLsFiles());
 
     // Move file, using git or fs depdning on cirumstance.
     if (shouldGitMv) await git.mv(oldAbsolutePath, newAbsolutePath);
