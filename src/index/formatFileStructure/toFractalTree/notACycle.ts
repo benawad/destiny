@@ -2,20 +2,19 @@ import path from "path";
 import { findSharedParent } from "../shared/findSharedParent";
 import { DependenciesTree, FractalTree } from "./createFractalProperties";
 
-export function notACycle(
+export function addDependencyToTree(
   dependencyIndex: DependenciesTree,
   tree: FractalTree
 ) {
-  for (const [fileName, dependency] of Object.entries(dependencyIndex)) {
-    if (dependency.length > 1 && !fileName.includes("..")) {
-      const newDependency = createDependencyPath(dependency, fileName);
+  for (const [fileName, dependencies] of Object.entries(dependencyIndex)) {
+    if (dependencies.length > 1 && !fileName.includes("..")) {
+      const newDependency = createSharedPath(dependencies, fileName);
       tree[fileName] = newDependency;
     }
   }
 }
 
-/** @todo rename dependencies to something more meaningful. */
-function createDependencyPath(dependencies: string[], fileName: string) {
+function createSharedPath(dependencies: string[], fileName: string) {
   const parent = findSharedParent(dependencies);
   const filename = path.basename(fileName);
   const { name, dir } = path.parse(filename);
@@ -28,6 +27,7 @@ function createDependencyPath(dependencies: string[], fileName: string) {
   return result;
 }
 
+//@todo — Needs a better name.
 export function indexConditional(name: string, upperFolder: string) {
   return name === "index" && upperFolder !== "" && upperFolder !== ".";
 }

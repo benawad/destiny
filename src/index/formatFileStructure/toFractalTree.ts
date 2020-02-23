@@ -1,7 +1,7 @@
 import { Graph } from "./shared/Graph";
 import { createFractalProperties } from "./toFractalTree/createFractalProperties";
 import { ifTestFilesExist } from "./toFractalTree/ifTestFilesExist";
-import { notACycle } from "./toFractalTree/notACycle";
+import { addDependencyToTree } from "./toFractalTree/notACycle";
 
 export function toFractalTree(graph: Graph, entryPoints: string[]) {
   const {
@@ -13,7 +13,7 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
 
   // if no cycle, then create shared folders.
   // add it to tree
-  if (!containsCycle) notACycle(dependencies, tree);
+  if (!containsCycle) addDependencyToTree(dependencies, tree);
 
   if (testFiles.size > 0) ifTestFilesExist(testFiles, graph, tree);
 
