@@ -1,10 +1,9 @@
 import path from "path";
-import { findEdges } from "./shared/findEdges";
 import { addEdgeToGraph } from "./buildGraph/addEdge";
-import { Graph, OldGraph } from "./shared/Graph";
-import { findSharedParent } from "./shared/findSharedParent";
 import { customResolve } from "./shared/customResolve";
-import OS from "os";
+import { findEdges } from "./shared/findEdges";
+import { findSharedParent } from "./shared/findSharedParent";
+import { Graph, OldGraph } from "./shared/Graph";
 
 /** Builds a graph for a particular set of files. */
 export function buildGraph(files: string[]) {
