@@ -23,7 +23,6 @@ export function buildGraph(files: string[]) {
     const start = path.relative(parentFolder, filePath);
     totalFiles.push(start);
 
-    // check and execute if oldGraph needs to be initialized with a value.
     const startNotInitialized = !(start in oldGraph);
     if (startNotInitialized) {
       oldGraph[start] = { oldLocation: filePath, imports: [] };
