@@ -1,6 +1,6 @@
 import path from "path";
 
-/** Finds the common parent directory betweeen all paths. */
+/** Finds the common parent directory between all paths. */
 export const findSharedParent = (paths: string[]) => {
   if (paths.length === 1) return path.dirname(paths[0]);
 

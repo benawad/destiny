@@ -28,7 +28,6 @@ export function buildGraph(files: string[]) {
       oldGraph[start] = { oldLocation: filePath, imports: [] };
     }
 
-    // add imports to start
     for (const edge of findEdges(filePath)) {
       const [first, last] = edge;
 
