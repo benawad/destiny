@@ -1,30 +1,38 @@
 import path from "path";
 
+function getExtensionFromImport(relativePath: string) {
+  const ext = path.extname(relativePath);
+  const includeExtension = [".js", ".jsx", ".ts", ".tsx"].includes(ext);
+  return includeExtension ? ext : undefined;
+}
+
 export const makeImportPath = (
-  p1: string,
-  p2: string,
+  fromPath: string,
+  toPath: string,
   useForwardSlashes: boolean
 ) => {
-  const fullPath = path.relative(path.dirname(p1), p2);
-  const ext = path.extname(fullPath);
-  let newImport = path.join(
-    path.dirname(fullPath),
-    path.basename(
-      fullPath,
-      [".js", ".jsx", ".ts", ".tsx"].includes(ext) ? ext : undefined
-    )
-  );
+  const fromDirectory = path.dirname(fromPath);
+  const relativePath = path.relative(fromDirectory, toPath);
 
-  if (!newImport.startsWith(".")) {
+  const relativeDirectory = path.dirname(relativePath);
+  const ext = getExtensionFromImport(relativePath);
+  const fileName = path.basename(relativePath, ext);
+
+  let newImport = path.join(relativeDirectory, fileName);
+
+  // Ensures relative imports.
+  const notRelative = !newImport.startsWith(".");
+  if (notRelative) {
     newImport = "./" + newImport;
   }
 
-  if (useForwardSlashes) {
-    // Replace \ with /.
-    newImport = newImport.replace(/\\/g, "/");
-  } else {
-    // Replace / and \ with \\.
+  // Replace / and \ with \\.
+  if (!useForwardSlashes) {
     newImport = newImport.replace(/\/|\\+/g, "\\\\");
+  }
+  // Replace \ with /.
+  else {
+    newImport = newImport.replace(/\\/g, "/");
   }
 
   return newImport;

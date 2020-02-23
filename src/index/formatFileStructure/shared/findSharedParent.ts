@@ -1,5 +1,6 @@
 import path from "path";
 
+/** Find the common parent directory between all paths. */
 export const findSharedParent = (paths: string[]) => {
   if (paths.length === 1) return path.dirname(paths[0]);
 
@@ -8,11 +9,10 @@ export const findSharedParent = (paths: string[]) => {
 
   for (let i = 0; i < fragments[0].length; i++) {
     const fragment = fragments[0][i];
-
-    if (fragments.every(f => f.length > i && f[i] === fragment)) {
+    const allFragmentsMatch = fragments.every(f => f[i] === fragment);
+    if (allFragmentsMatch) {
       parentPaths.push(fragment);
     }
   }
-
   return parentPaths.join("/");
 };
