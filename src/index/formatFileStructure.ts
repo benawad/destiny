@@ -35,8 +35,7 @@ export const formatFileStructure = async (
     const usedFiles = new Set<string>(Object.entries(graph).flat(2));
 
     for (const file of files) {
-      const isUnusedFile = !usedFiles.has(file);
-      if (isUnusedFile) unusedFiles.push(file);
+      if (!usedFiles.has(file)) unusedFiles.push(file);
     }
   }
 
