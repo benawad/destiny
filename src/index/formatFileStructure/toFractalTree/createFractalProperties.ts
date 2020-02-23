@@ -4,7 +4,6 @@ import { Graph } from "../shared/Graph";
 import { isTestFile } from "../shared/isTestFile";
 import { getPathProperties } from "./getFolderName";
 import { hasCycle } from "./hasCycle";
-import { createAddDependency } from "./createAddDependency";
 
 /** Property is the name, value is the name. */
 export type FractalTree = Record<string, string>;
@@ -96,4 +95,13 @@ function getImportsFromGraph(graph: Graph, filePath: string) {
   const imports = graph[filePath] || [];
   const hasImports = imports.length > 0;
   return { imports, hasImports };
+}
+
+/** returns a function that adds a dependency to the dependencies object. */
+export function createAddDependency(dependencyIndex: Record<string, string[]>) {
+  return (fileName: string, dependency: string) => {
+    const is = fileName in dependencyIndex;
+    if (!is) dependencyIndex[fileName] = [];
+    dependencyIndex[fileName].push(dependency);
+  };
 }
