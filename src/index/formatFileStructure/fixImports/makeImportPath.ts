@@ -2,7 +2,6 @@ import path from "path";
 
 /** Creates a new import path from `path1` to `path2`.  */
 export const makeImportPath = (
-  // path 1 is our CWD
   fromPath: string,
   toPath: string,
   useForwardSlashes: boolean
