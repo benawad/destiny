@@ -32,10 +32,6 @@ export const makeImportPath = (
   return newImport;
 };
 
-/**
- * Gets the extension of the imported file,
- * only if it was included in the original import.
- */
 function getExtensionFromImport(relativePath: string) {
   const ext = path.extname(relativePath);
   const includeExtension = [".js", ".jsx", ".ts", ".tsx"].includes(ext);
