@@ -20,7 +20,7 @@ export const makeImportPath = (
 
   let newImport = path.join(relativeDirectory, fileName);
 
-  // ensures import is relative
+  // Ensures relative imports.
   const notRelative = !newImport.startsWith(".");
   if (notRelative) {
     newImport = "./" + newImport;
