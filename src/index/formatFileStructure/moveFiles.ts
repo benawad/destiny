@@ -24,17 +24,17 @@ export const moveFiles = async (
     const newDirname = path.dirname(newAbsolutePath);
     fs.ensureDirSync(newDirname);
 
-    /**
-     * Check if file is tracked in git:
-     *
-     * Reference: https://git-scm.com/docs/git-ls-files#Documentation/git-ls-files.txt---error-unmatch
-     */
-    const shouldGitMv = await git
-      .silent(true)
-      .raw(["ls-files", "--error-unmatch", oldAbsolutePath])
-      .then(() => true)
-      // If not a repo, this returns false immediately.
-      .catch(() => false);
+    /** Reference: https://git-scm.com/docs/git-ls-files#Documentation/git-ls-files.txt---error-unmatch */
+    const checkLsFiles = async () => {
+      return await git
+        .silent(true)
+        .raw(["ls-files", "--error-unmatch", oldAbsolutePath])
+        .then(() => true)
+        // If not a repo, this returns false immediately.
+        .catch(() => false);
+    };
+
+    const shouldGitMv = git.checkIsRepo() && checkLsFiles();
 
     // Move file, using git or fs depdning on cirumstance.
     if (shouldGitMv) await git.mv(oldAbsolutePath, newAbsolutePath);
