@@ -50,6 +50,6 @@ export function buildGraph(files: string[]) {
     graph,
     files: totalFiles,
     oldGraph,
-    useForwardSlash: numForwardSlashes >= numBackSlashes ? true : false,
+    useForwardSlash: numForwardSlashes >= numBackSlashes,
   };
 }
