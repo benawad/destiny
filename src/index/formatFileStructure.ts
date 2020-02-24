@@ -8,21 +8,23 @@ import { RootOption } from "./shared/RootOption";
 import logger from "../shared/logger";
 
 export const formatFileStructure = async (
-  rootDirFiles: string[][],
+  restructureMap: { [key: string]: string[] },
   filesToEdit: string[]
 ) => {
   const unusedFiles: string[] = [];
   const rootOptions: RootOption[] = [];
 
-  for (const startingFiles of rootDirFiles) {
-    if (startingFiles.length <= 1) {
+  for (const rootPath in restructureMap) {
+    const filePaths = restructureMap[rootPath];
+
+    if (filePaths.length <= 1) {
       continue;
     }
 
     logger.info("Generating a graph and fractal tree.");
 
     const { graph, files, useForwardSlash, parentFolder } = buildGraph(
-      startingFiles
+      filePaths
     );
     const tree = toFractalTree(graph, findEntryPoints(graph));
     const usedFiles = new Set(Object.entries(graph).flat(2));

@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import { cosmiconfigSync } from "cosmiconfig";
 
-import getFilePaths from "./index/getFilePaths";
+import getFilePaths, { getRestructureMap } from "./index/getFilePaths";
 import logger from "./shared/logger";
 import { formatFileStructure } from "./index/formatFileStructure";
 import { version } from "../package.json";
@@ -41,7 +41,7 @@ const printHelp = (exitCode: number) => {
 
 const parseArgs = (
   args: any[]
-): { options: Partial<Options>; paths: string[] } =>
+): { options: Partial<Options>; rootPaths: string[] } =>
   args.reduce(
     (acc, arg) => {
       switch (arg) {
@@ -54,18 +54,18 @@ const parseArgs = (
           acc.options.version = true;
           break;
         default:
-          acc.paths.push(arg);
+          acc.rootPaths.push(arg);
       }
 
       return acc;
     },
-    { options: {}, paths: [] }
+    { options: {}, rootPaths: [] }
   );
 
 export const run = async (args: string[]) => {
   const config: Partial<Options> =
     cosmiconfigSync("destiny").search()?.config ?? {};
-  const { options, paths } = parseArgs(args);
+  const { options, rootPaths } = parseArgs(args);
 
   const mergedOptions: Options = {
     ...defaultOptions,
@@ -75,19 +75,19 @@ export const run = async (args: string[]) => {
 
   if (mergedOptions.help) return printHelp(0);
   if (mergedOptions.version) return printVersion();
-  if (paths.length === 0) return printHelp(1);
+  if (rootPaths.length === 0) return printHelp(1);
 
   logger.info("Resolving files.");
 
-  const filesToRestructure = getFilePaths(paths);
-  const filesToEdit = filesToRestructure.flat();
+  const restructureMap = getRestructureMap(rootPaths);
+  const filesToEdit = Object.values(restructureMap).flat();
 
-  if (filesToRestructure.length === 0) {
+  if (filesToEdit.length === 0) {
     logger.error("Could not find any files to restructure", 1);
     return;
   }
 
-  await formatFileStructure(filesToRestructure, filesToEdit);
+  await formatFileStructure(restructureMap, filesToEdit);
 };
 
 if (process.env.NODE_ENV !== "test") {
