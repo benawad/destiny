@@ -1,17 +1,29 @@
-type Leaf = { text: string; position: number };
+type PositionedLeaf = { text: string; position: number };
 
 const createBranchFromParts = (parts: string[], count: number) =>
   parts.slice(0, count).join("/");
 
+/** Remove path that matches `match` but save '/' to calculate position. */
 const removePathDuplication = (target: string, match: string) =>
   target.replace(new RegExp(`^(/*)${match.replace(/\//g, "")}(/+)`), "$1$2");
 
-const sanitizeDots = (text: string) => text.replace(/\./g, "");
+/**
+ * Matches anything between '/' and '.' and prepends the highest possible char
+ * code to it. This enables us sort files lower than directories.
+ */
+const prependMaxCharCodeToFile = (text: string) =>
+  text.replace(
+    /([^/]+)(?=\.)/g,
+    String.fromCharCode(Number.MAX_SAFE_INTEGER) + "$1"
+  );
 const compareLeafs = (a: string, b: string) =>
-  sanitizeDots(a).localeCompare(sanitizeDots(b));
+  prependMaxCharCodeToFile(a).localeCompare(prependMaxCharCodeToFile(b));
 
 /** Check if leaf is the last of its siblings excluding children. */
-const isLeafLastSibling = (leaf: Leaf, remainingLeafs: Leaf[]) => {
+const isLeafLastSibling = (
+  leaf: PositionedLeaf,
+  remainingLeafs: PositionedLeaf[]
+) => {
   for (const remaningLeaf of remainingLeafs) {
     if (remaningLeaf.position > leaf.position) continue;
     if (remaningLeaf.position < leaf.position) return true;
