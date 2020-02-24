@@ -1,4 +1,4 @@
-import printTree from "../src/index/printTree";
+import printTree from "../src/index/generateTrees/printTree";
 
 const filePathsList = [
   ["foo", "bar", "baz", "qux"],

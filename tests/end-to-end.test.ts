@@ -3,7 +3,7 @@ import glob from "glob";
 import path from "path";
 import treeDir from "tree-node-cli";
 
-import { buildGraph } from "../src/index/formatFileStructure/buildGraph";
+import { buildGraph } from "../src/index/generateTrees/buildGraph";
 import { run } from "../src/index";
 
 const tmpPath = path.join(__dirname, "tmp");
