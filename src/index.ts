@@ -1,10 +1,11 @@
 import chalk from "chalk";
 import { cosmiconfigSync } from "cosmiconfig";
 
-import getFilePaths, { getRestructureMap } from "./index/getFilePaths";
 import logger from "./shared/logger";
 import { formatFileStructure } from "./index/formatFileStructure";
+import { generateTrees } from "./index/generateTrees";
 import { version } from "../package.json";
+import getRestructureMap from "./index/getFilePaths";
 
 const { argv } = process;
 
@@ -87,7 +88,8 @@ export const run = async (args: string[]) => {
     return;
   }
 
-  await formatFileStructure(restructureMap, filesToEdit);
+  const rootOptions = generateTrees(restructureMap);
+  await formatFileStructure(filesToEdit, rootOptions);
 };
 
 if (process.env.NODE_ENV !== "test") {
