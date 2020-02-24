@@ -1,3 +1,5 @@
+import chalk from "chalk";
+
 import logger from "../shared/logger";
 
 type PositionedLeaf = { text: string; position: number };
@@ -90,13 +92,19 @@ export const printTree = (paths: string[]) => {
     .reduce<string[]>((lines, currentLeaf, idx) => {
       const pastLine = lines[idx - 1] ?? "";
       const remainingLeafs = positionedLeafs.slice(idx + 1);
+      const isDirectory =
+        remainingLeafs.length > 0 &&
+        remainingLeafs[0].position > currentLeaf.position;
 
       const indent =
         currentLeaf.position > 0 ? "│  ".repeat(currentLeaf.position) : "";
       const connector = isLeafLastSibling(currentLeaf, remainingLeafs)
         ? "└──"
         : "├──";
-      const line = indent + connector + currentLeaf.text;
+      const text = isDirectory
+        ? chalk.bold.blue(currentLeaf.text)
+        : currentLeaf.text;
+      const line = indent + connector + text;
 
       lines.push(removeIllicitIndentGuidelines(line, pastLine));
       return lines;
@@ -104,6 +112,7 @@ export const printTree = (paths: string[]) => {
     .join("\n");
 
   logger.log(treeVisualization);
+  return treeVisualization;
 };
 
 export default printTree;

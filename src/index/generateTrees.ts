@@ -1,3 +1,5 @@
+import chalk from "chalk";
+
 import logger from "../shared/logger";
 import printTree from "./printTree";
 import { RootOption as Root } from "./shared/RootOption";
@@ -22,7 +24,7 @@ export function generateTrees(restructureMap: { [key: string]: string[] }) {
         filePath => !usedFilePaths.has(filePath)
       );
 
-      logger.log(rootPath);
+      logger.log(chalk.bold.blue(rootPath));
       printTree(Object.values(tree));
       if (unusedFiles.length > 0) {
         logger.warn(
