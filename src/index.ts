@@ -12,11 +12,13 @@ const { argv } = process;
 export type Options = {
   help: boolean;
   version: boolean;
+  write: boolean;
 };
 
 const defaultOptions: Options = {
   help: false,
   version: false,
+  write: false,
 };
 
 const printVersion = () => console.log("v" + version);
@@ -34,6 +36,7 @@ const printHelp = (exitCode: number) => {
 
   -V, --version            output version number
   -h, --help               output usage information
+  -w, --write              restructure and edit folders and files
   `
   );
 
@@ -53,6 +56,10 @@ const parseArgs = (
         case "-V":
         case "--version":
           acc.options.version = true;
+          break;
+        case "-w":
+        case "--write":
+          acc.options.write = true;
           break;
         default:
           acc.rootPaths.push(arg);
@@ -89,7 +96,10 @@ export const run = async (args: string[]) => {
   }
 
   const rootOptions = generateTrees(restructureMap);
-  await formatFileStructure(filesToEdit, rootOptions);
+
+  if (mergedOptions.write) {
+    await formatFileStructure(filesToEdit, rootOptions);
+  }
 };
 
 if (process.env.NODE_ENV !== "test") {
