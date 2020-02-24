@@ -14,14 +14,19 @@ export const error = (err: Error | string, code = 0) => {
   process.exit(code);
 };
 
-export const warn = (msg: string) => {
-  if (process.env.NODE_ENV === "test") return;
-  console.log(chalk`{yellow.bold WARN:} ${msg}`);
-};
-
 export const info = (msg: string) => {
   if (process.env.NODE_ENV === "test") return;
-  console.log(chalk`{green.bold INFO:} ${msg}`);
+  console.info(chalk`{green.bold INFO:} ${msg}`);
 };
 
-export default { error, warn, info };
+export const log = (msg: string) => {
+  if (process.env.NODE_ENV === "test") return;
+  console.log(msg);
+};
+
+export const warn = (msg: string) => {
+  if (process.env.NODE_ENV === "test") return;
+  console.warn(chalk`{yellow.bold WARN:} ${msg}`);
+};
+
+export default { error, info, log, warn };
