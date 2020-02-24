@@ -1,8 +1,8 @@
 import path from "path";
-import { findEdges } from "./shared/findEdges";
+import { findEdges } from "../shared/findEdges";
 import { Graph, OldGraph } from "./shared/Graph";
 import { findSharedParent } from "./shared/findSharedParent";
-import { customResolve } from "./shared/customResolve";
+import { customResolve } from "../shared/customResolve";
 import { addEdgeToGraph } from "./buildGraph/addEdge";
 
 export function buildGraph(files: string[]) {

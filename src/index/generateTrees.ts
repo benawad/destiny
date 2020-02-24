@@ -1,11 +1,11 @@
 import chalk from "chalk";
 
 import logger from "../shared/logger";
-import printTree from "./printTree";
+import printTree from "./generateTrees/printTree";
 import { RootOption as Root } from "./shared/RootOption";
-import { buildGraph } from "./formatFileStructure/buildGraph";
-import { findEntryPoints } from "./formatFileStructure/findEntryPoints";
-import { toFractalTree } from "./formatFileStructure/toFractalTree";
+import { buildGraph } from "./generateTrees/buildGraph";
+import { findEntryPoints } from "./generateTrees/findEntryPoints";
+import { toFractalTree } from "./generateTrees/toFractalTree";
 
 export function generateTrees(restructureMap: { [key: string]: string[] }) {
   return Object.entries(restructureMap).reduce<Root[]>(

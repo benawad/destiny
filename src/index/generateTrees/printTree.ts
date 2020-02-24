@@ -1,6 +1,6 @@
 import chalk from "chalk";
 
-import logger from "../shared/logger";
+import logger from "../../shared/logger";
 
 type PositionedLeaf = { text: string; position: number };
 
