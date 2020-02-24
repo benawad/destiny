@@ -1,3 +1,5 @@
+import logger from "../shared/logger";
+
 type PositionedLeaf = { text: string; position: number };
 
 const createBranchFromParts = (parts: string[], count: number) =>
@@ -101,7 +103,7 @@ export const printTree = (paths: string[]) => {
     }, [])
     .join("\n");
 
-  console.log(treeVisualization);
+  logger.log(treeVisualization);
 };
 
 export default printTree;
