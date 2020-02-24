@@ -1,9 +1,9 @@
 import path from "path";
-import { findEdges } from "./shared/findEdges";
-import { addEdge } from "./buildGraph/addEdge";
+import { findEdges } from "../shared/findEdges";
 import { Graph, OldGraph } from "./shared/Graph";
 import { findSharedParent } from "./shared/findSharedParent";
-import { customResolve } from "./shared/customResolve";
+import { customResolve } from "../shared/customResolve";
+import { addEdgeToGraph } from "./buildGraph/addEdge";
 
 export function buildGraph(files: string[]) {
   const parentFolder = findSharedParent(files);
@@ -36,7 +36,7 @@ export function buildGraph(files: string[]) {
 
       const end = path.relative(parentFolder, pathWithExtension);
 
-      addEdge([start, end], graph);
+      addEdgeToGraph([start, end], graph);
 
       oldGraph[start].imports.push({
         text: edge[1],
@@ -50,6 +50,6 @@ export function buildGraph(files: string[]) {
     graph,
     files: totalFiles,
     oldGraph,
-    useForwardSlash: numForwardSlashes >= numBackSlashes ? true : false,
+    useForwardSlash: numForwardSlashes >= numBackSlashes,
   };
 }

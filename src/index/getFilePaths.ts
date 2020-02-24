@@ -1,9 +1,8 @@
 import glob from "glob";
 import path from "path";
-import { existsSync, lstatSync, readdirSync } from "fs-extra";
+import { existsSync, lstatSync } from "fs-extra";
 
 import logger from "../shared/logger";
-import { Options } from "../index";
 
 const isDirectory = (filePath: string) => lstatSync(filePath).isDirectory();
 const isFile = (filePath: string) => lstatSync(filePath).isFile();
@@ -20,42 +19,43 @@ const globSearch = (pattern: string) => {
 };
 
 /** Recursively get all file paths. */
-export const getFilePaths = (paths: string[], options: Options) => {
-  let { detectRoots } = options;
-  const files: string[][] = [];
+const getFilePaths = (rootPath: string) => {
+  const filePaths: string[] = [];
+  const paths = [rootPath];
 
   while (paths.length > 0) {
-    const filePath = paths.pop();
+    const filePath = paths.shift();
 
     if (filePath == null || filePath.length === 0) continue;
 
     const isGlobPattern = glob.hasMagic(filePath);
     if (isGlobPattern) {
-      files.push(globSearch(filePath));
+      filePaths.push(...globSearch(filePath));
       continue;
     }
 
     if (existsSync(filePath)) {
       if (isFile(filePath)) {
-        files.push([filePath]);
+        filePaths.push(filePath);
       } else if (isDirectory(filePath)) {
-        if (detectRoots) {
-          const childDirectories = readdirSync(path.resolve(filePath))
-            .map(x => path.join(filePath, x))
-            .filter(x => isDirectory(x));
-
-          paths.push(...childDirectories);
-          detectRoots = false;
-        } else {
-          paths.push(path.join(filePath, "/**/*.*"));
-        }
+        paths.push(path.join(filePath, "/**/*.*"));
       }
     } else {
       logger.error(`Unable to resolve the path: ${filePath}`);
     }
   }
 
-  return files;
+  return filePaths;
 };
 
-export default getFilePaths;
+/** Get a restructure map with rootPath keys and filePaths values. */
+export const getRestructureMap = (rootPaths: string[]) =>
+  rootPaths.reduce<{ [key: string]: string[] }>(
+    (acc, rootPath) => ({
+      ...acc,
+      [rootPath]: getFilePaths(rootPath),
+    }),
+    {}
+  );
+
+export default getRestructureMap;

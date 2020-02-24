@@ -1,8 +1,8 @@
 import { readFileSync, writeFileSync } from "fs-extra";
-import { findEdges } from "./shared/findEdges";
+import { findEdges } from "../shared/findEdges";
 import path from "path";
 import { makeImportPath } from "./fixImports/makeImportPath";
-import { customResolve } from "./shared/customResolve";
+import { customResolve } from "../shared/customResolve";
 import { RootOption } from "../shared/RootOption";
 
 const getNewFilePath = (file: string, rootOptions: RootOption[]) => {
@@ -37,18 +37,16 @@ const getNewImportPath = (
   return makeImportPath(newFilePath, absImportPath, lastUseForwardSlash);
 };
 
-export const fixImports = (files: string[], rootOptions: RootOption[]) => {
-  for (const file of files) {
-    const imports = findEdges(file);
-    if (!imports.length) {
-      continue;
-    }
+export const fixImports = (filePaths: string[], rootOptions: RootOption[]) => {
+  for (const filePath of filePaths) {
+    const imports = findEdges(filePath);
 
-    const basedir = path.dirname(file);
-    const newFilePath = getNewFilePath(file, rootOptions);
+    if (!imports.length) continue;
 
-    const ogText = readFileSync(file).toString();
-    // deep copy
+    const basedir = path.dirname(filePath);
+    const newFilePath = getNewFilePath(filePath, rootOptions);
+    const ogText = readFileSync(filePath).toString();
+
     let newText = ogText.repeat(1);
     for (const imp of imports) {
       const absPath = customResolve(imp[1], basedir);
@@ -60,8 +58,9 @@ export const fixImports = (files: string[], rootOptions: RootOption[]) => {
           .replace(`"${imp[1]}"`, `"${newImportText}"`);
       }
     }
+
     if (newText !== ogText) {
-      writeFileSync(file, newText);
+      writeFileSync(filePath, newText);
     }
   }
 };

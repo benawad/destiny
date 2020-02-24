@@ -1,6 +1,7 @@
-import { buildGraph } from "../src/index/formatFileStructure/buildGraph";
 import path from "path";
 import glob from "glob";
+
+import { buildGraph } from "../src/index/generateTrees/buildGraph";
 
 const t = (folder: string, g: any) => {
   it(folder, () => {

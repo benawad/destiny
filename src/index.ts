@@ -1,24 +1,24 @@
 import chalk from "chalk";
 import { cosmiconfigSync } from "cosmiconfig";
-import { existsSync, lstatSync, readdirSync } from "fs-extra";
 
-import getFilePaths from "./index/getFilePaths";
 import logger from "./shared/logger";
 import { formatFileStructure } from "./index/formatFileStructure";
+import { generateTrees } from "./index/generateTrees";
 import { version } from "../package.json";
+import getRestructureMap from "./index/getFilePaths";
 
 const { argv } = process;
 
 export type Options = {
-  detectRoots: boolean;
   help: boolean;
   version: boolean;
+  write: boolean;
 };
 
 const defaultOptions: Options = {
-  detectRoots: false,
   help: false,
   version: false,
+  write: false,
 };
 
 const printVersion = () => console.log("v" + version);
@@ -36,7 +36,7 @@ const printHelp = (exitCode: number) => {
 
   -V, --version            output version number
   -h, --help               output usage information
-  -dr, --detect-roots      structure after the first level
+  -w, --write              restructure and edit folders and files
   `
   );
 
@@ -45,7 +45,7 @@ const printHelp = (exitCode: number) => {
 
 const parseArgs = (
   args: any[]
-): { options: Partial<Options>; paths: string[] } =>
+): { options: Partial<Options>; rootPaths: string[] } =>
   args.reduce(
     (acc, arg) => {
       switch (arg) {
@@ -57,23 +57,23 @@ const parseArgs = (
         case "--version":
           acc.options.version = true;
           break;
-        case "-dr":
-        case "--detect-roots":
-          acc.options.detectRoots = true;
+        case "-w":
+        case "--write":
+          acc.options.write = true;
           break;
         default:
-          acc.paths.push(arg);
+          acc.rootPaths.push(arg);
       }
 
       return acc;
     },
-    { options: {}, paths: [] }
+    { options: {}, rootPaths: [] }
   );
 
 export const run = async (args: string[]) => {
   const config: Partial<Options> =
     cosmiconfigSync("destiny").search()?.config ?? {};
-  const { options, paths } = parseArgs(args);
+  const { options, rootPaths } = parseArgs(args);
 
   const mergedOptions: Options = {
     ...defaultOptions,
@@ -83,19 +83,23 @@ export const run = async (args: string[]) => {
 
   if (mergedOptions.help) return printHelp(0);
   if (mergedOptions.version) return printVersion();
-  if (paths.length === 0) return printHelp(1);
+  if (rootPaths.length === 0) return printHelp(1);
 
   logger.info("Resolving files.");
 
-  const filesToRestructure = getFilePaths(paths, mergedOptions);
-  const filesToEdit = filesToRestructure.flat();
+  const restructureMap = getRestructureMap(rootPaths);
+  const filesToEdit = Object.values(restructureMap).flat();
 
-  if (filesToRestructure.length === 0) {
+  if (filesToEdit.length === 0) {
     logger.error("Could not find any files to restructure", 1);
     return;
   }
 
-  await formatFileStructure(filesToRestructure, filesToEdit);
+  const rootOptions = generateTrees(restructureMap);
+
+  if (mergedOptions.write) {
+    await formatFileStructure(filesToEdit, rootOptions);
+  }
 };
 
 if (process.env.NODE_ENV !== "test") {
