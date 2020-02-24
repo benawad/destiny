@@ -35,7 +35,7 @@ The end result is a "prettified" file structure.
 ## How to run it
 
 ```
-npx destiny src/**/*.*
+npx destiny "src/**/*.*"
 ```
 
 ## This tool might be useless
