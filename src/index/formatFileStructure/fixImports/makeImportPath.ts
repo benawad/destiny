@@ -1,6 +1,12 @@
 import path from "path";
 
-/** Creates a new import path from `path1` to `path2`.  */
+
+function getExtensionFromImport(relativePath: string) {
+  const ext = path.extname(relativePath);
+  const includeExtension = [".js", ".jsx", ".ts", ".tsx"].includes(ext);
+  return includeExtension ? ext : undefined;
+}
+
 export const makeImportPath = (
   fromPath: string,
   toPath: string,
@@ -15,7 +21,7 @@ export const makeImportPath = (
 
   let newImport = path.join(relativeDirectory, fileName);
 
-  // ensures import is relative
+  // Ensures relative imports.
   const notRelative = !newImport.startsWith(".");
   if (notRelative) {
     newImport = "./" + newImport;

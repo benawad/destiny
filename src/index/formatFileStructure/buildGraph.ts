@@ -5,6 +5,7 @@ import { findEdges } from "./shared/findEdges";
 import { findSharedParent } from "./shared/findSharedParent";
 import { Graph, OldGraph } from "./shared/Graph";
 
+
 /** Builds a graph for a particular set of files. */
 export function buildGraph(files: string[]) {
   const parentFolder = findSharedParent(files);
@@ -32,6 +33,7 @@ export function buildGraph(files: string[]) {
 
       if (last.includes("/")) numForwardSlashes++;
       else if (last.includes("\\")) numBackSlashes++;
+
 
       const pathWithExtension = customResolve(last, path.dirname(first));
 

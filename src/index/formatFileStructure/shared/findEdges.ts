@@ -15,9 +15,8 @@ export function findEdges(filePath: string) {
     if (matches.index === importRegex.lastIndex) {
       importRegex.lastIndex++;
     }
-    const importMatch = matches[1];
-    const requireMatch = matches[2];
-    edges.push([filePath, importMatch ?? requireMatch]);
+
+    edges.push([filePath, matches[1] ?? matches[2]]);
   }
 
   return edges;
