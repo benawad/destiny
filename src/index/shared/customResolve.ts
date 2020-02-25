@@ -2,8 +2,8 @@ import resolve from "resolve";
 
 const extensions = [
   ".js",
-  ".jsx",
   ".json",
+  ".jsx",
   ".sass",
   ".scss",
   ".svg",
@@ -11,17 +11,11 @@ const extensions = [
   ".tsx",
 ];
 
-/** Checks if the file exists */
-export const canResolve = (id: string, basedir: string) => {
-  try {
-    resolve.sync(id, { basedir, extensions });
-    return true;
-  } catch (err) {
-    return false;
-  }
-};
-
 /** Resolve with a list of predefined extensions. */
 export const customResolve = (id: string, basedir: string) => {
-  return resolve.sync(id, { basedir, extensions });
+  try {
+    return resolve.sync(id, { basedir, extensions });
+  } catch (err) {
+    return null;
+  }
 };
