@@ -58,6 +58,7 @@ exports[`end-to-end cra: cra/index/App.js 1`] = `
 "import React from \\"react\\";
 import logo from \\"./App/logo.svg\\";
 import \\"./App/App.css\\";
+import \\"./non-existent-file\\";
 
 function App() {
   return (

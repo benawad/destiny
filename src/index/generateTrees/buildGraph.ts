@@ -2,8 +2,9 @@ import path from "path";
 import { findEdges } from "../shared/findEdges";
 import { Graph, OldGraph } from "./shared/Graph";
 import { findSharedParent } from "./shared/findSharedParent";
-import { customResolve } from "../shared/customResolve";
+import { customResolve, canResolve } from "../shared/customResolve";
 import { addEdgeToGraph } from "./buildGraph/addEdge";
+import logger from "../../shared/logger";
 
 export function buildGraph(files: string[]) {
   const parentFolder = findSharedParent(files);
@@ -26,6 +27,11 @@ export function buildGraph(files: string[]) {
     }
     totalFiles.push(start);
     findEdges(file).forEach(edge => {
+      if (!canResolve(edge[1], path.dirname(edge[0]))) {
+        logger.error(`Cannot find import ${edge[1]}`);
+        return;
+      }
+
       if (edge[1].includes("/")) {
         numForwardSlashes++;
       } else if (edge[1].includes("\\")) {
