@@ -1,4 +1,5 @@
 import path from "path";
+
 import { findEdges } from "../shared/findEdges";
 import { Graph, OldGraph } from "./shared/Graph";
 import { findSharedParent } from "./shared/findSharedParent";
@@ -13,6 +14,7 @@ export function buildGraph(files: string[]) {
   const totalFiles: string[] = [];
   let numForwardSlashes = 0;
   let numBackSlashes = 0;
+
   for (let file of files) {
     if (file === ".git") {
       continue;

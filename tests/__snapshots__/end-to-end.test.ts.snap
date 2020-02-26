@@ -337,6 +337,33 @@ import \\"@testing-library/jest-dom/extend-expect\\";
 "
 `;
 
+exports[`end-to-end duplicate-imports 1`] = `
+"duplicate-imports
+├── index
+│   ├── routes
+│   │   └── home.js
+│   └── routes.js
+└── index.js"
+`;
+
+exports[`end-to-end duplicate-imports: duplicate-imports/index.js 1`] = `
+"/* eslint-disable*/
+
+import { five } from \\"./index/routes\\";
+import { five } from \\"./index/routes\\";
+"
+`;
+
+exports[`end-to-end duplicate-imports: duplicate-imports/index/routes.js 1`] = `
+"export * from \\"./routes/home\\";
+"
+`;
+
+exports[`end-to-end duplicate-imports: duplicate-imports/index/routes/home.js 1`] = `
+"export const five = 5;
+"
+`;
+
 exports[`end-to-end duplicates 1`] = `
 "duplicates
 ├── index
