@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync } from "fs-extra";
-import { findEdges } from "../shared/findEdges";
+import { findImports } from "../shared/findImports";
 import path from "path";
 import { makeImportPath } from "./fixImports/makeImportPath";
 import { customResolve } from "../shared/customResolve";
@@ -40,29 +40,29 @@ const getNewImportPath = (
 
 export const fixImports = (filePaths: string[], rootOptions: RootOption[]) => {
   for (const filePath of filePaths) {
-    const imports = findEdges(filePath);
+    const importPaths = findImports(filePath);
 
-    if (!imports.length) continue;
+    if (!importPaths.length) continue;
 
     const basedir = path.dirname(filePath);
     const newFilePath = getNewFilePath(filePath, rootOptions);
     const ogText = readFileSync(filePath).toString();
 
     let newText = ogText.repeat(1);
-    for (const imp of imports) {
-      const absPath = customResolve(imp[1], basedir);
+    for (const importPath of importPaths) {
+      const absPath = customResolve(importPath, basedir);
 
       if (absPath == null) {
-        logger.error(`Cannot find import ${imp[1]}`);
+        logger.error(`Cannot find import ${importPath}`);
         continue;
       }
 
-      const newImportText = getNewImportPath(absPath, newFilePath, rootOptions);
+      const newImportPath = getNewImportPath(absPath, newFilePath, rootOptions);
 
-      if (newImportText) {
+      if (newImportPath != null) {
         newText = newText
-          .replace(`'${imp[1]}'`, `'${newImportText}'`)
-          .replace(`"${imp[1]}"`, `"${newImportText}"`);
+          .replace(`'${importPath}'`, `'${newImportPath}'`)
+          .replace(`"${importPath}"`, `"${newImportPath}"`);
       }
     }
 
