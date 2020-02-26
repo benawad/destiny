@@ -58,6 +58,7 @@ exports[`end-to-end cra: cra/index/App.js 1`] = `
 "import React from \\"react\\";
 import logo from \\"./App/logo.svg\\";
 import \\"./App/App.css\\";
+import \\"./non-existent-file\\";
 
 function App() {
   return (
@@ -333,6 +334,33 @@ exports[`end-to-end cra: cra/setupTests.js 1`] = `
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import \\"@testing-library/jest-dom/extend-expect\\";
+"
+`;
+
+exports[`end-to-end duplicate-imports 1`] = `
+"duplicate-imports
+├── index
+│   ├── routes
+│   │   └── home.js
+│   └── routes.js
+└── index.js"
+`;
+
+exports[`end-to-end duplicate-imports: duplicate-imports/index.js 1`] = `
+"/* eslint-disable*/
+
+import { five } from \\"./index/routes\\";
+import { five } from \\"./index/routes\\";
+"
+`;
+
+exports[`end-to-end duplicate-imports: duplicate-imports/index/routes.js 1`] = `
+"export * from \\"./routes/home\\";
+"
+`;
+
+exports[`end-to-end duplicate-imports: duplicate-imports/index/routes/home.js 1`] = `
+"export const five = 5;
 "
 `;
 

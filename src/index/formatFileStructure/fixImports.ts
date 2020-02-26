@@ -4,6 +4,7 @@ import path from "path";
 import { makeImportPath } from "./fixImports/makeImportPath";
 import { customResolve } from "../shared/customResolve";
 import { RootOption } from "../shared/RootOption";
+import logger from "../../shared/logger";
 
 const getNewFilePath = (file: string, rootOptions: RootOption[]) => {
   for (const { tree, parentFolder } of rootOptions) {
@@ -50,6 +51,12 @@ export const fixImports = (filePaths: string[], rootOptions: RootOption[]) => {
     let newText = ogText.repeat(1);
     for (const imp of imports) {
       const absPath = customResolve(imp[1], basedir);
+
+      if (absPath == null) {
+        logger.error(`Cannot find import ${imp[1]}`);
+        continue;
+      }
+
       const newImportText = getNewImportPath(absPath, newFilePath, rootOptions);
 
       if (newImportText) {

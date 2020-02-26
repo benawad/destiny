@@ -1,9 +1,11 @@
 import path from "path";
+
 import { findEdges } from "../shared/findEdges";
 import { Graph, OldGraph } from "./shared/Graph";
 import { findSharedParent } from "./shared/findSharedParent";
 import { customResolve } from "../shared/customResolve";
 import { addEdgeToGraph } from "./buildGraph/addEdge";
+import logger from "../../shared/logger";
 
 export function buildGraph(files: string[]) {
   const parentFolder = findSharedParent(files);
@@ -12,6 +14,7 @@ export function buildGraph(files: string[]) {
   const totalFiles: string[] = [];
   let numForwardSlashes = 0;
   let numBackSlashes = 0;
+
   for (let file of files) {
     if (file === ".git") {
       continue;
@@ -33,6 +36,11 @@ export function buildGraph(files: string[]) {
       }
 
       const pathWithExtension = customResolve(edge[1], path.dirname(edge[0]));
+
+      if (pathWithExtension == null) {
+        logger.error(`Cannot find import ${edge[1]}`);
+        return;
+      }
 
       const end = path.relative(parentFolder, pathWithExtension);
 
