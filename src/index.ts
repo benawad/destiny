@@ -9,10 +9,15 @@ import getRestructureMap from "./index/getFilePaths";
 
 const { argv } = process;
 
-export type Options = {
-  help: boolean;
-  version: boolean;
-  write: boolean;
+type Options = {
+  help: boolean,
+  version: boolean,
+  write: boolean,
+};
+
+type Args = {
+  options: Partial<Options>,
+  rootPaths: string[],
 };
 
 const defaultOptions: Options = {
@@ -43,10 +48,8 @@ const printHelp = (exitCode: number) => {
   return process.exit(exitCode);
 };
 
-const parseArgs = (
-  args: any[]
-): { options: Partial<Options>; rootPaths: string[] } =>
-  args.reduce(
+const parseArgs = (args: string[]): Args =>
+  args.reduce<Args>(
     (acc, arg) => {
       switch (arg) {
         case "-h":

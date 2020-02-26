@@ -2,7 +2,7 @@ import chalk from "chalk";
 
 import logger from "../../shared/logger";
 
-type PositionedLeaf = { text: string; position: number };
+type PositionedLeaf = { text: string, position: number };
 
 const createBranchFromParts = (parts: string[], count: number) =>
   parts.slice(0, count).join("/");
