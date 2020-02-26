@@ -1,3 +1,10 @@
+## [0.3.1](https://github.com/benawad/destiny/compare/v0.3.0...v0.3.1) (2020-02-26)
+
+### Bug Fixes
+
+- don't fail if can't find file and add json support ([954e9db](https://github.com/benawad/destiny/commit/954e9dbacb7515bd1e358723086e8aeff6d7ca7b))
+- ensure unique edges ([a50c40c](https://github.com/benawad/destiny/commit/a50c40c6d333343bfd102d6f2cafce344fbc13aa))
+
 # [0.3.0](https://github.com/benawad/destiny/compare/v0.2.1...v0.3.0) (2020-02-24)
 
 ### Bug Fixes
