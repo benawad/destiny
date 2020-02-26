@@ -1,20 +1,22 @@
-# https://github.com/marketplace/actions/action-for-semantic-release
 name: npm-publish
+
 on:
   push:
     branches:
-      - master # Change this to your default branch
+      - master
+
 jobs:
   npm-publish:
     name: npm-publish
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: yarn install
+      - name: Install dependencies
         run: |
           yarn config set ignore-engines true
-          yarn
+          yarn --frozen-lockfile
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v2
         env:

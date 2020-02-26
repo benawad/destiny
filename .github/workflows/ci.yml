@@ -1,21 +1,25 @@
 name: ci
+
 on: [push, pull_request]
+
 jobs:
   tests:
-    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         node-version: [10]
         os: [ubuntu-latest, macOS-latest]
+    runs-on: ${{ matrix.os }}
+
     steps:
       - run: git config --global core.autocrlf false
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm i -g yarn
-      - name: yarn install and test
+      - name: Install dependencies
         run: |
           yarn config set ignore-engines true
-          yarn
+          yarn --frozen-lockfile
           yarn test --verbose=false
+      - name: Run tests
+        run: yarn test --verbose=false
