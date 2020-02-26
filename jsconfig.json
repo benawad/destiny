@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "target": "esnext"
+  },
+  "include": ["src/**/*", "test/**/*"]
+}
