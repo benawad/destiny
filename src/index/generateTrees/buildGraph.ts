@@ -1,63 +1,78 @@
 import path from "path";
 
-import { findEdges } from "../shared/findEdges";
-import { Graph, OldGraph } from "./shared/Graph";
-import { findSharedParent } from "./shared/findSharedParent";
-import { customResolve } from "../shared/customResolve";
-import { addEdgeToGraph } from "./buildGraph/addEdge";
 import logger from "../../shared/logger";
+import { Graph, OldGraph } from "./shared/Graph";
+import { customResolve } from "../shared/customResolve";
+import { findImports } from "../shared/findImports";
+import { findSharedParent } from "./shared/findSharedParent";
 
-export function buildGraph(files: string[]) {
-  const parentFolder = findSharedParent(files);
+const isFilePathIgnored = (filePath: string) => {
+  const ignoreList = [/^\.git/];
+
+  return ignoreList.some(re => re.test(filePath));
+};
+
+/** Build graph of all file paths and their own imports. */
+export function buildGraph(filePaths: string[]) {
+  const parentFolder = findSharedParent(filePaths);
   const graph: Graph = {};
   const oldGraph: OldGraph = {};
   const totalFiles: string[] = [];
   let numForwardSlashes = 0;
   let numBackSlashes = 0;
 
-  for (let file of files) {
-    if (file === ".git") {
-      continue;
-    }
-    file = path.resolve(file);
-    const start = path.relative(parentFolder, file);
-    if (!(start in oldGraph)) {
+  for (let filePath of filePaths) {
+    if (isFilePathIgnored(filePath)) continue;
+
+    filePath = path.resolve(filePath);
+
+    const start = path.relative(parentFolder, filePath);
+    if (oldGraph.start == null) {
       oldGraph[start] = {
-        oldLocation: file,
+        oldLocation: filePath,
         imports: [],
       };
     }
+
     totalFiles.push(start);
-    findEdges(file).forEach(edge => {
-      if (edge[1].includes("/")) {
+    findImports(filePath).forEach(importPath => {
+      if (importPath.includes("/")) {
         numForwardSlashes++;
-      } else if (edge[1].includes("\\")) {
+      } else if (importPath.includes("\\")) {
         numBackSlashes++;
       }
 
-      const pathWithExtension = customResolve(edge[1], path.dirname(edge[0]));
+      const pathWithExtension = customResolve(
+        importPath,
+        path.dirname(filePath)
+      );
 
       if (pathWithExtension == null) {
-        logger.error(`Cannot find import ${edge[1]}`);
+        logger.error(`Cannot find import ${importPath}`);
         return;
       }
 
       const end = path.relative(parentFolder, pathWithExtension);
 
-      addEdgeToGraph([start, end], graph);
+      if (!Array.isArray(graph[start])) {
+        graph[start] = [];
+      }
+      if (!graph[start].includes(end)) {
+        graph[start].push(end);
+      }
 
       oldGraph[start].imports.push({
-        text: edge[1],
+        text: importPath,
         resolved: end,
       });
     });
   }
 
   return {
-    parentFolder,
-    graph,
     files: totalFiles,
+    graph,
     oldGraph,
+    parentFolder,
     useForwardSlash: numForwardSlashes >= numBackSlashes,
   };
 }

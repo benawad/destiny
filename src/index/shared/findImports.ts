@@ -1,9 +1,10 @@
 import fs from "fs";
 
-export function findEdges(filePath: string) {
+/** Find all imports for file path. */
+export function findImports(filePath: string) {
   const importRegex = /(?:(?:from|import)\s+["'](\.[^'"]*)["'])|(?:(?:require|import)\s*\(["'](\.[^'"]*)["']\))/gm;
   const commentRegex = /\/\*[^]*?\*\/|^.*\/\/.*$/gm;
-  const edges: Array<[string, string]> = [];
+  const importPaths: string[] = [];
   const fileContent = fs
     .readFileSync(filePath, { encoding: "utf8" })
     .toString()
@@ -15,8 +16,8 @@ export function findEdges(filePath: string) {
     if (matches.index === importRegex.lastIndex) {
       importRegex.lastIndex++;
     }
-    edges.push([filePath, matches[1] ?? matches[2]]);
+    importPaths.push(matches[1] ?? matches[2]);
   }
 
-  return edges;
+  return importPaths;
 }
