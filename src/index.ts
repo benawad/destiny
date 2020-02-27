@@ -1,4 +1,6 @@
 import chalk from "chalk";
+import fs from "fs";
+import glob from "glob";
 import { cosmiconfigSync } from "cosmiconfig";
 
 import logger from "./shared/logger";
@@ -64,8 +66,11 @@ const parseArgs = (args: string[]): Args =>
         case "--write":
           acc.options.write = true;
           break;
-        default:
-          acc.rootPaths.push(arg);
+        default: {
+          if (fs.existsSync(arg) || glob.hasMagic(arg)) {
+            acc.rootPaths.push(arg);
+          }
+        }
       }
 
       return acc;
