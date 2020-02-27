@@ -22,7 +22,7 @@ jobs:
           yarn --frozen-lockfile
           yarn test --verbose=false
       - name: Run tests
-        run: yarn test --verbose=false
+        run: yarn test:coverage --verbose=false
       - uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
