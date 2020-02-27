@@ -27,6 +27,7 @@
     "prepublishOnly": "npm run build",
     "start": "nodemon lib/destiny.js",
     "test": "jest --colors",
+    "test:coverage": "jest --coverage",
     "watch": "npm run build -- --watch"
   },
   "engines": {
