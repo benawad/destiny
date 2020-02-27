@@ -23,5 +23,6 @@ jobs:
           yarn test --verbose=false
       - name: Run tests
         run: yarn test --verbose=false
-      - name: Upload coverage
-        run: bash <(curl -s https://codecov.io/bash)
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
