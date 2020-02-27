@@ -18,7 +18,7 @@
     "build": "npm-run-all clean check -p 'build:* -- {@}' --",
     "build:cjs": "rollup -c",
     "check": "tsc",
-    "clean": "rimraf lib",
+    "clean": "rimraf coverage lib",
     "format": "run-s format:*",
     "format:eslint": "npm run lint -- --fix",
     "format:prettier": "prettier --write '{**/*,*}.{js,json,md,ts,yaml}'",
@@ -27,7 +27,7 @@
     "prepublishOnly": "npm run build",
     "start": "nodemon lib/destiny.js",
     "test": "jest --colors",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "npm run test -- --coverage",
     "watch": "npm run build -- --watch"
   },
   "engines": {

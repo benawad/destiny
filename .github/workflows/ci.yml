@@ -20,9 +20,9 @@ jobs:
         run: |
           yarn config set ignore-engines true
           yarn --frozen-lockfile
-          yarn test --verbose=false
       - name: Run tests
         run: yarn test:coverage --verbose=false
-      - uses: codecov/codecov-action@v1
+      - name: Upload test coverage
+        uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
