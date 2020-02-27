@@ -28,7 +28,7 @@
     "start": "nodemon lib/destiny.js",
     "test": "jest --colors",
     "watch": "npm run build -- --watch",
-    "upload:coverage": "codecov -f coverage/*.json"
+    "upload:coverage": "codecov -f coverage/*.json -t $CODECOV_TOKEN"
   },
   "engines": {
     "node": ">= 10"
