@@ -34,8 +34,13 @@ The end result is a "prettified" file structure.
 
 ## How to run it
 
+Dry run which will output what the resulting file structure will look like:
 ```
 npx destiny "src/**/*.*"
+```
+This will actually move files around and fix imports:
+```
+npx destiny -w "src/**/*.*"
 ```
 
 ## This tool might be useless
