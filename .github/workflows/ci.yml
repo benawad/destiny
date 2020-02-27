@@ -24,4 +24,4 @@ jobs:
       - name: Run tests
         run: yarn test --verbose=false
       - name: Upload coverage
-        run: yarn upload:coverage
+        run: bash <(curl -s https://codecov.io/bash)
