@@ -7,15 +7,10 @@ export const findSharedParent = (paths: string[]) => {
   const [shortest, secondShortest] =
     paths.length > 2 ? paths.sort((a, b) => a.length - b.length) : paths;
 
-  const secondShortestParts = secondShortest.split("/");
-  const parentPaths: string[] = [];
+  const secondShortestParts = secondShortest.split(path.sep);
 
-  let index = 0;
-  for (const part of shortest.split("/")) {
-    if (part === secondShortestParts[index++]) {
-      parentPaths.push(part);
-    }
-  }
-
-  return parentPaths.join("/");
+  return shortest
+    .split(path.sep)
+    .filter((part, idx) => part === secondShortestParts[idx])
+    .join(path.sep);
 };
