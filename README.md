@@ -50,7 +50,13 @@ The end result is a "prettified" file structure.
 - Snapshot tests don't format correctly
 - Only works on JavaScript/TypeScript codebases (althought this concept could probably be extended to any language)
 
-## How to run it
+## Dependencies required for installing
+
+Destiny uses NPX, node package binary executor, to install and run. More details about NPX [here](https://www.npmjs.com/package/npx).
+
+## How to run Destiny
+
+`npx destiny` is used to both install the project if it's currently missing, and then run it, if it's already installed.
 
 Dry run which will output what the resulting file structure will look like:
 ```
