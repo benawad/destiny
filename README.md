@@ -1,5 +1,7 @@
 # Destiny
 
+<img align="center" alt="example transformation" src="https://raw.githubusercontent.com/benawad/destiny/master/assets/example.png" />
+
 <h2 align="center">Prettier for File Structures</h2>
 
 <p align="center">
@@ -27,8 +29,6 @@
 ---
 
 Motivation: https://www.youtube.com/watch?v=rGYbrIf-y58
-
-![example transformation](https://github.com/benawad/destiny/blob/master/assets/example.png)
 
 ## What does this do?
 
@@ -71,7 +71,7 @@ It might be better to just name your folders.
 
 ## Contributing
 
-pull requests are welcome :)
+Pull requests are welcome :)
 
 ## Badge
 
