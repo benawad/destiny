@@ -4,17 +4,13 @@ import path from "path";
 export const findSharedParent = (paths: string[]) => {
   if (paths.length === 1) return path.dirname(paths[0]);
 
-  const parentPaths: string[] = [];
-  const parts: string[][] = paths.map(x => x.split("/"));
-  const firstParts = parts[0];
+  const [shortest, secondShortest] =
+    paths.length > 2 ? paths.sort((a, b) => a.length - b.length) : paths;
 
-  firstParts.forEach((part, idx) => {
-    const allPartsMatch = parts.every(p => p[idx] === part);
+  const secondShortestParts = secondShortest.split(path.sep);
 
-    if (allPartsMatch) {
-      parentPaths.push(part);
-    }
-  });
-
-  return parentPaths.join("/");
+  return shortest
+    .split(path.sep)
+    .filter((part, idx) => part === secondShortestParts[idx])
+    .join(path.sep);
 };
