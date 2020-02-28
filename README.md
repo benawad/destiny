@@ -1,10 +1,28 @@
-# destiny
+# Destiny
 
-Prettier for File Structures
+<h2 align="center">Prettier for File Structures</h2>
 
-[![npm version](https://badge.fury.io/js/destiny.svg)](https://badge.fury.io/js/destiny)
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/benawad/destiny/issues)
-[![](https://github.com/benawad/destiny/workflows/ci/badge.svg)](https://github.com/benawad/destiny/actions?query=workflow%3Aci) [![Join the chat at https://gitter.im/destiny-dev/community](https://badges.gitter.im/destiny-dev/community.svg)](https://gitter.im/destiny-dev/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+<p align="center">
+  <a href="https://www.npmjs.com/package/destiny">
+    <img alt="npm version" src="https://badge.fury.io/js/destiny.svg">
+  </a>
+
+  <a href="https://github.com/benawad/destiny/issues">
+    <img alt="contributions welcome" src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat">
+  </a>
+
+  <a href="https://github.com/benawad/destiny/actions?query=workflow%3Aci">
+    <img alt="ci workflow" src="https://github.com/benawad/destiny/workflows/ci/badge.svg">
+  </a>
+
+  <a href="https://gitter.im/destiny-dev/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge">
+    <img alt="Join the chat at https://gitter.im/destiny-dev/community" src="https://badges.gitter.im/destiny-dev/community.svg">
+  </a>
+
+  <a href="https://github.com/benawad/destiny">
+    <img alt="file structure: destiny" src="https://img.shields.io/badge/file%20structure-destiny-7a49ff?style=flat">
+  </a>
+</p>
 
 ---
 
@@ -54,3 +72,11 @@ It might be better to just name your folders.
 ## Contributing
 
 pull requests are welcome :)
+
+## Badge
+
+[![file structure: destiny](https://img.shields.io/badge/file%20structure-destiny-7a49ff?style=flat)](https://github.com/benawad/destiny)
+
+```
+[![file structure: destiny](https://img.shields.io/badge/file%20structure-destiny-7a49ff?style=flat)](https://github.com/benawad/destiny)
+```
