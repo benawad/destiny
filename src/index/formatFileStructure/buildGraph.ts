@@ -1,48 +1,44 @@
 import path from "path";
-import { findEdges } from "./shared/findEdges";
-import { addEdge } from "./buildGraph/addEdge";
-import { Graph, OldGraph } from "./shared/Graph";
-import { findSharedParent } from "./shared/findSharedParent";
+import { addEdgeToGraph } from "./buildGraph/addEdge";
 import { customResolve } from "./shared/customResolve";
+import { findEdges } from "./shared/findEdges";
+import { findSharedParent } from "./shared/findSharedParent";
+import { Graph, OldGraph } from "./shared/Graph";
 
+/** Builds a graph for a particular set of files. */
 export function buildGraph(files: string[]) {
   const parentFolder = findSharedParent(files);
   const graph: Graph = {};
   const oldGraph: OldGraph = {};
   const totalFiles: string[] = [];
+
   let numForwardSlashes = 0;
   let numBackSlashes = 0;
-  for (let file of files) {
-    if (file === ".git") {
-      continue;
-    }
-    file = path.resolve(file);
-    const start = path.relative(parentFolder, file);
-    if (!(start in oldGraph)) {
-      oldGraph[start] = {
-        oldLocation: file,
-        imports: [],
-      };
-    }
-    totalFiles.push(start);
-    findEdges(file).forEach(edge => {
-      if (edge[1].includes("/")) {
-        numForwardSlashes++;
-      } else if (edge[1].includes("\\")) {
-        numBackSlashes++;
-      }
 
-      const pathWithExtension = customResolve(edge[1], path.dirname(edge[0]));
+  for (let filePath of files) {
+    if (filePath === ".git") continue;
+
+    filePath = path.resolve(filePath);
+    const start = path.relative(parentFolder, filePath);
+    totalFiles.push(start);
+
+    const startNotInitialized = !(start in oldGraph);
+    if (startNotInitialized) {
+      oldGraph[start] = { oldLocation: filePath, imports: [] };
+    }
+
+    for (const edge of findEdges(filePath)) {
+      const [first, last] = edge;
+
+      if (last.includes("/")) numForwardSlashes++;
+      else if (last.includes("\\")) numBackSlashes++;
+
+      const pathWithExtension = customResolve(last, path.dirname(first));
 
       const end = path.relative(parentFolder, pathWithExtension);
-
-      addEdge([start, end], graph);
-
-      oldGraph[start].imports.push({
-        text: edge[1],
-        resolved: end,
-      });
-    });
+      addEdgeToGraph([start, end], graph);
+      oldGraph[start].imports.push({ text: last, resolved: end });
+    }
   }
 
   return {
@@ -50,6 +46,6 @@ export function buildGraph(files: string[]) {
     graph,
     files: totalFiles,
     oldGraph,
-    useForwardSlash: numForwardSlashes >= numBackSlashes ? true : false,
+    useForwardSlash: numForwardSlashes >= numBackSlashes,
   };
 }

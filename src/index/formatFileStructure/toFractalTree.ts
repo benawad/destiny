@@ -3,7 +3,7 @@ import path from "path";
 import logger from "../../shared/logger";
 import { Graph } from "./shared/Graph";
 import { findSharedParent } from "./shared/findSharedParent";
-import { hasCycle } from "./toFractalTree/hasCycle";
+import { hasCycle } from "./toFractalTree/util";
 import { isTestFile } from "./shared/isTestFile";
 
 export function toFractalTree(graph: Graph, entryPoints: string[]) {

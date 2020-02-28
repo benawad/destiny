@@ -49,13 +49,13 @@ export const formatFileStructure = async (
     removeEmptyFolders(parentFolder);
   }
 
-  if (unusedFiles.length) {
+  if (unusedFiles.length > 0) {
     logger.warn(
-      "Unused files:" +
+      `Found ${unusedFiles.length} unused files:` +
         "\n" +
-        [...unusedFiles].map(file => " ".repeat(8) + file).join("\n")
+        unusedFiles.map(file => " ".repeat(8) + file).join("\n")
     );
   }
 
-  logger.info("Successfully restructured!");
+  logger.info("Restructure was successful!");
 };
