@@ -3,27 +3,24 @@ import fs from "fs";
 import glob from "glob";
 import { cosmiconfigSync } from "cosmiconfig";
 
+import getRestructureMap from "./index/getFilePaths";
 import logger from "./shared/logger";
 import { formatFileStructure } from "./index/formatFileStructure";
 import { generateTrees } from "./index/generateTrees";
 import { version } from "../package.json";
-import getRestructureMap from "./index/getFilePaths";
 
 const { argv } = process;
 
-type Options = {
+type Config = {
   help: boolean,
+  include: string[],
   version: boolean,
   write: boolean,
 };
 
-type Args = {
-  options: Partial<Options>,
-  rootPaths: string[],
-};
-
-const defaultOptions: Options = {
+const defaultConfig: Config = {
   help: false,
+  include: [],
   version: false,
   write: false,
 };
@@ -50,52 +47,51 @@ const printHelp = (exitCode: number) => {
   return process.exit(exitCode);
 };
 
-const parseArgs = (args: string[]): Args =>
-  args.reduce<Args>(
-    (acc, arg) => {
-      switch (arg) {
-        case "-h":
-        case "--help":
-          acc.options.help = true;
-          break;
-        case "-V":
-        case "--version":
-          acc.options.version = true;
-          break;
-        case "-w":
-        case "--write":
-          acc.options.write = true;
-          break;
-        default: {
-          if (fs.existsSync(arg) || glob.hasMagic(arg)) {
-            acc.rootPaths.push(arg);
-          }
+const parseArgs = (args: string[]) =>
+  args.reduce<Partial<Config>>((acc, arg) => {
+    switch (arg) {
+      case "-h":
+      case "--help":
+        acc.help = true;
+        break;
+      case "-V":
+      case "--version":
+        acc.version = true;
+        break;
+      case "-w":
+      case "--write":
+        acc.write = true;
+        break;
+      default: {
+        if (fs.existsSync(arg) || glob.hasMagic(arg)) {
+          acc.include = [...(acc.include ?? []), arg];
         }
       }
+    }
 
-      return acc;
-    },
-    { options: {}, rootPaths: [] }
-  );
+    return acc;
+  }, {});
+
+const getMergedConfig = (cliConfig: Partial<Config>): Config => {
+  const externalConfig: Partial<Config> =
+    cosmiconfigSync("destiny").search()?.config ?? {};
+
+  return {
+    ...defaultConfig,
+    ...externalConfig,
+    ...cliConfig,
+  };
+};
 
 export const run = async (args: string[]) => {
-  const config: Partial<Options> =
-    cosmiconfigSync("destiny").search()?.config ?? {};
-  const { options, rootPaths } = parseArgs(args);
+  const cliConfig = parseArgs(args);
+  const mergedConfig = getMergedConfig(cliConfig);
 
-  const mergedOptions: Options = {
-    ...defaultOptions,
-    ...config,
-    ...options,
-  };
+  if (mergedConfig.help) return printHelp(0);
+  if (mergedConfig.version) return printVersion();
+  if (mergedConfig.include.length === 0) return printHelp(1);
 
-  if (mergedOptions.help) return printHelp(0);
-  if (mergedOptions.version) return printVersion();
-  if (rootPaths.length === 0) return printHelp(1);
-
-  logger.info("Resolving files.");
-
-  const restructureMap = getRestructureMap(rootPaths);
+  const restructureMap = getRestructureMap(mergedConfig.include);
   const filesToEdit = Object.values(restructureMap).flat();
 
   if (filesToEdit.length === 0) {
@@ -105,7 +101,7 @@ export const run = async (args: string[]) => {
 
   const rootOptions = generateTrees(restructureMap);
 
-  if (mergedOptions.write) {
+  if (mergedConfig.write) {
     await formatFileStructure(filesToEdit, rootOptions);
   }
 };
