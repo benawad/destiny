@@ -2,41 +2,44 @@ import fs from "fs-extra";
 import path from "path";
 import Git from "simple-git/promise";
 
-export const moveFiles = async (
-  newStructure: Record<string, string>,
+/** Moves each file in the tree from old path to new path. */
+export async function moveFiles(
+  tree: Record<string, string>,
   parentFolder: string
-) => {
+) {
   const git = Git(parentFolder);
-  let isRepo = false;
-  try {
-    isRepo = await git.checkIsRepo();
-  } catch {}
-  for (const [k, newLocation] of Object.entries(newStructure)) {
+
+  for (const [oldPath, newPath] of Object.entries(tree)) {
     // skip globals
-    if (k.includes("..")) {
-      continue;
-    }
-    const oldAbsLocation = path.resolve(path.join(parentFolder, k));
-    const newAbsLocation = path.resolve(path.join(parentFolder, newLocation));
-    if (oldAbsLocation !== newAbsLocation) {
-      // make folders
-      fs.ensureDirSync(path.dirname(newAbsLocation));
-      let shouldGitMv = false;
-      if (isRepo) {
-        // check if file is tracked in git
-        try {
-          await git
-            .silent(true)
-            .raw(["ls-files", "--error-unmatch", oldAbsLocation]);
-          shouldGitMv = true;
-        } catch {}
-      }
-      if (shouldGitMv) {
-        await git.mv(oldAbsLocation, newAbsLocation);
-      } else {
-        // move
-        fs.renameSync(oldAbsLocation, newAbsLocation);
-      }
-    }
+    if (oldPath.includes("..")) continue;
+
+    const oldAbsolutePath = path.resolve(parentFolder, oldPath);
+    const newAbsolutePath = path.resolve(parentFolder, newPath);
+
+    const isSamePath = oldAbsolutePath === newAbsolutePath;
+    if (isSamePath) continue;
+
+    // Create the folder that should contain this file,
+    // if it does not already exist.
+    const newDirname = path.dirname(newAbsolutePath);
+    fs.ensureDirSync(newDirname);
+
+    /** Reference: https://git-scm.com/docs/git-ls-files#Documentation/git-ls-files.txt---error-unmatch */
+    const checkLsFiles = () => {
+      return (
+        git
+          .silent(true)
+          .raw(["ls-files", "--error-unmatch", oldAbsolutePath])
+          .then(() => true)
+          // If not a repo, this returns false immediately.
+          .catch(() => false)
+      );
+    };
+
+    const shouldGitMv = (await git.checkIsRepo()) && (await checkLsFiles());
+
+    // Move file, using git or fs depdning on cirumstance.
+    if (shouldGitMv) await git.mv(oldAbsolutePath, newAbsolutePath);
+    else fs.renameSync(oldAbsolutePath, newAbsolutePath);
   }
-};
+}
