@@ -7,7 +7,8 @@ import { hasCycle } from "./toFractalTree/hasCycle";
 import { isTestFile } from "./shared/isTestFile";
 
 export function toFractalTree(graph: Graph, entryPoints: string[]) {
-  const res: Record<string, string> = {};
+  const tree: Record<string, string> = {};
+  const treeSet = new Set<string>();
   const dependencies: Record<string, string[]> = {};
   const testFiles = new Set<string>();
   let containsCycle = false;
@@ -16,6 +17,7 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
     if (!Array.isArray(dependencies[key])) {
       dependencies[key] = [];
     }
+
     dependencies[key].push(location);
   };
 
@@ -24,47 +26,54 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
     dirname: string,
     filePath: string
   ) => {
-    let newLocation;
+    const hasLocation = treeSet.has(location);
 
-    if (Object.values(res).includes(location)) {
-      newLocation = path.join(dirname, filePath.replace(/\//g, "-"));
+    if (hasLocation) {
+      const newLocation = path.join(dirname, filePath.replace(/\//g, "-"));
       logger.info(`File renamed: ${filePath} -> ${newLocation}`);
+
+      return newLocation;
     }
 
-    return newLocation ?? location;
+    return location;
   };
 
   const fn = (filePath: string, folderPath: string, graph: Graph) => {
-    const basenameWithExt = path.basename(filePath);
-    if (isTestFile(basenameWithExt)) {
+    const basename = path.basename(filePath);
+
+    if (isTestFile(basename)) {
       testFiles.add(filePath);
       return;
     }
-    let folderName = path.basename(filePath, path.extname(filePath));
-    const upperFolder = path.basename(path.dirname(filePath));
+
+    let directoryName = path.basename(filePath, path.extname(filePath));
+    const currentFolder = path.basename(path.dirname(filePath));
     const isGlobal = filePath.includes("..");
-    let location = isGlobal
+
+    const tempLocation = isGlobal
       ? filePath
       : path.join(
           folderPath,
-          folderName === "index" && upperFolder && upperFolder !== "."
-            ? upperFolder + path.extname(filePath)
-            : basenameWithExt
+          directoryName === "index" && currentFolder && currentFolder !== "."
+            ? currentFolder + path.extname(filePath)
+            : basename
         );
 
-    location = checkDuplicates(location, folderPath, filePath);
-    folderName = path.basename(location, path.extname(location));
+    const location = checkDuplicates(tempLocation, folderPath, filePath);
+    directoryName = path.basename(location, path.extname(location));
 
     if (!isGlobal) {
-      res[filePath] = location;
+      tree[filePath] = location;
+      treeSet.add(location);
     }
+
     const imports = graph[filePath];
 
     if (imports?.length > 0) {
-      const newDestination = path.join(folderPath, folderName);
+      const newDestination = path.join(folderPath, directoryName);
 
       for (const importFilePath of imports) {
-        if (importFilePath in res) {
+        if (importFilePath in tree) {
           const cycle = hasCycle(importFilePath, graph, new Set());
 
           if (cycle) {
@@ -87,22 +96,27 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
   }
 
   if (!containsCycle) {
-    Object.entries(dependencies).forEach(([k, v]) => {
-      if (v.length > 1 && !k.includes("..")) {
-        const parent = findSharedParent(v);
-        const filename = path.basename(k);
-        const upperFolder = path.basename(path.dirname(k));
-
-        res[k] = path.join(
-          parent,
-          "shared",
-          path.basename(filename, path.extname(filename)) === "index" &&
-            upperFolder &&
-            upperFolder !== "."
-            ? upperFolder + path.extname(filename)
-            : filename
-        );
+    Object.entries(dependencies).forEach(([currentPath, dependencies]) => {
+      if (dependencies.length <= 1 || currentPath.includes("..")) {
+        return;
       }
+
+      const parent = findSharedParent(dependencies);
+      const filename = path.basename(currentPath);
+      const currentDir = path.dirname(currentPath);
+
+      const newFilePath = path.join(
+        parent,
+        "shared",
+        path.basename(filename, path.extname(filename)) === "index" &&
+          currentDir &&
+          currentDir !== "."
+          ? path.join(currentDir + path.extname(filename))
+          : filename
+      );
+
+      tree[currentPath] = newFilePath;
+      treeSet.add(newFilePath);
     });
   }
 
@@ -116,22 +130,20 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
         continue;
       }
 
-      const testFilePath = res[firstRelativeImport];
-      if (testFilePath) {
-        let location = path.join(
-          path.dirname(testFilePath),
-          path.basename(testFile)
-        );
+      const testFilePath = tree[firstRelativeImport];
 
-        location = checkDuplicates(
-          location,
-          path.dirname(testFilePath),
-          testFile
-        );
-        res[testFile] = location;
-      }
+      if (!testFilePath) continue
+
+      const location = checkDuplicates(
+        path.join(path.dirname(testFilePath), path.basename(testFile)),
+        path.dirname(testFilePath),
+        testFile
+      );
+
+      tree[testFile] = location;
+      treeSet.add(location);
     }
   }
 
-  return res;
+  return tree;
 }

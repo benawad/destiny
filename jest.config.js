@@ -1,4 +1,4 @@
 module.exports = {
-  testPathIgnorePatterns: ["/tests/fixtures/", "/test/tmp/"],
+  testPathIgnorePatterns: ["<rootDir>/tests/fixtures/", "<rootDir>/tests/tmp/"],
   coveragePathIgnorePatterns: ["/tests/tmp/"],
 };

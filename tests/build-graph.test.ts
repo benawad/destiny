@@ -50,4 +50,8 @@ describe("build graph", () => {
   t("commented-imports", {
     "index.js": ["existent.js"],
   });
+
+  t("single-file-folder", {
+    "file.js": ["page/page.js"]
+  });
 });
