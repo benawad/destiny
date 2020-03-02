@@ -17,7 +17,7 @@ export async function moveFiles(
     const newAbsolutePath = path.resolve(parentFolder, newPath);
 
     const isSamePath = oldAbsolutePath === newAbsolutePath;
-    if (isSamePath) continue;
+    if (oldAbsolutePath === newAbsolutePath) continue;
 
     // Create the folder that should contain this file,
     // if it does not already exist.
@@ -31,14 +31,12 @@ export async function moveFiles(
           .silent(true)
           .raw(["ls-files", "--error-unmatch", oldAbsolutePath])
           .then(() => true)
-          // If not a repo, this returns false immediately.
           .catch(() => false)
       );
     };
 
     const shouldGitMv = (await git.checkIsRepo()) && (await checkLsFiles());
 
-    // Move file, using git or fs depdning on cirumstance.
     if (shouldGitMv) await git.mv(oldAbsolutePath, newAbsolutePath);
     else fs.renameSync(oldAbsolutePath, newAbsolutePath);
   }
