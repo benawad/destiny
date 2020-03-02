@@ -19,8 +19,7 @@ export async function moveFiles(
     const isSamePath = oldAbsolutePath === newAbsolutePath;
     if (oldAbsolutePath === newAbsolutePath) continue;
 
-    // Create the folder that should contain this file,
-    // if it does not already exist.
+    // Create folder for files
     const newDirname = path.dirname(newAbsolutePath);
     fs.ensureDirSync(newDirname);
 
