@@ -47,30 +47,38 @@ const printHelp = (exitCode: number) => {
   return process.exit(exitCode);
 };
 
-const parseArgs = (args: string[]) =>
-  args.reduce<Partial<Config>>((acc, arg) => {
+const parseArgs = (args: string[]) => {
+  const cliConfig: Partial<Config> = {};
+
+  while (args.length > 0) {
+    const arg = args.shift();
+
+    if (arg == null) break;
+
     switch (arg) {
       case "-h":
       case "--help":
-        acc.help = true;
+        cliConfig.help = true;
         break;
       case "-V":
       case "--version":
-        acc.version = true;
+        cliConfig.version = true;
         break;
       case "-w":
       case "--write":
-        acc.write = true;
+        cliConfig.write = true;
         break;
+      case "-G":
       default: {
         if (fs.existsSync(arg) || glob.hasMagic(arg)) {
-          acc.include = [...(acc.include ?? []), arg];
+          cliConfig.include = [...(cliConfig.include ?? []), arg];
         }
       }
     }
+  }
 
-    return acc;
-  }, {});
+  return cliConfig;
+};
 
 const getMergedConfig = (cliConfig: Partial<Config>): Config => {
   const externalConfig: Partial<Config> =
