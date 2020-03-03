@@ -2,41 +2,41 @@ import fs from "fs-extra";
 import path from "path";
 import Git from "simple-git/promise";
 
-export const moveFiles = async (
-  newStructure: Record<string, string>,
+async function isFileGitTracked(git: Git.SimpleGit, location: string) {
+  return git
+    .silent(true)
+    .raw(["ls-files", "--error-unmatch", location])
+    .then(() => true)
+    .catch(() => false);
+}
+
+/** Moves each file in the tree from old path to new path. */
+export async function moveFiles(
+  tree: Record<string, string>,
   parentFolder: string
-) => {
+) {
   const git = Git(parentFolder);
-  let isRepo = false;
-  try {
-    isRepo = await git.checkIsRepo();
-  } catch {}
-  for (const [k, newLocation] of Object.entries(newStructure)) {
+  const isFolderGitTracked = await git.checkIsRepo();
+  for (const [oldPath, newPath] of Object.entries(tree)) {
     // skip globals
-    if (k.includes("..")) {
-      continue;
-    }
-    const oldAbsLocation = path.resolve(path.join(parentFolder, k));
-    const newAbsLocation = path.resolve(path.join(parentFolder, newLocation));
-    if (oldAbsLocation !== newAbsLocation) {
-      // make folders
-      fs.ensureDirSync(path.dirname(newAbsLocation));
-      let shouldGitMv = false;
-      if (isRepo) {
-        // check if file is tracked in git
-        try {
-          await git
-            .silent(true)
-            .raw(["ls-files", "--error-unmatch", oldAbsLocation]);
-          shouldGitMv = true;
-        } catch {}
-      }
-      if (shouldGitMv) {
-        await git.mv(oldAbsLocation, newAbsLocation);
-      } else {
-        // move
-        fs.renameSync(oldAbsLocation, newAbsLocation);
-      }
+    if (oldPath.includes("..")) continue;
+
+    const oldAbsolutePath = path.resolve(parentFolder, oldPath);
+    const newAbsolutePath = path.resolve(parentFolder, newPath);
+
+    if (oldAbsolutePath === newAbsolutePath) continue;
+
+    // Create folder for files
+    const newDirname = path.dirname(newAbsolutePath);
+    fs.ensureDirSync(newDirname);
+
+    const shouldGitMv =
+      isFolderGitTracked && (await isFileGitTracked(git, oldAbsolutePath));
+
+    if (shouldGitMv) {
+      await git.mv(oldAbsolutePath, newAbsolutePath);
+    } else {
+      fs.renameSync(oldAbsolutePath, newAbsolutePath);
     }
   }
-};
+}
