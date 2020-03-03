@@ -2,21 +2,20 @@ import fs from "fs";
 
 /** Find all imports for file path. */
 export function findImports(filePath: string) {
-  const importRegex = /(?:(?:from|import)\s+["'](\.[^'"]*)["'])|(?:(?:require|import)\s*\(["'](\.[^'"]*)["']\))/gm;
-  const commentRegex = /\/\*[^]*?\*\/|^.*\/\/.*$/gm;
+  const reImport = /(?:(?:import|from)\s+|(?:import|require)\s*\()['"]((?:\.{1,2})(?:\/.+)?)['"]/gm;
+  const reComment = /\/\*[^]*?\*\/|^.*\/\/.*$/gm;
   const importPaths: string[] = [];
   const fileContent = fs
     .readFileSync(filePath, { encoding: "utf8" })
-    .toString()
-    .replace(commentRegex, "");
+    .replace(reComment, "");
 
   let matches;
-  while ((matches = importRegex.exec(fileContent)) !== null) {
+  while ((matches = reImport.exec(fileContent)) !== null) {
     // This is necessary to avoid infinite loops with zero-width matches.
-    if (matches.index === importRegex.lastIndex) {
-      importRegex.lastIndex++;
+    if (matches.index === reImport.lastIndex) {
+      reImport.lastIndex++;
     }
-    importPaths.push(matches[1] ?? matches[2]);
+    importPaths.push(matches[1]);
   }
 
   return importPaths;

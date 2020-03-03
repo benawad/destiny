@@ -1,11 +1,12 @@
 import chalk from "chalk";
+import path from "path";
 
 import logger from "../../shared/logger";
 
 type PositionedLeaf = { text: string, position: number };
 
 const createBranchFromParts = (parts: string[], count: number) =>
-  parts.slice(0, count).join("/");
+  path.join(...parts.slice(0, count));
 
 /** Remove path that matches `match` but save '/' to calculate position. */
 const removePathDuplication = (target: string, match: string) =>
