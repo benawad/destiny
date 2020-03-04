@@ -1,3 +1,18 @@
+# [0.4.0](https://github.com/benawad/destiny/compare/v0.3.1...v0.4.0) (2020-03-04)
+
+### Bug Fixes
+
+- ensure path correctness ([f22f07f](https://github.com/benawad/destiny/commit/f22f07f962c130a821009b43c0e568d819533b96)), closes [#81](https://github.com/benawad/destiny/issues/81)
+- extend linting ([039cadf](https://github.com/benawad/destiny/commit/039cadf98fb5e08fcf469faa95154b763b64c3bd))
+- fix new linting issues ([c19f2e5](https://github.com/benawad/destiny/commit/c19f2e53a93c3859c7c02fd206c87c2b367efe36))
+- Fix time complexity when searching for common parent dir ([ce9915e](https://github.com/benawad/destiny/commit/ce9915eac72870135e30b9b895a4ad265a004266))
+- improve regex path matching ([ff9b19b](https://github.com/benawad/destiny/commit/ff9b19b43870a6fd0d43364ce9e342c4f2c6b30c)), closes [#87](https://github.com/benawad/destiny/issues/87)
+- support paths in config via include ([c049ceb](https://github.com/benawad/destiny/commit/c049cebf336da6a01f3b931a2ce0b62d0f482b06))
+
+### Features
+
+- Add CLI flag to rename single files ([2de9ff1](https://github.com/benawad/destiny/commit/2de9ff1acde8c040fe324b8d9a5fc37b6413e935))
+
 ## [0.3.1](https://github.com/benawad/destiny/compare/v0.3.0...v0.3.1) (2020-02-26)
 
 ### Bug Fixes
