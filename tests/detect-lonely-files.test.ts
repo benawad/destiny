@@ -1,39 +1,78 @@
 import * as path from "path";
 import * as glob from "glob";
 
-import { toFractalTree } from "../src/index/generateTrees/toFractalTree";
+import { detectLonelyFiles } from "../src/index/shared/detect-lonely-files";
 import { buildGraph } from "../src/index/generateTrees/buildGraph";
+import { toFractalTree } from "../src/index/generateTrees/toFractalTree";
 import { findEntryPoints } from "../src/index/generateTrees/findEntryPoints";
+
+const mockedTest = (
+  name: string,
+  tree: Record<string, string>,
+  result: Record<string, string>
+) => {
+  it(name, () => {
+    expect(detectLonelyFiles(tree)).toEqual(result);
+  });
+};
 
 const t = (folder: string, g2: any, entryPoints?: string[]) => {
   it(folder, () => {
     const g1 = buildGraph(
       glob.sync(path.join(__dirname, "fixtures", folder, "/**/*.js"))
     ).graph;
-    expect(toFractalTree(g1, entryPoints || findEntryPoints(g1))).toEqual(g2);
+    expect(
+      detectLonelyFiles(toFractalTree(g1, entryPoints || findEntryPoints(g1)))
+    ).toEqual(g2);
   });
 };
 
-describe("toFractalTree", () => {
+describe("detectLonelyFiles", () => {
+  mockedTest(
+    "should move when lonely file",
+    {
+      "file.js": "file.js",
+      "page/page.js": "file/page.js",
+    },
+    {
+      "file.js": "file.js",
+      "page/page.js": "page.js",
+    }
+  );
+
+  mockedTest(
+    "should not move file when sibling file is present after moving",
+    {
+      "file.js": "file.js",
+      "page/page.js": "file/page.js",
+      "header/header.js": "file/page/header.js",
+    },
+    {
+      "file.js": "file.js",
+      "page/page.js": "file/page.js",
+      "header/header.js": "file/header.js",
+    }
+  );
+
   t("simple", {
     "index.js": "index.js",
     "routes.js": "index/routes.js",
-    "home.js": "index/routes/home.js",
+    "home.js": "index/home.js",
   });
 
   t("index-cycle", {
     "index.js": "index.js",
     "routes/index.js": "index/routes.js",
+    "home/index.js": "index/home.js",
     "login/index.js": "index/login.js",
-    "home/index.js": "index/routes/home.js",
-    "utils/search.js": "index/login/search.js",
+    "utils/search.js": "index/search.js",
   });
 
   t("sharing", {
     "index.js": "index.js",
     "footer/index.js": "index/footer.js",
+    "header/helper.js": "index/helper.js",
     "header/index.js": "index/header.js",
-    "header/helper.js": "index/shared/helper.js",
   });
 
   t("spec-files", {
@@ -60,11 +99,11 @@ describe("toFractalTree", () => {
 
   t("commented-imports", {
     "index.js": "index.js",
-    "existent.js": "index/existent.js",
+    "existent.js": "existent.js",
   });
 
   t("single-file-folder", {
     "file.js": "file.js",
-    "page/page.js": "file/page.js"
+    "page/page.js": "page.js"
   });
 });

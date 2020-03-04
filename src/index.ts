@@ -11,11 +11,12 @@ import { version } from "../package.json";
 
 const { argv } = process;
 
-type Config = {
-  help: boolean,
-  include: string[],
-  version: boolean,
-  write: boolean,
+export type Config = {
+  help: boolean;
+  include: string[];
+  version: boolean;
+  write: boolean;
+  avoidSingleFile: boolean;
 };
 
 const defaultConfig: Config = {
@@ -23,6 +24,7 @@ const defaultConfig: Config = {
   include: [],
   version: false,
   write: false,
+  avoidSingleFile: false,
 };
 
 const printVersion = () => console.log("v" + version);
@@ -38,9 +40,10 @@ const printHelp = (exitCode: number) => {
 
 {bold OPTIONS}
 
-  -V, --version            output version number
-  -h, --help               output usage information
-  -w, --write              restructure and edit folders and files
+  -V, --version               Output version number
+  -h, --help                  Output usage information
+  -w, --write                 Restructure and edit folders and files
+  -S, --avoid-single-file     Flag to indicate if single files in folders should be avoided
   `
   );
 
@@ -68,6 +71,9 @@ const parseArgs = (args: string[]) => {
       case "--write":
         cliConfig.write = true;
         break;
+      case "-S":
+      case "--avoid-single-file":
+        cliConfig.avoidSingleFile = true;
       case "-G":
       default: {
         if (fs.existsSync(arg) || glob.hasMagic(arg)) {
@@ -107,7 +113,7 @@ export const run = async (args: string[]) => {
     return;
   }
 
-  const rootOptions = generateTrees(restructureMap);
+  const rootOptions = generateTrees(restructureMap, mergedConfig);
 
   if (mergedConfig.write) {
     await formatFileStructure(filesToEdit, rootOptions);

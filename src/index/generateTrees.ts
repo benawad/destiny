@@ -6,8 +6,10 @@ import { RootOption as Root } from "./shared/RootOption";
 import { buildGraph } from "./generateTrees/buildGraph";
 import { findEntryPoints } from "./generateTrees/findEntryPoints";
 import { toFractalTree } from "./generateTrees/toFractalTree";
+import { detectLonelyFiles } from "./shared/detect-lonely-files";
+import { Config } from "../index";
 
-export function generateTrees(restructureMap: { [key: string]: string[] }) {
+export function generateTrees(restructureMap: { [key: string]: string[] }, {avoidSingleFile}: Config) {
   return Object.entries(restructureMap).reduce<Root[]>(
     (rootOptions, [rootPath, filePaths]) => {
       if (filePaths.length <= 1) return rootOptions;
@@ -17,7 +19,12 @@ export function generateTrees(restructureMap: { [key: string]: string[] }) {
       const { graph, files, useForwardSlash, parentFolder } = buildGraph(
         filePaths
       );
-      const tree = toFractalTree(graph, findEntryPoints(graph));
+
+      let tree = toFractalTree(graph, findEntryPoints(graph));
+
+      if (avoidSingleFile) {
+        tree = detectLonelyFiles(tree);
+      }
 
       const usedFilePaths = new Set(Object.entries(graph).flat(2));
       const unusedFiles = files.filter(
