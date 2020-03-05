@@ -37,8 +37,8 @@ describe('NODE_ENV === "production"', () => {
 
   const message = "a test message!";
   const table = [
-    ["info", chalk.green.bold(`INFO: ${message}`)],
-    ["warn", chalk.yellow.bold(`WARN: ${message}`)],
+    ["info", chalk.green.bold("INFO: ") + message],
+    ["warn", chalk.yellow.bold("WARN: ") + message],
     ["log", message],
   ];
 
@@ -64,7 +64,7 @@ describe('NODE_ENV === "production"', () => {
 
     it('calls "console.error()" with chalk when passed a string', () => {
       const msg = "A test message";
-      const result = chalk.red.bold(`ERROR: ${msg}`);
+      const result = chalk.red.bold("ERROR: ") + msg;
       logger.error(msg);
       expect(mocks.error).toBeCalledTimes(1);
       expect(mocks.error).toBeCalledWith(result);
