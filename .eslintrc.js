@@ -19,6 +19,7 @@ const typescriptSettings = {
   files: ["src/**/*.ts"],
   extends: [
     "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "prettier/@typescript-eslint",
   ],
   parser: "@typescript-eslint/parser",
@@ -46,6 +47,10 @@ const typescriptSettings = {
 const testSettings = {
   ...typescriptSettings,
   env: { ...defaultSettings.env, jest: true },
+  extends: [
+    "plugin:@typescript-eslint/recommended",
+    "prettier/@typescript-eslint",
+  ],
   parserOptions: {
     ecmaFeatures: { jsx: true },
     ecmaVersion: 2020,
