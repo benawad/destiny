@@ -1,7 +1,7 @@
 import path from "path";
 
 import logger from "../../shared/logger";
-import { Graph, OldGraph } from "./shared/Graph";
+import { Graph } from "./shared/Graph";
 import { customResolve } from "../shared/customResolve";
 import { findImports } from "../shared/findImports";
 import { findSharedParent } from "./shared/findSharedParent";
@@ -52,6 +52,6 @@ export function buildGraph(filePaths: string[]) {
     files: totalFiles,
     graph,
     parentFolder,
-    useForwardSlash: path.sep === "/"
+    useForwardSlash: path.sep === "/",
   };
 }

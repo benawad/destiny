@@ -9,7 +9,10 @@ import { toFractalTree } from "./generateTrees/toFractalTree";
 import { detectLonelyFiles } from "./shared/detect-lonely-files";
 import { Config } from "../index";
 
-export function generateTrees(restructureMap: { [key: string]: string[] }, {avoidSingleFile}: Config) {
+export function generateTrees(
+  restructureMap: { [key: string]: string[] },
+  { avoidSingleFile }: Config
+) {
   return Object.entries(restructureMap).reduce<Root[]>(
     (rootOptions, [rootPath, filePaths]) => {
       if (filePaths.length <= 1) return rootOptions;
