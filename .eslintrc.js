@@ -15,14 +15,8 @@ const defaultSettings = {
   },
 };
 
-const testSettings = {
-  env: { ...defaultSettings.env, jest: true },
-  files: ["tests/**/*.{js,jsx,mjs,ts,tsx}", "**/*.test.{js,jsx,mjs,ts,tsx}"],
-  rules: { ...defaultSettings.rules, "import/first": "off" },
-};
-
 const typescriptSettings = {
-  files: ["src/**/*.{ts,tsx}"],
+  files: ["src/**/*.ts"],
   extends: [
     "plugin:@typescript-eslint/recommended",
     "prettier/@typescript-eslint",
@@ -46,6 +40,24 @@ const typescriptSettings = {
     ],
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-unused-vars": "error",
+  },
+};
+
+const testSettings = {
+  ...typescriptSettings,
+  env: { ...defaultSettings.env, jest: true },
+  parserOptions: {
+    ecmaFeatures: { jsx: true },
+    ecmaVersion: 2020,
+    warnOnUnsupportedTypeScriptVersion: false,
+  },
+  files: ["tests/**/*.ts", "**/*.test.ts"],
+  rules: {
+    ...typescriptSettings.rules,
+    "@typescript-eslint/ban-ts-ignore": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "import/first": "off",
   },
 };
 
