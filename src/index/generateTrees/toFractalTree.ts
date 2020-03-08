@@ -132,7 +132,7 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
 
       const testFilePath = tree[firstRelativeImport];
 
-      if (!testFilePath) continue
+      if (!testFilePath) continue;
 
       const location = checkDuplicates(
         path.join(path.dirname(testFilePath), path.basename(testFile)),

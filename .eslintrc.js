@@ -34,8 +34,8 @@ const typescriptSettings = {
     "@typescript-eslint/member-delimiter-style": [
       "error",
       {
-        multiline: { delimiter: "comma", requireLast: true },
-        singleline: { delimiter: "comma", requireLast: false },
+        multiline: { delimiter: "semi", requireLast: true },
+        singleline: { delimiter: "semi", requireLast: false },
       },
     ],
     "@typescript-eslint/explicit-function-return-type": "off",

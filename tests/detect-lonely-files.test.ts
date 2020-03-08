@@ -104,6 +104,6 @@ describe("detectLonelyFiles", () => {
 
   t("single-file-folder", {
     "file.js": "file.js",
-    "page/page.js": "page.js"
+    "page/page.js": "page.js",
   });
 });

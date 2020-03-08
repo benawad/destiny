@@ -1,4 +1,4 @@
-import path from 'path';
+import path from "path";
 
 const extractParentDirectory = (destination: string): string | undefined => {
   const parts = destination.split(path.sep);
@@ -9,31 +9,34 @@ const extractParentDirectory = (destination: string): string | undefined => {
 
   parts.pop();
 
-  return parts.join(path.sep)
-}
+  return parts.join(path.sep);
+};
 
 const moveUp = (destinationPath: string) => {
   const parts = destinationPath.split(path.sep);
 
-  return [
-    ...parts.slice(0, parts.length - 2),
-    parts[parts.length - 1]
-  ].join(path.sep)
-}
+  return [...parts.slice(0, parts.length - 2), parts[parts.length - 1]].join(
+    path.sep
+  );
+};
 
 export const detectLonelyFiles = (tree: Record<string, string>) => {
-  const fractalTree = {...tree};
+  const fractalTree = { ...tree };
   // Reverse lookup destination -> current location
   const reversedFractalTree: Record<string, string> = {};
 
-  for (const [currentFilePath, destinationFilePath] of Object.entries(fractalTree)) {
-    reversedFractalTree[destinationFilePath] = currentFilePath
+  for (const [currentFilePath, destinationFilePath] of Object.entries(
+    fractalTree
+  )) {
+    reversedFractalTree[destinationFilePath] = currentFilePath;
   }
 
-  const dirCounter: Record<string, number> = {}
+  const dirCounter: Record<string, number> = {};
 
   // Sort is important here since we want to go from deep in the file structure to top
-  const currentDestinations = Object.values(fractalTree).sort((a, b) => b.length - a.length);
+  const currentDestinations = Object.values(fractalTree).sort(
+    (a, b) => b.length - a.length
+  );
 
   // Count all occurencies of the parent dirs of the current destinations
   for (const currentDestination of currentDestinations) {
@@ -48,7 +51,7 @@ export const detectLonelyFiles = (tree: Record<string, string>) => {
       continue;
     }
 
-    dirCounter[parentDir] = 1
+    dirCounter[parentDir] = 1;
   }
 
   /**
@@ -73,9 +76,9 @@ export const detectLonelyFiles = (tree: Record<string, string>) => {
       }
 
       if (startParentDir === parentDir) {
-        counter = 1
+        counter = 1;
       } else if (parentDir in dirCounter) {
-        counter = dirCounter[parentDir] + 1
+        counter = dirCounter[parentDir] + 1;
       }
 
       dirCounter[parentDir] = counter;
@@ -89,4 +92,4 @@ export const detectLonelyFiles = (tree: Record<string, string>) => {
   }
 
   return fractalTree;
-}
+};

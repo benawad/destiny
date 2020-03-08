@@ -75,7 +75,11 @@ describe("end-to-end --avoid-single-file", () => {
       const rootPath =
         testCase === "globals" ? path.join(testCase, "src") : testCase;
 
-      await run(["--write", "--avoid-single-file", path.join(tmpPath, rootPath)]);
+      await run([
+        "--write",
+        "--avoid-single-file",
+        path.join(tmpPath, rootPath),
+      ]);
       buildGraph(glob.sync(path.join(copyPath, "/**/*.*")));
       expect(treeDir(path.join(tmpPath, rootPath))).toMatchSnapshot();
 
@@ -85,4 +89,4 @@ describe("end-to-end --avoid-single-file", () => {
       });
     });
   }
-})
+});

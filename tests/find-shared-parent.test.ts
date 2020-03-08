@@ -16,6 +16,6 @@ const t = (folder: string, g: string) => {
 
 describe("findSharedParentTest", () => {
   for (const dir of fs.readdirSync(path.join(__dirname, "fixtures"))) {
-    t(dir, path.resolve(path.join(__dirname, "fixtures", dir)))
+    t(dir, path.resolve(path.join(__dirname, "fixtures", dir)));
   }
 });

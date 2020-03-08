@@ -65,6 +65,6 @@ describe("toFractalTree", () => {
 
   t("single-file-folder", {
     "file.js": "file.js",
-    "page/page.js": "file/page.js"
+    "page/page.js": "file/page.js",
   });
 });

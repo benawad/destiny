@@ -52,6 +52,6 @@ describe("build graph", () => {
   });
 
   t("single-file-folder", {
-    "file.js": ["page/page.js"]
+    "file.js": ["page/page.js"],
   });
 });

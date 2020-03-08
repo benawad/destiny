@@ -3,7 +3,7 @@ import path from "path";
 
 import logger from "../../shared/logger";
 
-type PositionedLeaf = { text: string, position: number };
+type PositionedLeaf = { text: string; position: number };
 
 const createBranchFromParts = (parts: string[], count: number) =>
   path.join(...parts.slice(0, count));

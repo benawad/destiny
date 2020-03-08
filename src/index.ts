@@ -12,11 +12,11 @@ import { version } from "../package.json";
 const { argv } = process;
 
 export type Config = {
-  help: boolean,
-  include: string[],
-  version: boolean,
-  write: boolean,
-  avoidSingleFile: boolean,
+  help: boolean;
+  include: string[];
+  version: boolean;
+  write: boolean;
+  avoidSingleFile: boolean;
 };
 
 const defaultConfig: Config = {
