@@ -64,6 +64,10 @@ This will actually move files around and fix imports:
 npx destiny -w "src/**/*.*"
 ```
 
+## Documentation
+
+You can find the [full documentation at this url](https://github.com/benawad/destiny/wiki).
+
 ## This tool might be useless
 
 It might be better to just name your folders.
