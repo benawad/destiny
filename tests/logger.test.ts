@@ -21,11 +21,9 @@ describe('NODE_ENV === "test"', () => {
   describe.each(Object.keys(logger))("logger.%s", name => {
     test(`stops execution of logger.${name} if in a test environment`, () => {
       logger[name]("a test message");
-      expect(mocks.error).toBeCalledTimes(0);
-      expect(mocks.info).toBeCalledTimes(0);
-      expect(mocks.log).toBeCalledTimes(0);
-      expect(mocks.warn).toBeCalledTimes(0);
-      expect(mocks.exit).toBeCalledTimes(0);
+      for (const mock of Object.values(mocks)) {
+        expect(mock).not.toBeCalled();
+      }
     });
   });
 });
@@ -53,7 +51,7 @@ describe('NODE_ENV === "production"', () => {
 
   describe(`logger.error`, () => {
     it('calls "console.error()" when passed an error instances', () => {
-      const error = new Error();
+      const error = new Error("test error");
       logger.error(error);
 
       expect(mocks.error).toBeCalledTimes(1);
@@ -72,10 +70,11 @@ describe('NODE_ENV === "production"', () => {
     });
 
     it('exits process with error code "1"', () => {
-      logger.error("", 1);
+      const exitCode = 1;
+      logger.error("", exitCode);
       expect(mocks.error).toBeCalledTimes(1);
       expect(mocks.exit).toBeCalledTimes(1);
-      expect(mocks.exit).toBeCalledWith(1);
+      expect(mocks.exit).toBeCalledWith(exitCode);
     });
   });
 });
