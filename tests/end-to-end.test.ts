@@ -61,3 +61,32 @@ describe("end-to-end", () => {
     });
   }
 });
+
+describe("end-to-end --avoid-single-file", () => {
+  const fixturePath = path.join(__dirname, "fixtures");
+  const testCases = fs.readdirSync(fixturePath);
+
+  for (const testCase of testCases) {
+    const templateFolder = path.join(fixturePath, testCase);
+    const copyPath = path.join(tmpPath, testCase);
+
+    fs.copySync(templateFolder, copyPath);
+    it(testCase, async () => {
+      const rootPath =
+        testCase === "globals" ? path.join(testCase, "src") : testCase;
+
+      await run([
+        "--write",
+        "--avoid-single-file",
+        path.join(tmpPath, rootPath),
+      ]);
+      buildGraph(glob.sync(path.join(copyPath, "/**/*.*")));
+      expect(treeDir(path.join(tmpPath, rootPath))).toMatchSnapshot();
+
+      const treeContents = treeDirWithContents(copyPath);
+      Object.keys(treeContents).forEach(k => {
+        expect(treeContents[k]).toMatchSnapshot(k);
+      });
+    });
+  }
+});

@@ -1,6 +1,6 @@
 {
   "name": "destiny",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Prettier for file structures",
   "license": "MIT",
   "homepage": "https://github.com/benawad/destiny",
@@ -22,7 +22,7 @@
     "format": "run-s format:*",
     "format:eslint": "npm run lint -- --fix",
     "format:prettier": "prettier --write '{**/*,*}.{js,json,md,ts,yaml}'",
-    "lint": "eslint '{src,test}/**/*.{js,ts}'",
+    "lint": "eslint '{**/*,*}.{js,ts}'",
     "prepare": "npm run build",
     "prepublishOnly": "npm run build",
     "start": "nodemon lib/destiny.js",

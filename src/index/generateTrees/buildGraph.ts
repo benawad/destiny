@@ -1,7 +1,7 @@
 import path from "path";
 
 import logger from "../../shared/logger";
-import { Graph, OldGraph } from "./shared/Graph";
+import { Graph } from "./shared/Graph";
 import { customResolve } from "../shared/customResolve";
 import { findImports } from "../shared/findImports";
 import { findSharedParent } from "./shared/findSharedParent";
@@ -16,10 +16,7 @@ const isFilePathIgnored = (filePath: string) => {
 export function buildGraph(filePaths: string[]) {
   const parentFolder = findSharedParent(filePaths);
   const graph: Graph = {};
-  const oldGraph: OldGraph = {};
   const totalFiles: string[] = [];
-  let numForwardSlashes = 0;
-  let numBackSlashes = 0;
 
   for (let filePath of filePaths) {
     if (isFilePathIgnored(filePath)) continue;
@@ -27,21 +24,9 @@ export function buildGraph(filePaths: string[]) {
     filePath = path.resolve(filePath);
 
     const start = path.relative(parentFolder, filePath);
-    if (oldGraph.start == null) {
-      oldGraph[start] = {
-        oldLocation: filePath,
-        imports: [],
-      };
-    }
-
     totalFiles.push(start);
-    findImports(filePath).forEach(importPath => {
-      if (importPath.includes("/")) {
-        numForwardSlashes++;
-      } else if (importPath.includes("\\")) {
-        numBackSlashes++;
-      }
 
+    findImports(filePath).forEach(importPath => {
       const pathWithExtension = customResolve(
         importPath,
         path.dirname(filePath)
@@ -60,19 +45,13 @@ export function buildGraph(filePaths: string[]) {
       if (!graph[start].includes(end)) {
         graph[start].push(end);
       }
-
-      oldGraph[start].imports.push({
-        text: importPath,
-        resolved: end,
-      });
     });
   }
 
   return {
     files: totalFiles,
     graph,
-    oldGraph,
     parentFolder,
-    useForwardSlash: numForwardSlashes >= numBackSlashes,
+    useForwardSlash: path.sep === "/",
   };
 }

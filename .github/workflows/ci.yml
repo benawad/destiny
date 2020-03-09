@@ -20,6 +20,8 @@ jobs:
         run: |
           yarn config set ignore-engines true
           yarn --frozen-lockfile
+      - name: Run linting
+        run: yarn lint
       - name: Run tests
         run: yarn test:coverage --verbose=false
       - name: Upload test coverage

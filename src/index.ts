@@ -11,11 +11,12 @@ import { version } from "../package.json";
 
 const { argv } = process;
 
-type Config = {
-  help: boolean,
-  include: string[],
-  version: boolean,
-  write: boolean,
+export type Config = {
+  help: boolean;
+  include: string[];
+  version: boolean;
+  write: boolean;
+  avoidSingleFile: boolean;
 };
 
 const defaultConfig: Config = {
@@ -23,6 +24,7 @@ const defaultConfig: Config = {
   include: [],
   version: false,
   write: false,
+  avoidSingleFile: false,
 };
 
 const printVersion = () => console.log("v" + version);
@@ -38,39 +40,51 @@ const printHelp = (exitCode: number) => {
 
 {bold OPTIONS}
 
-  -V, --version            output version number
-  -h, --help               output usage information
-  -w, --write              restructure and edit folders and files
+  -V, --version               Output version number
+  -h, --help                  Output usage information
+  -w, --write                 Restructure and edit folders and files
+  -S, --avoid-single-file     Flag to indicate if single files in folders should be avoided
   `
   );
 
   return process.exit(exitCode);
 };
 
-const parseArgs = (args: string[]) =>
-  args.reduce<Partial<Config>>((acc, arg) => {
+const parseArgs = (args: string[]) => {
+  const cliConfig: Partial<Config> = {};
+
+  while (args.length > 0) {
+    const arg = args.shift();
+
+    if (arg == null) break;
+
     switch (arg) {
       case "-h":
       case "--help":
-        acc.help = true;
+        cliConfig.help = true;
         break;
       case "-V":
       case "--version":
-        acc.version = true;
+        cliConfig.version = true;
         break;
       case "-w":
       case "--write":
-        acc.write = true;
+        cliConfig.write = true;
+        break;
+      case "-S":
+      case "--avoid-single-file":
+        cliConfig.avoidSingleFile = true;
         break;
       default: {
         if (fs.existsSync(arg) || glob.hasMagic(arg)) {
-          acc.include = [...(acc.include ?? []), arg];
+          cliConfig.include = [...(cliConfig.include ?? []), arg];
         }
       }
     }
+  }
 
-    return acc;
-  }, {});
+  return cliConfig;
+};
 
 const getMergedConfig = (cliConfig: Partial<Config>): Config => {
   const externalConfig: Partial<Config> =
@@ -99,7 +113,7 @@ export const run = async (args: string[]) => {
     return;
   }
 
-  const rootOptions = generateTrees(restructureMap);
+  const rootOptions = generateTrees(restructureMap, mergedConfig);
 
   if (mergedConfig.write) {
     await formatFileStructure(filesToEdit, rootOptions);
