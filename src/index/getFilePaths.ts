@@ -23,7 +23,7 @@ export const getFilePaths = (rootPath: string) => {
 
   while (paths.length > 0) {
     const filePath = paths.shift();
-    if (filePath === undefined || filePath.length === 0) break;
+    if (!filePath || filePath.length === 0) break;
 
     const isGlobPattern = glob.hasMagic(filePath);
     if (isGlobPattern) {
