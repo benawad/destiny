@@ -78,9 +78,4 @@ describe(toFractalTree, () => {
     const tree = toFractalTree(graph, findEntryPoints(graph));
     expect(tree).toEqual(resultingTree);
   });
-
-  t("single-file-folder", {
-    "file.js": "file.js",
-    "page/page.js": "file/page.js",
-  });
 });
