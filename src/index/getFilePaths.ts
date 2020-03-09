@@ -51,12 +51,12 @@ export const getFilePaths = (rootPath: string) => {
 
 /** Get a restructure map with rootPath keys and filePaths values. */
 export const getRestructureMap = (rootPaths: string[]) =>
-  rootPaths.reduce(
+  rootPaths.reduce<{ [key: string]: string[] }>(
     (acc, rootPath) => ({
       ...acc,
       [rootPath]: getFilePaths(rootPath),
     }),
-    {} as { [key: string]: string[] }
+    {}
   );
 
 export default getRestructureMap;
