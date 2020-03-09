@@ -43,7 +43,6 @@ export const getFilePaths = (rootPath: string) => {
 
     if (isFile(filePath)) {
       filePaths.push(filePath);
-      continue;
     }
   }
 

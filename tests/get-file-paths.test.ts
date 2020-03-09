@@ -9,7 +9,7 @@ const mocks = {
 afterEach(() => jest.resetAllMocks());
 
 describe(globSearch, () => {
-  it("logs an error if a patetern only has directories", () => {
+  it("logs an error if a pattern only has directories", () => {
     globSearch(__dirname);
     expect(mocks.error).toBeCalled();
   });
