@@ -52,6 +52,24 @@ The end result is a "prettified" file structure.
 
 ## How to run it
 
+```
+$ destiny --help
+destiny - Prettier for file structures.
+
+USAGE
+
+  destiny [option...] [path]
+
+  The path argument can consist of either a file path or a glob.
+
+OPTIONS
+
+  -V, --version               Output version number
+  -h, --help                  Output usage information
+  -w, --write                 Restructure and edit folders and files
+  -S, --avoid-single-file     Flag to indicate if single files in folders should be avoided
+```
+
 Dry run which will output what the resulting file structure will look like:
 
 ```
