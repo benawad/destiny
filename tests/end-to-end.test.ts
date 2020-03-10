@@ -2,6 +2,7 @@ import fs from "fs-extra";
 import glob from "glob";
 import path from "path";
 import treeDir from "tree-node-cli";
+import chalk from 'chalk';
 
 import { buildGraph } from "../src/index/generateTrees/buildGraph";
 import { run } from "../src/index";
@@ -37,7 +38,27 @@ const treeDirWithContents = (dir: string) => {
   return tree;
 };
 
+const mocks = {
+  log: jest.spyOn(console, "log").mockImplementationOnce(() => {}),
+  error: jest.spyOn(console, "error").mockImplementationOnce(() => {}),
+  info: jest.spyOn(console, "info").mockImplementationOnce(() => {}),
+  warn: jest.spyOn(console, "warn").mockImplementationOnce(() => {}),
+  exit: jest
+    .spyOn(process, "exit")
+    // @ts-ignore - eslint won't allow assertion of `code as never`
+    .mockImplementationOnce(code => code),
+};
+
 describe("end-to-end", () => {
+  beforeEach(() => {
+    process.env.NODE_ENV = "production";
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
+    jest.resetModules();
+  });
+
   const fixturePath = path.join(__dirname, "fixtures");
   const testCases = fs.readdirSync(fixturePath);
 
@@ -52,7 +73,9 @@ describe("end-to-end", () => {
 
       await run(["--write", path.join(tmpPath, rootPath)]);
       buildGraph(glob.sync(path.join(copyPath, "/**/*.*")));
+
       expect(treeDir(path.join(tmpPath, rootPath))).toMatchSnapshot();
+      expect(mocks.log).toBeCalledWith(chalk.bold.blue(rootPath.split(path.sep).pop()));
 
       const treeContents = treeDirWithContents(copyPath);
       Object.keys(treeContents).forEach(k => {
@@ -63,6 +86,15 @@ describe("end-to-end", () => {
 });
 
 describe("end-to-end --avoid-single-file", () => {
+  beforeEach(() => {
+    process.env.NODE_ENV = "production";
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
+    jest.resetModules();
+  });
+
   const fixturePath = path.join(__dirname, "fixtures");
   const testCases = fs.readdirSync(fixturePath);
 
@@ -81,7 +113,9 @@ describe("end-to-end --avoid-single-file", () => {
         path.join(tmpPath, rootPath),
       ]);
       buildGraph(glob.sync(path.join(copyPath, "/**/*.*")));
+
       expect(treeDir(path.join(tmpPath, rootPath))).toMatchSnapshot();
+      expect(mocks.log).toBeCalledWith(chalk.bold.blue(rootPath.split(path.sep).pop()));
 
       const treeContents = treeDirWithContents(copyPath);
       Object.keys(treeContents).forEach(k => {

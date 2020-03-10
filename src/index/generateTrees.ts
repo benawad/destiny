@@ -1,3 +1,4 @@
+import path from 'path';
 import chalk from "chalk";
 
 import logger from "../shared/logger";
@@ -8,6 +9,8 @@ import { findEntryPoints } from "./generateTrees/findEntryPoints";
 import { toFractalTree } from "./generateTrees/toFractalTree";
 import { detectLonelyFiles } from "./shared/detect-lonely-files";
 import { Config } from "../index";
+
+const getRootFolder = (parentDir: string) => parentDir.split(path.sep).pop()
 
 export function generateTrees(
   restructureMap: { [key: string]: string[] },
@@ -34,7 +37,7 @@ export function generateTrees(
         filePath => !usedFilePaths.has(filePath)
       );
 
-      logger.log(chalk.bold.blue(rootPath));
+      logger.log(chalk.bold.blue(getRootFolder(parentFolder)));
       printTree(Object.values(tree));
       if (unusedFiles.length > 0) {
         logger.warn(
