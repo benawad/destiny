@@ -1,13 +1,12 @@
+import fs from "fs-extra";
 import glob from "glob";
 import path from "path";
-import { existsSync, lstatSync } from "fs-extra";
-
 import logger from "../shared/logger";
 
-const isDirectory = (filePath: string) => lstatSync(filePath).isDirectory();
-const isFile = (filePath: string) => lstatSync(filePath).isFile();
+const isDirectory = (filePath: string) => fs.lstatSync(filePath).isDirectory();
+const isFile = (filePath: string) => fs.lstatSync(filePath).isFile();
 
-const globSearch = (pattern: string) => {
+export const globSearch = (pattern: string) => {
   const matches = glob.sync(pattern);
   const files = matches.filter(match => isFile(match));
 
@@ -18,15 +17,13 @@ const globSearch = (pattern: string) => {
   return files;
 };
 
-/** Recursively get all file paths. */
-const getFilePaths = (rootPath: string) => {
+export const getFilePaths = (rootPath: string) => {
   const filePaths: string[] = [];
   const paths = [rootPath];
 
   while (paths.length > 0) {
     const filePath = paths.shift();
-
-    if (filePath == null || filePath.length === 0) continue;
+    if (filePath == null || filePath.length === 0) break;
 
     const isGlobPattern = glob.hasMagic(filePath);
     if (isGlobPattern) {
@@ -34,14 +31,18 @@ const getFilePaths = (rootPath: string) => {
       continue;
     }
 
-    if (existsSync(filePath)) {
-      if (isFile(filePath)) {
-        filePaths.push(filePath);
-      } else if (isDirectory(filePath)) {
-        paths.push(path.join(filePath, "/**/*.*"));
-      }
-    } else {
+    if (!fs.existsSync(filePath)) {
       logger.error(`Unable to resolve the path: ${filePath}`);
+      break;
+    }
+
+    if (isDirectory(filePath)) {
+      paths.push(path.resolve(filePath, "./**/*.*"));
+      continue;
+    }
+
+    if (isFile(filePath)) {
+      filePaths.push(filePath);
     }
   }
 

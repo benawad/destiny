@@ -4,18 +4,37 @@ import fs from "fs";
 
 import { findSharedParent } from "../src/index/generateTrees/shared/findSharedParent";
 
-const t = (folder: string, g: string) => {
-  it(folder, () => {
-    expect(
-      findSharedParent(
-        glob.sync(path.join(__dirname, "fixtures", folder, "/**/*.js"))
-      )
-    ).toEqual(g);
-  });
-};
+const fixturesPath = fs.readdirSync(path.resolve(__dirname, "fixtures"));
 
-describe("findSharedParentTest", () => {
-  for (const dir of fs.readdirSync(path.join(__dirname, "fixtures"))) {
-    t(dir, path.resolve(path.join(__dirname, "fixtures", dir)));
-  }
+describe(findSharedParent, () => {
+  it.each(fixturesPath)("fixture — %s", fixtureName => {
+    const fixture = path.resolve(__dirname, "fixtures", fixtureName);
+    const filePaths = glob.sync(
+      path.resolve(__dirname, "fixtures", fixtureName, "./**/*.js")
+    );
+
+    const result = findSharedParent(filePaths);
+    expect(result).toEqual(fixture);
+  });
+
+  it("finds the path when length is one", () => {
+    const result = findSharedParent(["/home/user/Documents/file-1.js"]);
+    expect(result).toBe("/home/user/Documents");
+  });
+
+  it("finds share parent when array length greater than one", () => {
+    const result = findSharedParent([
+      "/home/user/Documents/file-1.js",
+      "/home/user/Documents/file-2.js",
+    ]);
+    expect(result).toBe("/home/user/Documents");
+  });
+
+  it("finds shared parent when both files are at different depths", () => {
+    const result = findSharedParent([
+      "/home/user/Documents/folder-1/folder-2/file-1.js",
+      "/home/user/Documents/folder-3/file-2.js",
+    ]);
+    expect(result).toBe("/home/user/Documents");
+  });
 });
