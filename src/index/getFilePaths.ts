@@ -6,8 +6,8 @@ import logger from "../shared/logger";
 const isDirectory = (filePath: string) => fs.lstatSync(filePath).isDirectory();
 const isFile = (filePath: string) => fs.lstatSync(filePath).isFile();
 
-export const globSearch = (pattern: string) => {
-  const matches = glob.sync(pattern);
+export const globSearch = (pattern: string, ignore: string[]) => {
+  const matches = glob.sync(pattern, { ignore });
   const files = matches.filter(match => isFile(match));
 
   if (files.length === 0) {
@@ -17,7 +17,7 @@ export const globSearch = (pattern: string) => {
   return files;
 };
 
-export const getFilePaths = (rootPath: string) => {
+export const getFilePaths = (rootPath: string, ignore: string[]) => {
   const filePaths: string[] = [];
   const paths = [rootPath];
 
@@ -27,7 +27,7 @@ export const getFilePaths = (rootPath: string) => {
 
     const isGlobPattern = glob.hasMagic(filePath);
     if (isGlobPattern) {
-      filePaths.push(...globSearch(filePath));
+      filePaths.push(...globSearch(filePath, ignore));
       continue;
     }
 
@@ -50,11 +50,11 @@ export const getFilePaths = (rootPath: string) => {
 };
 
 /** Get a restructure map with rootPath keys and filePaths values. */
-export const getRestructureMap = (rootPaths: string[]) =>
+export const getRestructureMap = (rootPaths: string[], ignore: string[]) =>
   rootPaths.reduce<{ [key: string]: string[] }>(
     (acc, rootPath) => ({
       ...acc,
-      [rootPath]: getFilePaths(rootPath),
+      [rootPath]: getFilePaths(rootPath, ignore),
     }),
     {}
   );

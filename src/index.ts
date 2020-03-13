@@ -14,6 +14,7 @@ const { argv } = process;
 export type Config = {
   help: boolean;
   include: string[];
+  ignore: string[];
   version: boolean;
   write: boolean;
   avoidSingleFile: boolean;
@@ -22,6 +23,7 @@ export type Config = {
 const defaultConfig: Config = {
   help: false,
   include: [],
+  ignore: [],
   version: false,
   write: false,
   avoidSingleFile: false,
@@ -44,6 +46,7 @@ const printHelp = (exitCode: number) => {
   -h, --help                  Output usage information
   -w, --write                 Restructure and edit folders and files
   -S, --avoid-single-file     Flag to indicate if single files in folders should be avoided
+      --ignore {path}         .gitignore like file path expressions to ignore
   `
   );
 
@@ -75,6 +78,9 @@ const parseArgs = (args: string[]) => {
       case "--avoid-single-file":
         cliConfig.avoidSingleFile = true;
         break;
+      case "--ignore":
+        cliConfig.ignore = [...(cliConfig.ignore ?? []), args.shift() ?? ""];
+        break;
       default: {
         if (fs.existsSync(arg) || glob.hasMagic(arg)) {
           cliConfig.include = [...(cliConfig.include ?? []), arg];
@@ -105,7 +111,10 @@ export const run = async (args: string[]) => {
   if (mergedConfig.version) return printVersion();
   if (mergedConfig.include.length === 0) return printHelp(1);
 
-  const restructureMap = getRestructureMap(mergedConfig.include);
+  const restructureMap = getRestructureMap(
+    mergedConfig.include,
+    mergedConfig.ignore
+  );
   const filesToEdit = Object.values(restructureMap).flat();
 
   if (filesToEdit.length === 0) {
