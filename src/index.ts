@@ -1,4 +1,3 @@
-import chalk from "chalk";
 import fs from "fs";
 import glob from "glob";
 import { cosmiconfigSync } from "cosmiconfig";
@@ -8,6 +7,7 @@ import logger from "./shared/logger";
 import { formatFileStructure } from "./index/formatFileStructure";
 import { generateTrees } from "./index/generateTrees";
 import { version } from "../package.json";
+import { printHelpMessage } from "./index/printHelpMessage";
 
 const { argv } = process;
 
@@ -29,23 +29,25 @@ const defaultConfig: Config = {
 
 const printVersion = () => console.log("v" + version);
 const printHelp = (exitCode: number) => {
-  console.log(
-    chalk`{blue destiny} - Prettier for file structures.
-
-{bold USAGE}
-
-  {blue destiny} [option...] [{underline path}]
-
-  The {underline path} argument can consist of either a {bold file path} or a {bold glob}.
-
-{bold OPTIONS}
-
-  -V, --version               Output version number
-  -h, --help                  Output usage information
-  -w, --write                 Restructure and edit folders and files
-  -S, --avoid-single-file     Flag to indicate if single files in folders should be avoided
-  `
-  );
+  printHelpMessage([
+    {
+      flags: ["-V", "--version"],
+      description: "Output version number",
+    },
+    {
+      flags: ["-h", "--help"],
+      description: "Output usage information",
+    },
+    {
+      flags: ["-w", "--write"],
+      description: "Restructure and edit folders and files",
+    },
+    {
+      flags: ["-S", "--avoid-single-file"],
+      description:
+        "Flag to indicate if single files in folders should be avoided",
+    },
+  ]);
 
   return process.exit(exitCode);
 };
