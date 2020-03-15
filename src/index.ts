@@ -79,7 +79,9 @@ const parseArgs = (args: string[]) => {
         cliConfig.avoidSingleFile = true;
         break;
       case "--ignore":
-        cliConfig.ignore = [...(cliConfig.ignore ?? []), args.shift() ?? ""];
+        const nextOptionIdx = args.findIndex(x => x.startsWith("-"));
+
+        cliConfig.ignore = [...(cliConfig.ignore ?? []), ...(args.splice(0, nextOptionIdx) ?? [])];
         break;
       default: {
         if (fs.existsSync(arg) || glob.hasMagic(arg)) {
