@@ -46,7 +46,7 @@ const printHelp = (exitCode: number) => {
   -h, --help                  Output usage information
   -w, --write                 Restructure and edit folders and files
   -S, --avoid-single-file     Flag to indicate if single files in folders should be avoided
-      --ignore {path}         .gitignore like file path expressions to ignore
+  --ignore [path]             Ignore file(s) / folder(s) by a file path or a glob pattern.
   `
   );
 
