@@ -2,7 +2,7 @@ import fs from "fs-extra";
 import glob from "glob";
 import path from "path";
 import treeDir from "tree-node-cli";
-import chalk from 'chalk';
+import chalk from "chalk";
 
 import { buildGraph } from "../src/index/generateTrees/buildGraph";
 import { run } from "../src/index";
@@ -75,7 +75,9 @@ describe("end-to-end", () => {
       buildGraph(glob.sync(path.join(copyPath, "/**/*.*")));
 
       expect(treeDir(path.join(tmpPath, rootPath))).toMatchSnapshot();
-      expect(mocks.log).toBeCalledWith(chalk.bold.blue(rootPath.split(path.sep).pop()));
+      expect(mocks.log).toBeCalledWith(
+        chalk.bold.blue(rootPath.split(path.sep).pop())
+      );
 
       const treeContents = treeDirWithContents(copyPath);
       Object.keys(treeContents).forEach(k => {
@@ -115,7 +117,9 @@ describe("end-to-end --avoid-single-file", () => {
       buildGraph(glob.sync(path.join(copyPath, "/**/*.*")));
 
       expect(treeDir(path.join(tmpPath, rootPath))).toMatchSnapshot();
-      expect(mocks.log).toBeCalledWith(chalk.bold.blue(rootPath.split(path.sep).pop()));
+      expect(mocks.log).toBeCalledWith(
+        chalk.bold.blue(rootPath.split(path.sep).pop())
+      );
 
       const treeContents = treeDirWithContents(copyPath);
       Object.keys(treeContents).forEach(k => {
