@@ -40,9 +40,13 @@ const getNewImportPath = (
 
 export const fixImports = (filePaths: string[], rootOptions: RootOption[]) => {
   for (const filePath of filePaths) {
+    logger.debug(`checking imports of "${filePath}"`);
     const importPaths = findImports(filePath);
 
-    if (!importPaths.length) continue;
+    if (importPaths.length === 0) {
+      logger.debug(`no import found in "${filePath}"`);
+      continue;
+    }
 
     const basedir = path.dirname(filePath);
     const newFilePath = getNewFilePath(filePath, rootOptions);
@@ -59,7 +63,11 @@ export const fixImports = (filePaths: string[], rootOptions: RootOption[]) => {
 
       const newImportPath = getNewImportPath(absPath, newFilePath, rootOptions);
 
-      if (newImportPath != null) {
+      if (newImportPath != null && importPath !== newImportPath) {
+        logger.debug(
+          `replacing import of "${importPath}" by "${newImportPath}" in "${filePath}"`
+        );
+
         newText = newText
           .replace(`'${importPath}'`, `'${newImportPath}'`)
           .replace(`"${importPath}"`, `"${newImportPath}"`);
@@ -67,6 +75,7 @@ export const fixImports = (filePaths: string[], rootOptions: RootOption[]) => {
     }
 
     if (newText !== ogText) {
+      logger.debug(`writing new imports of "${filePath}"`);
       writeFileSync(filePath, newText);
     }
   }

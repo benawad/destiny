@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import logger from "../../shared/logger";
 
 /** Recursively removes all empty folders. */
 export function removeEmptyFolders(directory: string): void {
@@ -15,6 +16,9 @@ export function removeEmptyFolders(directory: string): void {
     removeEmptyFolders(fullPath);
 
     const isEmpty = fs.readdirSync(fullPath).length === 0;
-    if (isEmpty) fs.rmdirSync(fullPath);
+    if (isEmpty) {
+      fs.rmdirSync(fullPath);
+      logger.debug(`removing "${fullPath}" as empty folder`);
+    }
   }
 }

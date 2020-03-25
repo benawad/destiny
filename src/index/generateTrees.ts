@@ -1,4 +1,4 @@
-import path from 'path';
+import path from "path";
 import chalk from "chalk";
 
 import logger from "../shared/logger";
@@ -10,7 +10,7 @@ import { toFractalTree } from "./generateTrees/toFractalTree";
 import { detectLonelyFiles } from "./shared/detect-lonely-files";
 import { Config } from "../index";
 
-const getRootFolder = (parentDir: string) => parentDir.split(path.sep).pop()
+const getRootFolder = (parentDir: string) => parentDir.split(path.sep).pop();
 
 export function generateTrees(
   restructureMap: { [key: string]: string[] },
