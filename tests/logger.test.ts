@@ -6,6 +6,8 @@ const mocks = {
   log: jest.spyOn(console, "log").mockImplementationOnce(() => {}),
   info: jest.spyOn(console, "info").mockImplementationOnce(() => {}),
   warn: jest.spyOn(console, "warn").mockImplementationOnce(() => {}),
+  group: jest.spyOn(console, "group").mockImplementationOnce(() => {}),
+  groupEnd: jest.spyOn(console, "groupEnd").mockImplementationOnce(() => {}),
   exit: jest
     .spyOn(process, "exit")
     // @ts-ignore - eslint won't allow assertion of `code as never`
@@ -49,7 +51,7 @@ describe('NODE_ENV === "production"', () => {
     });
   });
 
-  describe(`logger.error`, () => {
+  describe("logger.error", () => {
     it('calls "console.error()" when passed an error instances', () => {
       const error = new Error("test error");
       logger.error(error);
@@ -76,5 +78,37 @@ describe('NODE_ENV === "production"', () => {
       expect(mocks.exit).toBeCalledTimes(1);
       expect(mocks.exit).toBeCalledWith(exitCode);
     });
+  });
+});
+
+describe("logger.debug", () => {
+  it('calls "console.info" with the time and the given message', () => {
+    const msg = "test debug message";
+    logger.debug(msg);
+
+    expect(mocks.info).toBeCalledTimes(1);
+    expect(mocks.info).toBeCalledWith(
+      chalk.magenta.bold("DEBUG: ") + chalk.yellow.bold("+0ms ") + msg
+    );
+  });
+
+  it("logs the given data in a group", () => {
+    const data = [
+      {
+        name: "test data n1",
+      },
+      {
+        name: "test data n2",
+      },
+    ];
+
+    logger.debug("", ...data);
+
+    expect(mocks.group).toBeCalledTimes(1);
+    expect(mocks.log).toBeCalledTimes(data.length);
+    data.forEach(d => {
+      expect(mocks.log).toBeCalledWith(d, "\n");
+    });
+    expect(mocks.groupEnd).toBeCalledTimes(1);
   });
 });

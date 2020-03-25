@@ -71,6 +71,8 @@ export const debug = (msg: string, ...data: any[]) => {
 };
 
 export const writeDebugStdout = (filePath: string) => {
+  if (process.env.NODE_ENV === "test" || !isDebuggerEnabled) return;
+
   const resolvedFilePath = path.resolve(filePath);
 
   if (fs.existsSync(resolvedFilePath))
