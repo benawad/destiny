@@ -1,3 +1,13 @@
+# [0.5.0](https://github.com/benawad/destiny/compare/v0.4.0...v0.5.0) (2020-03-26)
+
+### Bug Fixes
+
+- Glob stays in the tree's root path - [#88](https://github.com/benawad/destiny/issues/88) ([3795d40](https://github.com/benawad/destiny/commit/3795d40b9b20e04215eb57fa8bb919a8ad774195))
+
+### Features
+
+- **debugger:** add debugger ([10d6a8b](https://github.com/benawad/destiny/commit/10d6a8b095b74f0e34419941d64468e8ffa1bd74))
+
 # [0.4.0](https://github.com/benawad/destiny/compare/v0.3.1...v0.4.0) (2020-03-04)
 
 ### Bug Fixes
