@@ -17,6 +17,7 @@ export type Config = {
   version: boolean;
   write: boolean;
   avoidSingleFile: boolean;
+  debug: boolean | string;
 };
 
 const defaultConfig: Config = {
@@ -25,6 +26,7 @@ const defaultConfig: Config = {
   version: false,
   write: false,
   avoidSingleFile: false,
+  debug: false,
 };
 
 const printVersion = () => console.log("v" + version);
@@ -46,6 +48,10 @@ const printHelp = (exitCode: number) => {
       flags: ["-S", "--avoid-single-file"],
       description:
         "Flag to indicate if single files in folders should be avoided",
+    },
+    {
+      flags: ["--debug [?output file]"],
+      description: "Print debugging info",
     },
   ]);
 
@@ -77,6 +83,10 @@ const parseArgs = (args: string[]) => {
       case "--avoid-single-file":
         cliConfig.avoidSingleFile = true;
         break;
+      case "--debug":
+        cliConfig.debug =
+          !args[0] || args[0].startsWith("-") ? true : args.shift();
+        break;
       default: {
         if (fs.existsSync(arg) || glob.hasMagic(arg)) {
           cliConfig.include = [...(cliConfig.include ?? []), arg];
@@ -106,9 +116,22 @@ export const run = async (args: string[]) => {
   if (mergedConfig.help) return printHelp(0);
   if (mergedConfig.version) return printVersion();
   if (mergedConfig.include.length === 0) return printHelp(1);
+  if (mergedConfig.debug) logger.enableDebugger();
+
+  process.on("exit", () => {
+    if (typeof mergedConfig.debug === "string") {
+      logger.writeDebugStdout(mergedConfig.debug);
+    }
+
+    logger.debug("exiting");
+  });
+
+  logger.debug("config used:", mergedConfig);
 
   const restructureMap = getRestructureMap(mergedConfig.include);
   const filesToEdit = Object.values(restructureMap).flat();
+
+  logger.debug("restructured map:", restructureMap);
 
   if (filesToEdit.length === 0) {
     logger.error("Could not find any files to restructure", 1);
@@ -116,6 +139,8 @@ export const run = async (args: string[]) => {
   }
 
   const rootOptions = generateTrees(restructureMap, mergedConfig);
+
+  logger.debug("generated tree(s):", rootOptions);
 
   if (mergedConfig.write) {
     await formatFileStructure(filesToEdit, rootOptions);

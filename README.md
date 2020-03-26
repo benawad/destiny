@@ -64,10 +64,11 @@ USAGE
 
 OPTIONS
 
-  -V, --version               Output version number
-  -h, --help                  Output usage information
-  -w, --write                 Restructure and edit folders and files
-  -S, --avoid-single-file     Flag to indicate if single files in folders should be avoided
+  -V, --version              Output version number
+  -h, --help                 Output usage information
+  -w, --write                Restructure and edit folders and files
+  -S, --avoid-single-file    Flag to indicate if single files in folders should be avoided
+  --debug [?output file]     Print debugging info
 ```
 
 Dry run which will output what the resulting file structure will look like:

@@ -1,6 +1,7 @@
 import fs from "fs-extra";
 import path from "path";
 import Git from "simple-git/promise";
+import logger from "../../shared/logger";
 
 async function isFileGitTracked(git: Git.SimpleGit, location: string) {
   return git
@@ -32,6 +33,8 @@ export async function moveFiles(
 
     const shouldGitMv =
       isFolderGitTracked && (await isFileGitTracked(git, oldAbsolutePath));
+
+    logger.debug(`moving "${oldAbsolutePath}" to "${newAbsolutePath}"`);
 
     if (shouldGitMv) {
       await git.mv(oldAbsolutePath, newAbsolutePath);

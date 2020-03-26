@@ -10,6 +10,8 @@ export const globSearch = (pattern: string) => {
   const matches = glob.sync(pattern);
   const files = matches.filter(match => isFile(match));
 
+  logger.debug(`glob matches for "${pattern}":`, matches);
+
   if (files.length === 0) {
     logger.error("Could not find any files for: " + pattern, 1);
   }
