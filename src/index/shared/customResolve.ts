@@ -9,6 +9,7 @@ const extensions = [
   ".svg",
   ".ts",
   ".tsx",
+  ".js.flow",
 ];
 
 /** Resolve with a list of predefined extensions. */
