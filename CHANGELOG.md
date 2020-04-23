@@ -1,3 +1,10 @@
+# [0.6.0](https://github.com/benawad/destiny/compare/v0.5.0...v0.6.0) (2020-04-23)
+
+
+### Features
+
+* add .d.ts extension support ([01b83b0](https://github.com/benawad/destiny/commit/01b83b015192d4ac105c81a1d7b837e8dd818e54))
+
 # [0.5.0](https://github.com/benawad/destiny/compare/v0.4.0...v0.5.0) (2020-03-26)
 
 ### Bug Fixes
