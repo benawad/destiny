@@ -8,6 +8,7 @@ const extensions = [
   ".scss",
   ".svg",
   ".ts",
+  ".d.ts",
   ".tsx",
   ".js.flow",
 ];
