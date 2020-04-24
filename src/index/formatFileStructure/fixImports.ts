@@ -57,7 +57,7 @@ export const fixImports = (filePaths: string[], rootOptions: RootOption[]) => {
       const absPath = customResolve(importPath, basedir);
 
       if (absPath == null) {
-        logger.error(`Cannot find import ${importPath}`);
+        logger.error(`Cannot find import ${importPath} for ${basedir}`);
         continue;
       }
 

@@ -33,7 +33,7 @@ export function buildGraph(filePaths: string[]) {
       );
 
       if (pathWithExtension == null) {
-        logger.error(`Cannot find import ${importPath}`);
+        logger.error(`Cannot find import ${importPath} for ${filePath}`);
         return;
       }
 
