@@ -73,7 +73,9 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
       const newDestination = path.join(folderPath, directoryName);
 
       for (const importFilePath of imports) {
-        if (importFilePath in tree) {
+        // if importFilePath includes .. then it's a global
+        // we don't store globals in tree, so check if cycle
+        if (importFilePath in tree || importFilePath.includes("..")) {
           const cycle = hasCycle(importFilePath, graph, new Set());
 
           if (cycle) {
