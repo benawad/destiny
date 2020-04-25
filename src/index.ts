@@ -126,6 +126,7 @@ export const run = async (args: string[]) => {
     logger.debug("exiting");
   });
 
+  logger.debug(`version: ${version}`);
   logger.debug("config used:", mergedConfig);
 
   const restructureMap = getRestructureMap(mergedConfig.include);
