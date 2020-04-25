@@ -1,3 +1,10 @@
+## [0.6.1](https://github.com/benawad/destiny/compare/v0.6.0...v0.6.1) (2020-04-25)
+
+
+### Reverts
+
+* Revert "chore(release): 0.6.0 [skip ci]" ([9d2dbc1](https://github.com/benawad/destiny/commit/9d2dbc1af47e6189ec7e261f1a1140685e1770e5))
+
 # [0.5.0](https://github.com/benawad/destiny/compare/v0.4.0...v0.5.0) (2020-03-26)
 
 ### Bug Fixes
