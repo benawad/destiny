@@ -3,7 +3,7 @@ import fs from "fs";
 /** Find all imports for file path. */
 export function findImports(filePath: string) {
   const reImport = /(?:(?:import|from)\s+|(?:import|require)\s*\()['"]((?:\.{1,2})(?:\/.+)?)['"]/gm;
-  const reComment = /\/\*[^]*?\*\/|^.*\/\/.*$/gm;
+  const reComment = /\/\*[\s\S]*?\*\/|\/\/.*/gm;
   const importPaths: string[] = [];
   const fileContent = fs
     .readFileSync(filePath, { encoding: "utf8" })

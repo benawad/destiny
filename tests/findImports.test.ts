@@ -40,4 +40,10 @@ describe("findImports", () => {
     "es5-chained-variable-require",
     ["./module1", "./module2"]
   );
+
+  t(
+    "doesn't ignore imports with a comment on the same line",
+    "commented-line",
+    ["./module"]
+  );
 });
