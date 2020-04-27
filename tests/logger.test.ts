@@ -1,5 +1,7 @@
 import chalk from "chalk";
 import logger from "../src/shared/logger";
+import path from "path";
+import fs from "fs";
 
 const mocks = {
   error: jest.spyOn(console, "error").mockImplementationOnce(() => {}),
@@ -13,6 +15,9 @@ const mocks = {
     // @ts-ignore - eslint won't allow assertion of `code as never`
     .mockImplementationOnce(code => code),
 };
+
+jest.mock("path");
+jest.mock("fs");
 
 afterEach(() => {
   jest.resetAllMocks();
@@ -110,5 +115,39 @@ describe("logger.debug", () => {
       expect(mocks.log).toBeCalledWith(d, "\n");
     });
     expect(mocks.groupEnd).toBeCalledTimes(1);
+  });
+});
+
+describe("logger.writeDebugStdOut", () => {
+  it("calls writeDebugStdout() with non-existent file", () => {
+    const filepath = "NonExistentFile";
+    path.resolve = jest.fn().mockReturnValueOnce(filepath);
+    logger.writeDebugStdout(filepath);
+
+    expect(fs.writeFileSync).toBeCalledTimes(1);
+    expect(fs.writeFileSync).toBeCalledWith(
+      filepath,
+      expect.any(String),
+      "utf8"
+    );
+
+    // This is to test debug method call
+    expect(mocks.info).toBeCalledTimes(1);
+    expect(mocks.info).toBeCalledWith(
+      expect.stringContaining(`stdout written in "${filepath}"`)
+    );
+  });
+
+  it("alls writeDebugStdout() with valid file", () => {
+    const filepath = "ValidFile";
+    path.resolve = jest.fn().mockReturnValueOnce(filepath);
+    fs.existsSync = jest.fn().mockReturnValueOnce(true);
+    logger.writeDebugStdout(filepath);
+
+    const errorInfo =
+      chalk.red.bold("ERROR: ") +
+      `The debug file output already exist "${filepath}".\nPlease give a path to a non existing file.`;
+    expect(mocks.error).toBeCalledTimes(1);
+    expect(mocks.error).toBeCalledWith(errorInfo);
   });
 });
