@@ -1,4 +1,5 @@
 import fs from "fs";
+import os from "os";
 import glob from "glob";
 import { cosmiconfigSync } from "cosmiconfig";
 
@@ -28,6 +29,9 @@ const defaultConfig: Config = {
   avoidSingleFile: false,
   debug: false,
 };
+
+const resolveHomeDir = (path: string) =>
+  path.replace(/~\/|~(?!.)/, `${os.homedir()}/`);
 
 const printVersion = () => console.log("v" + version);
 const printHelp = (exitCode: number) => {
@@ -88,7 +92,7 @@ const parseArgs = (args: string[]) => {
           !args[0] || args[0].startsWith("-") ? true : args.shift();
         break;
       default: {
-        if (fs.existsSync(arg) || glob.hasMagic(arg)) {
+        if (fs.existsSync(resolveHomeDir(arg)) || glob.hasMagic(arg)) {
           cliConfig.include = [...(cliConfig.include ?? []), arg];
         }
       }
@@ -128,6 +132,8 @@ export const run = async (args: string[]) => {
 
   logger.debug(`version: ${version}`);
   logger.debug("config used:", mergedConfig);
+
+  mergedConfig.include = mergedConfig.include.map(resolveHomeDir);
 
   const restructureMap = getRestructureMap(mergedConfig.include);
   const filesToEdit = Object.values(restructureMap).flat();
