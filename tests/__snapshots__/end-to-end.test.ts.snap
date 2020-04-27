@@ -471,7 +471,7 @@ exports[`end-to-end --avoid-single-file index-cycle: index-cycle/index/routes.js
 `;
 
 exports[`end-to-end --avoid-single-file index-cycle: index-cycle/index/search.js 1`] = `
-"import { five } from \\"../index\\";
+"import { five } from \\"..\\";
 
 export const six = five + 1;
 "
@@ -574,7 +574,7 @@ exports[`end-to-end --avoid-single-file spec-files: spec-files/index.js 1`] = `
 `;
 
 exports[`end-to-end --avoid-single-file spec-files: spec-files/index.spec.js 1`] = `
-"require(\\"./index\\");
+"require(\\".\\");
 "
 `;
 
@@ -1061,7 +1061,7 @@ export const seven = six + 1;
 `;
 
 exports[`end-to-end index-cycle: index-cycle/index/login/search.js 1`] = `
-"import { five } from \\"../../index\\";
+"import { five } from \\"../..\\";
 
 export const six = five + 1;
 "
@@ -1177,7 +1177,7 @@ exports[`end-to-end spec-files: spec-files/index.js 1`] = `
 `;
 
 exports[`end-to-end spec-files: spec-files/index.spec.js 1`] = `
-"require(\\"./index\\");
+"require(\\".\\");
 "
 `;
 
