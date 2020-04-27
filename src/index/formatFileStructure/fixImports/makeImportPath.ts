@@ -16,7 +16,14 @@ export const makeImportPath = (
 
   const relativeDirectory = path.dirname(relativePath);
   const ext = getExtensionFromImport(relativePath);
-  const fileName = path.basename(relativePath, ext);
+  let fileName = path.basename(relativePath, ext);
+
+  // this will cleanup index imports
+  // path.join("../add", ".") =>  "../add"
+  // instead of: path.join("../add", "index") =>  "../add/index"
+  if (fileName === "index") {
+    fileName = ".";
+  }
 
   let newImport = path.join(relativeDirectory, fileName);
 
