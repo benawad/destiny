@@ -30,15 +30,13 @@ ${indent}The {underline path} argument can consist of either a {bold file path} 
     (a, b) => b.flags.length - a.flags.length
   );
 
-  const descriptionsX = `${longestFlag.flags}${indent}${indent}`.length;
+  const descriptionsPosX = `${longestFlag.flags}${indent.repeat(2)}`.length;
 
   const parsedOptionsMessage = optionsWithJoinedFlags
     .map(({ flags, description }) => {
-      const numOfSpacesToAdd = descriptionsX - flags.length;
+      const numOfSpacesToAdd = descriptionsPosX - flags.length;
 
-      return `${indent}${flags}${Array(numOfSpacesToAdd)
-        .fill(" ")
-        .join("")}${description}`;
+      return `${indent}${flags}${" ".repeat(numOfSpacesToAdd)}${description}`;
     })
     .join("\n");
 
