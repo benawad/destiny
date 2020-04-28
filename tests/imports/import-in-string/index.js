@@ -47,19 +47,16 @@ module(`const test = require('./test16')`);
 
 // prettier-ignore
 module(`const test = require(\`./test17\`)`);
-
 // prettier-ignore
-module(`const test = require(\`./test18\`)`);
+module("const test = require(`./test18`)");
 // prettier-ignore
-module("const test = require(./test19`)");
-// prettier-ignore
-module('const test = require(./test20`)');
+module('const test = require(`./test19`)');
 
 // prettier-ingore
 module(`
   this is just
 
-  const test = require("./test21")
+  const test = require("./test20")
   a random multi lines string
 
   which contain an es5 import
