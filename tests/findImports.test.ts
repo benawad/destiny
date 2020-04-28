@@ -46,4 +46,6 @@ describe("findImports", () => {
     "commented-line",
     ["./module"]
   );
+
+  t("doesn't match with imports in string", "import-in-string", ["./module"]);
 });
