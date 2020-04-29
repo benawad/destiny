@@ -1,3 +1,14 @@
+## [0.6.2](https://github.com/benawad/destiny/compare/v0.6.1...v0.6.2) (2020-04-29)
+
+
+### Bug Fixes
+
+* [#111](https://github.com/benawad/destiny/issues/111) ([3b05b2a](https://github.com/benawad/destiny/commit/3b05b2a6b371bd53276bc316393dfd6883c001aa))
+* [#119](https://github.com/benawad/destiny/issues/119) ([366f8cf](https://github.com/benawad/destiny/commit/366f8cfdb200fdaffc820b4fb6b61893aed0fdc7))
+* [#129](https://github.com/benawad/destiny/issues/129) ([2db66af](https://github.com/benawad/destiny/commit/2db66af44bf746e11251d1b6b7fff1830368ae97))
+* **#125:** resolve home dir ([40b36a2](https://github.com/benawad/destiny/commit/40b36a22c0dbb86bf7217bae984ec0ffa4556c2e))
+* check cycle when graphl is all globals ([7880933](https://github.com/benawad/destiny/commit/78809330a3be0c04484483a91e2dd5642c8915e9))
+
 ## [0.6.1](https://github.com/benawad/destiny/compare/v0.6.0...v0.6.1) (2020-04-25)
 
 
