@@ -6,6 +6,7 @@ import fs from "fs";
 const mocks = {
   error: jest.spyOn(console, "error").mockImplementationOnce(() => {}),
   log: jest.spyOn(console, "log").mockImplementationOnce(() => {}),
+  dir: jest.spyOn(console, "dir").mockImplementationOnce(() => {}),
   info: jest.spyOn(console, "info").mockImplementationOnce(() => {}),
   warn: jest.spyOn(console, "warn").mockImplementationOnce(() => {}),
   group: jest.spyOn(console, "group").mockImplementationOnce(() => {}),
@@ -110,9 +111,14 @@ describe("logger.debug", () => {
     logger.debug("", ...data);
 
     expect(mocks.group).toBeCalledTimes(1);
+    expect(mocks.dir).toBeCalledTimes(data.length);
     expect(mocks.log).toBeCalledTimes(data.length);
     data.forEach(d => {
-      expect(mocks.log).toBeCalledWith(d, "\n");
+      expect(mocks.dir).toBeCalledWith(d, {
+        depth: Infinity,
+        maxArrayLength: Infinity,
+      });
+      expect(mocks.log).toBeCalledWith();
     });
     expect(mocks.groupEnd).toBeCalledTimes(1);
   });
