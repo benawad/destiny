@@ -64,7 +64,11 @@ export const debug = (msg: string, ...data: any[]) => {
   if (data.length > 0) {
     console.group();
     data.forEach(d => {
-      console.log(d, "\n");
+      console.dir(d, {
+        depth: Infinity,
+        maxArrayLength: Infinity,
+      });
+      console.log();
     });
     console.groupEnd();
   }
