@@ -38,6 +38,15 @@ const getNewImportPath = (
   return makeImportPath(newFilePath, absImportPath, lastUseForwardSlash);
 };
 
+const getNumOfNewChar = (a: number, b: number) => {
+  const numOfNewChar = b - a;
+
+  // less char than before
+  if (a > b) return -Math.abs(numOfNewChar);
+
+  return numOfNewChar;
+};
+
 export const fixImports = (filePaths: string[], rootOptions: RootOption[]) => {
   for (const filePath of filePaths) {
     logger.debug(`checking imports of "${filePath}"`);
@@ -52,25 +61,33 @@ export const fixImports = (filePaths: string[], rootOptions: RootOption[]) => {
     const newFilePath = getNewFilePath(filePath, rootOptions);
     const ogText = readFileSync(filePath).toString();
 
-    let newText = ogText.repeat(1);
-    for (const importPath of importPaths) {
-      const absPath = customResolve(importPath, basedir);
+    let newText = ogText;
+    let numOfNewChar = 0;
+
+    for (const _import of importPaths) {
+      const absPath = customResolve(_import.path, basedir);
 
       if (absPath == null) {
-        logger.error(`Cannot find import ${importPath} for ${basedir}`);
+        logger.error(`Cannot find import ${_import.path} for ${basedir}`);
         continue;
       }
 
       const newImportPath = getNewImportPath(absPath, newFilePath, rootOptions);
 
-      if (newImportPath != null && importPath !== newImportPath) {
+      if (newImportPath != null && _import.path !== newImportPath) {
         logger.debug(
-          `replacing import of "${importPath}" by "${newImportPath}" in "${filePath}"`
+          `replacing import of "${_import.path}" by "${newImportPath}" in "${filePath}"`
         );
 
-        newText = newText
-          .replace(`'${importPath}'`, `'${newImportPath}'`)
-          .replace(`"${importPath}"`, `"${newImportPath}"`);
+        newText = `${newText.substr(
+          0,
+          _import.start + numOfNewChar
+        )}${newImportPath}${newText.substring(_import.end + numOfNewChar)}`;
+
+        numOfNewChar += getNumOfNewChar(
+          _import.path.length,
+          newImportPath.length
+        );
       }
     }
 

@@ -26,14 +26,14 @@ export function buildGraph(filePaths: string[]) {
     const start = path.relative(parentFolder, filePath);
     totalFiles.push(start);
 
-    findImports(filePath).forEach(importPath => {
+    findImports(filePath).forEach(_import => {
       const pathWithExtension = customResolve(
-        importPath,
+        _import.path,
         path.dirname(filePath)
       );
 
       if (pathWithExtension == null) {
-        logger.error(`Cannot find import ${importPath} for ${filePath}`);
+        logger.error(`Cannot find import ${_import.path} for ${filePath}`);
         return;
       }
 
