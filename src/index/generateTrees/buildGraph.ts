@@ -52,6 +52,5 @@ export function buildGraph(filePaths: string[]) {
     files: totalFiles,
     graph,
     parentFolder,
-    useForwardSlash: path.sep === "/",
   };
 }

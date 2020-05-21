@@ -6,11 +6,7 @@ function getExtensionFromImport(relativePath: string) {
   return includeExtension ? ext : undefined;
 }
 
-export const makeImportPath = (
-  fromPath: string,
-  toPath: string,
-  useForwardSlashes: boolean
-) => {
+export const makeImportPath = (fromPath: string, toPath: string) => {
   const fromDirectory = path.dirname(fromPath);
   const relativePath = path.relative(fromDirectory, toPath);
 
@@ -33,12 +29,8 @@ export const makeImportPath = (
     newImport = "./" + newImport;
   }
 
-  // Replace / and \ with \\.
-  if (!useForwardSlashes) {
-    newImport = newImport.replace(/\/|\\+/g, "\\\\");
-  }
-  // Replace \ with /.
-  else {
+  // Replace \\ by /.
+  if (process.platform === "win32") {
     newImport = newImport.replace(/\\/g, "/");
   }
 

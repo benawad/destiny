@@ -7,7 +7,11 @@ const isDirectory = (filePath: string) => fs.lstatSync(filePath).isDirectory();
 const isFile = (filePath: string) => fs.lstatSync(filePath).isFile();
 
 export const globSearch = (pattern: string) => {
-  const matches = glob.sync(pattern);
+  const matches = glob
+    .sync(pattern)
+    // convert forward slashes to backslashes on windows
+    .map(filePath => path.resolve(filePath));
+
   const files = matches.filter(match => isFile(match));
 
   logger.debug(`glob matches for "${pattern}":`, matches);

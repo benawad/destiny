@@ -22,9 +22,7 @@ export function generateTrees(
 
       logger.info(`Generating tree for: ${rootPath}`);
 
-      const { graph, files, useForwardSlash, parentFolder } = buildGraph(
-        filePaths
-      );
+      const { graph, files, parentFolder } = buildGraph(filePaths);
 
       let tree = toFractalTree(graph, findEntryPoints(graph));
 
@@ -50,7 +48,6 @@ export function generateTrees(
       rootOptions.push({
         parentFolder,
         tree,
-        useForwardSlash,
       });
 
       return rootOptions;
