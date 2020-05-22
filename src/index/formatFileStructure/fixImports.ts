@@ -22,20 +22,18 @@ const getNewImportPath = (
   newFilePath: string,
   rootOptions: RootOption[]
 ) => {
-  let lastUseForwardSlash = true;
-  for (const { tree, parentFolder, useForwardSlash } of rootOptions) {
-    lastUseForwardSlash = useForwardSlash;
+  for (const { tree, parentFolder } of rootOptions) {
     const key = path.relative(parentFolder, absImportPath);
+
     if (key in tree) {
       return makeImportPath(
         newFilePath,
-        path.resolve(path.join(parentFolder, tree[key])),
-        useForwardSlash
+        path.resolve(path.join(parentFolder, tree[key]))
       );
     }
   }
 
-  return makeImportPath(newFilePath, absImportPath, lastUseForwardSlash);
+  return makeImportPath(newFilePath, absImportPath);
 };
 
 const getNumOfNewChar = (a: number, b: number) => {
