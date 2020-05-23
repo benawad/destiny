@@ -3,13 +3,13 @@ import { isTestFile } from "./shared/isTestFile";
 
 const invertGraph = (graph: Graph) => {
   const invertedGraph: Graph = {};
-  Object.keys(graph).forEach(k => {
-    graph[k].forEach(v => {
-      if (!(v in invertedGraph)) {
-        invertedGraph[v] = [];
+  Object.entries(graph).forEach(([filePath, imports]) => {
+    imports.forEach(importPath => {
+      if (!(importPath in invertedGraph)) {
+        invertedGraph[importPath] = [];
       }
 
-      invertedGraph[v].push(k);
+      invertedGraph[importPath].push(filePath);
     });
   });
 
@@ -34,14 +34,14 @@ export function findEntryPoints(graph: Graph) {
 
   const levelMap: Record<number, string[]> = {};
 
-  possibleEntryPoints.forEach(k => {
-    const n = k.split("/").length;
+  possibleEntryPoints.forEach(filePath => {
+    const n = filePath.split("/").length;
 
     if (!(n in levelMap)) {
       levelMap[n] = [];
     }
 
-    levelMap[n].push(k);
+    levelMap[n].push(filePath);
   });
 
   for (let i = 1; i < 10; i++) {
