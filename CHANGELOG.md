@@ -1,3 +1,16 @@
+# [0.7.0](https://github.com/benawad/destiny/compare/v0.6.2...v0.7.0) (2020-05-23)
+
+
+### Bug Fixes
+
+* [#128](https://github.com/benawad/destiny/issues/128) ([3c33290](https://github.com/benawad/destiny/commit/3c33290352ccb450051ea5359b33e1ac9868466d))
+* [#135](https://github.com/benawad/destiny/issues/135) ([8a2a1c0](https://github.com/benawad/destiny/commit/8a2a1c06301b53f457d738d255b65f30dd3d41cb))
+
+
+### Features
+
+* **debugger:** log full data ([09a78f4](https://github.com/benawad/destiny/commit/09a78f4289abef805dd5b6f4b680a12990ed1391))
+
 ## [0.6.2](https://github.com/benawad/destiny/compare/v0.6.1...v0.6.2) (2020-04-29)
 
 
