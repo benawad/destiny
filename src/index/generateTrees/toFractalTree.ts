@@ -39,6 +39,15 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
     return location;
   };
 
+  const changeImportLocation = (
+    filePath: string,
+    newLocation: string
+  ): void => {
+    tree[filePath] = newLocation;
+
+    treeSet.add(newLocation);
+  };
+
   const fn = (filePath: string, folderPath: string, graph: Graph) => {
     const basename = path.basename(filePath);
 
@@ -64,8 +73,7 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
     directoryName = path.basename(location, path.extname(location));
 
     if (!isGlobal) {
-      tree[filePath] = location;
-      treeSet.add(location);
+      changeImportLocation(filePath, location);
     }
 
     const imports = graph[filePath];
@@ -118,8 +126,7 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
           : filename
       );
 
-      tree[currentPath] = newFilePath;
-      treeSet.add(newFilePath);
+      changeImportLocation(currentPath, newFilePath);
     });
   }
 
@@ -143,8 +150,7 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
         testFile
       );
 
-      tree[testFile] = location;
-      treeSet.add(location);
+      changeImportLocation(testFile, location);
     }
   }
 
