@@ -5,9 +5,10 @@ import { Graph } from "./shared/Graph";
 import { findSharedParent } from "./shared/findSharedParent";
 import { hasCycle } from "./toFractalTree/hasCycle";
 import { isTestFile } from "./shared/isTestFile";
+import { RootOption } from "../shared/RootOption";
 
 export function toFractalTree(graph: Graph, entryPoints: string[]) {
-  const tree: Record<string, string> = {};
+  const tree: RootOption["tree"] = {};
   const treeSet = new Set<string>();
   const dependencies: Record<string, string[]> = {};
   const testFiles = new Set<string>();

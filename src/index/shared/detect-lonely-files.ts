@@ -1,5 +1,7 @@
 import path from "path";
 
+import { RootOption } from "./RootOption";
+
 const extractParentDirectory = (destination: string): string | undefined => {
   const parts = destination.split(path.sep);
 
@@ -20,7 +22,7 @@ const moveUp = (destinationPath: string) => {
   );
 };
 
-export const detectLonelyFiles = (tree: Record<string, string>) => {
+export const detectLonelyFiles = (tree: RootOption["tree"]) => {
   const fractalTree = { ...tree };
   // Reverse lookup destination -> current location
   const reversedFractalTree: Record<string, string> = {};

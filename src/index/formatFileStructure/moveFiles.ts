@@ -1,7 +1,9 @@
 import fs from "fs-extra";
 import path from "path";
 import Git from "simple-git/promise";
+
 import logger from "../../shared/logger";
+import { RootOption } from "../shared/RootOption";
 
 async function isFileGitTracked(git: Git.SimpleGit, location: string) {
   return git
@@ -13,7 +15,7 @@ async function isFileGitTracked(git: Git.SimpleGit, location: string) {
 
 /** Moves each file in the tree from old path to new path. */
 export async function moveFiles(
-  tree: Record<string, string>,
+  tree: RootOption["tree"],
   parentFolder: string
 ) {
   const git = Git(parentFolder);
