@@ -12,6 +12,7 @@ const defaultSettings = {
         varsIgnorePattern: "^_+$",
       },
     ],
+    "no-control-regex": 0,
   },
 };
 

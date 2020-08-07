@@ -4,34 +4,50 @@ import path from "path";
 
 let loggerStdout = "";
 
+// https://github.com/chalk/ansi-regex/blob/master/index.js#L3
+const removeANSI = (text: string): string =>
+  text.replace(
+    /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g,
+    ""
+  );
+
 export const error = (err: Error | string, code = 0) => {
   if (process.env.NODE_ENV === "test") return;
+
   const text = err instanceof Error ? err : chalk.red.bold("ERROR: ") + err;
-  loggerStdout += `${err}\n`;
+  loggerStdout += `${removeANSI(text.toString())}\n`;
+
   console.error(text);
   console.log(
     "If you think this is a bug, you can report it: https://github.com/benawad/destiny/issues"
   );
+
   process.exit(code);
 };
 
 export const info = (msg: string) => {
   if (process.env.NODE_ENV === "test") return;
+
   const text = chalk.green.bold("INFO: ") + msg;
-  loggerStdout += `${msg}\n`;
+  loggerStdout += `${removeANSI(text)}\n`;
+
   console.info(text);
 };
 
 export const log = (msg: string) => {
   if (process.env.NODE_ENV === "test") return;
-  loggerStdout += `${msg}\n`;
+
+  loggerStdout += `${removeANSI(msg)}\n`;
+
   console.log(msg);
 };
 
 export const warn = (msg: string) => {
   if (process.env.NODE_ENV === "test") return;
+
   const text = chalk.yellow.bold("WARN: ") + msg;
-  loggerStdout += `${msg}\n`;
+  loggerStdout += `${removeANSI(text)}\n`;
+
   console.warn(text);
 };
 
@@ -56,7 +72,7 @@ export const debug = (msg: string, ...data: any[]) => {
     ) +
     msg;
 
-  loggerStdout += `${msg}\n`;
+  loggerStdout += `${removeANSI(text)}\n`;
   console.info(text);
 
   lastDebugTimestamp = currentDebugTimestamp;
@@ -69,6 +85,7 @@ export const debug = (msg: string, ...data: any[]) => {
         maxArrayLength: Infinity,
       });
       console.log();
+      loggerStdout += `${JSON.stringify(d, null, 2)}\n`;
     });
     console.groupEnd();
   }
