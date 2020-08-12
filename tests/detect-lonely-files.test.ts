@@ -82,6 +82,8 @@ describe("detectLonelyFiles", () => {
     "level1.spec.js": "index/level1.spec.js",
     "level2.js": "index/level1/level2.js",
     "level2.spec.js": "index/level1/level2.spec.js",
+    "util1.js": "index/level1/level2/util1.js",
+    "util2.js": "index/level1/level2/util2.js",
   });
 
   t("duplicates", {
