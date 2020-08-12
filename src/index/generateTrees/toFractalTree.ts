@@ -134,19 +134,34 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
     const globalTests = [];
 
     for (const testFile of testFiles) {
-      const [firstRelativeImport] = graph[testFile];
-      if (!firstRelativeImport) {
-        globalTests.push(testFile);
-        continue;
+      const parts = testFile.split(".");
+      let sourceFilePath = "";
+      if (parts.length === 3) {
+        // add.test.js => add.js
+        const sourceFile = parts[0] + "." + parts[2];
+        // source file will either be in the current dir or one up
+        sourceFilePath =
+          tree[sourceFile] ||
+          tree[
+            path.join(path.dirname(sourceFile), "..", path.basename(sourceFile))
+          ];
       }
 
-      const testFilePath = tree[firstRelativeImport];
-
-      if (!testFilePath) continue;
+      // if the source file couldn't be located by name, use the first relative import
+      if (!sourceFilePath) {
+        const [firstRelativeImport] = graph[testFile];
+        if (!firstRelativeImport) {
+          globalTests.push(testFile);
+          continue;
+        }
+        const testFilePath = tree[sourceFilePath];
+        if (!testFilePath) continue;
+        sourceFilePath = testFilePath;
+      }
 
       const location = checkDuplicates(
-        path.join(path.dirname(testFilePath), path.basename(testFile)),
-        path.dirname(testFilePath),
+        path.join(path.dirname(sourceFilePath), path.basename(testFile)),
+        path.dirname(sourceFilePath),
         testFile
       );
 
