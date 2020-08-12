@@ -31,6 +31,7 @@ describe("build graph", () => {
     "index.spec.js": ["index.js"],
     "level1.js": ["level2.js"],
     "level1.spec.js": ["level1.js"],
+    "level2.js": ["util1.js", "util2.js"],
     "level2.spec.js": ["level2.js"],
   });
 
