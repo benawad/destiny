@@ -7,6 +7,8 @@ import { hasCycle } from "./toFractalTree/hasCycle";
 import { RootOption } from "../shared/RootOption";
 import { isLinkedFile, linkedFileToOriginal } from "./shared/isLinkedFile";
 import chalk from "chalk";
+import { fileWithoutExtension } from "../shared/fileWithoutExtension";
+import { isTestFile } from "./shared/isTestFile";
 
 export function toFractalTree(graph: Graph, entryPoints: string[]) {
   const tree: RootOption["tree"] = {};
@@ -130,6 +132,8 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
     });
   }
 
+  const treeKeys = Object.keys(tree);
+
   if (linkedFiles.size > 0) {
     // const globalTests = [];
 
@@ -141,7 +145,30 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
         path.basename(sourceFile)
       );
       // source file will either be in the current dir or one up
-      const sourceFilePath = tree[sourceFile] || tree[oneDirUp];
+      let sourceFilePath = tree[sourceFile] || tree[oneDirUp];
+
+      // sometimes the test is add.test.jsx and the source is add.test.js
+      // so we have to do a linear search to find source key
+      // we could probably optimize this if needed by doing some work in the fn above
+      if (!sourceFilePath) {
+        const sourceFileWithoutFileExtension = fileWithoutExtension(sourceFile);
+        for (const key of treeKeys) {
+          if (path.basename(key).startsWith(sourceFileWithoutFileExtension)) {
+            sourceFilePath = tree[key];
+            break;
+          }
+        }
+      }
+
+      if (!sourceFilePath && isTestFile(linkedFile)) {
+        // could not link by filename
+        // so the backup is linking by first relative import
+        const [firstRelativeImport] = graph[linkedFile];
+        if (firstRelativeImport) {
+          sourceFilePath = tree[firstRelativeImport];
+        }
+      }
+
       if (!sourceFilePath) {
         logger.warn(
           `could not find source file that is linked to ${chalk.blueBright(
