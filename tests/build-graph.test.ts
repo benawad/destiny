@@ -17,6 +17,7 @@ describe("build graph", () => {
   t("simple", {
     "index.js": ["routes.js"],
     "routes.js": ["home.js"],
+    "home.js": [],
   });
 
   t("index-cycle", {
@@ -24,6 +25,7 @@ describe("build graph", () => {
     "routes/index.js": ["home/index.js"],
     "login/index.js": ["utils/search.js"],
     "utils/search.js": ["index.js"],
+    "home/index.js": [],
   });
 
   t("spec-files", {
@@ -33,6 +35,8 @@ describe("build graph", () => {
     "level1.spec.js": ["level1.js"],
     "level2.js": ["util1.js", "util2.js"],
     "level2.spec.js": ["level2.js"],
+    "util1.js": [],
+    "util2.js": [],
   });
 
   t("duplicates", {
@@ -43,6 +47,12 @@ describe("build graph", () => {
       "dir4/sub/file.js",
       "dir5/index.js",
     ],
+    "dir1/file.js": [],
+    "dir2/file.js": [],
+    "dir3/sub/file.js": [],
+    "dir4/sub/file.js": [],
+    "dir5/sub1/file.js": [],
+    "dir5/sub2/file.js": [],
     "dir5/index.js": ["dir5/sub1/file.js", "dir5/sub2/file.js"],
     "dir5/sub1/file.spec.js": ["dir5/sub1/file.js"],
     "dir5/sub2/file.spec.js": ["dir5/sub2/file.js"],
@@ -50,9 +60,11 @@ describe("build graph", () => {
 
   t("commented-imports", {
     "index.js": ["existent.js"],
+    "existent.js": [],
   });
 
   t("single-file-folder", {
     "file.js": ["page/page.js"],
+    "page/page.js": [],
   });
 });

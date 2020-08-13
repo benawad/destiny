@@ -11,6 +11,9 @@ const extensions = [
   ".d.ts",
   ".tsx",
   ".js.flow",
+  ".png",
+  ".jpeg",
+  ".jpg",
 ];
 
 /** Resolve with a list of predefined extensions. */
