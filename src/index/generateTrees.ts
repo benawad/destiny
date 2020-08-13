@@ -9,6 +9,7 @@ import { findEntryPoints } from "./generateTrees/findEntryPoints";
 import { toFractalTree } from "./generateTrees/toFractalTree";
 import { detectLonelyFiles } from "./shared/detect-lonely-files";
 import { Config } from "../index";
+import { isTestFile } from "./generateTrees/shared/isTestFile";
 
 const getRootFolder = (parentDir: string) => parentDir.split(path.sep).pop();
 
@@ -22,17 +23,23 @@ export function generateTrees(
 
       logger.info(`Generating tree for: ${rootPath}`);
 
-      const { graph, files, parentFolder } = buildGraph(filePaths);
+      const { graph, parentFolder } = buildGraph(filePaths);
 
-      let tree = toFractalTree(graph, findEntryPoints(graph));
+      const entryPoints = findEntryPoints(graph);
+      let tree = toFractalTree(graph, entryPoints);
 
       if (avoidSingleFile) {
         tree = detectLonelyFiles(tree);
       }
 
-      const usedFilePaths = new Set(Object.entries(graph).flat(2));
-      const unusedFiles = files.filter(
-        filePath => !usedFilePaths.has(filePath)
+      // entryPoints that don't import anything might be unused??
+      // @todo let user ignore some of these
+      const unusedFiles = entryPoints.filter(
+        filePath =>
+          !isTestFile(filePath) &&
+          !filePath.endsWith(".snap") &&
+          !filePath.endsWith(".d.ts") &&
+          !graph[filePath].length
       );
 
       logger.log(chalk.bold.blue(getRootFolder(parentFolder)));
