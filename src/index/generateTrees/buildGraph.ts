@@ -26,6 +26,10 @@ export function buildGraph(filePaths: string[]) {
     const start = path.relative(parentFolder, filePath);
     totalFiles.push(start);
 
+    if (!Array.isArray(graph[start])) {
+      graph[start] = [];
+    }
+
     findImports(filePath).forEach(_import => {
       const pathWithExtension = customResolve(
         _import.path,
@@ -39,9 +43,6 @@ export function buildGraph(filePaths: string[]) {
 
       const end = path.relative(parentFolder, pathWithExtension);
 
-      if (!Array.isArray(graph[start])) {
-        graph[start] = [];
-      }
       if (!graph[start].includes(end)) {
         graph[start].push(end);
       }

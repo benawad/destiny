@@ -63,9 +63,6 @@ describe("end-to-end", () => {
   const testCases = fs.readdirSync(fixturePath);
 
   for (const testCase of testCases) {
-    if (!testCase.includes("duplicates")) {
-      continue;
-    }
     const templateFolder = path.join(fixturePath, testCase);
     const copyPath = path.join(tmpPath, testCase);
 

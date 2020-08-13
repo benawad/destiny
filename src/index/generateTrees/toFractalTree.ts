@@ -4,14 +4,15 @@ import logger from "../../shared/logger";
 import { Graph } from "./shared/Graph";
 import { findSharedParent } from "./shared/findSharedParent";
 import { hasCycle } from "./toFractalTree/hasCycle";
-import { isTestFile } from "./shared/isTestFile";
 import { RootOption } from "../shared/RootOption";
+import { isLinkedFile, linkedFileToOriginal } from "./shared/isLinkedFile";
+import chalk from "chalk";
 
 export function toFractalTree(graph: Graph, entryPoints: string[]) {
   const tree: RootOption["tree"] = {};
   const treeSet = new Set<string>();
   const dependencies: Record<string, string[]> = {};
-  const testFiles = new Set<string>();
+  const linkedFiles = new Set<string>();
   let containsCycle = false;
 
   const addDependency = (key: string, location: string) => {
@@ -50,9 +51,8 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
 
   const fn = (filePath: string, folderPath: string, graph: Graph) => {
     const basename = path.basename(filePath);
-
-    if (isTestFile(basename)) {
-      testFiles.add(filePath);
+    if (isLinkedFile(basename)) {
+      linkedFiles.add(filePath);
       return;
     }
 
@@ -130,42 +130,42 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
     });
   }
 
-  if (testFiles.size > 0) {
-    const globalTests = [];
+  if (linkedFiles.size > 0) {
+    // const globalTests = [];
 
-    for (const testFile of testFiles) {
-      const parts = testFile.split(".");
-      let sourceFilePath = "";
-      if (parts.length === 3) {
-        // add.test.js => add.js
-        const sourceFile = parts[0] + "." + parts[2];
-        // source file will either be in the current dir or one up
-        sourceFilePath =
-          tree[sourceFile] ||
-          tree[
-            path.join(path.dirname(sourceFile), "..", path.basename(sourceFile))
-          ];
-      }
-
-      // if the source file couldn't be located by name, use the first relative import
+    for (const linkedFile of linkedFiles) {
+      const sourceFile = linkedFileToOriginal(linkedFile);
+      const oneDirUp = path.join(
+        path.dirname(sourceFile),
+        "..",
+        path.basename(sourceFile)
+      );
+      // source file will either be in the current dir or one up
+      const sourceFilePath = tree[sourceFile] || tree[oneDirUp];
       if (!sourceFilePath) {
-        const [firstRelativeImport] = graph[testFile];
-        if (!firstRelativeImport) {
-          globalTests.push(testFile);
-          continue;
-        }
-        const testFilePath = tree[sourceFilePath];
-        if (!testFilePath) continue;
-        sourceFilePath = testFilePath;
+        logger.warn(
+          `could not find source file that is linked to ${chalk.blueBright(
+            linkedFile
+          )} | 2 locations were checked: ${chalk.blueBright(
+            sourceFile
+          )} and ${chalk.blueBright(oneDirUp)}`
+        );
+        continue;
       }
+
+      const isSnapshot = linkedFile.endsWith(".snap");
 
       const location = checkDuplicates(
-        path.join(path.dirname(sourceFilePath), path.basename(testFile)),
+        path.join(
+          path.dirname(sourceFilePath),
+          isSnapshot ? "__snapshot__" : "",
+          path.basename(linkedFile)
+        ),
         path.dirname(sourceFilePath),
-        testFile
+        linkedFile
       );
 
-      changeImportLocation(testFile, location);
+      changeImportLocation(linkedFile, location);
     }
   }
 
