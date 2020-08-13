@@ -1,2 +1,2 @@
 export const isTestFile = (f: string) =>
-  /\.test\.|\.spec\.|\.stories\./.test(f);
+  /\.test\.|\.spec\.|\.story\.|\.stories\./.test(f);
