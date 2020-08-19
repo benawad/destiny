@@ -437,6 +437,26 @@ exports[`end-to-end --avoid-single-file globals: globals/src/index.js 1`] = `
 "
 `;
 
+exports[`end-to-end --avoid-single-file ignore-node-modules 1`] = `
+"ignore-node-modules
+├── file2.js
+├── index.js
+└── node_modules
+    ├── add.js
+    └── subtract.js"
+`;
+
+exports[`end-to-end --avoid-single-file ignore-node-modules: ignore-node-modules/file2.js 1`] = `""`;
+
+exports[`end-to-end --avoid-single-file ignore-node-modules: ignore-node-modules/index.js 1`] = `"require('./file2')"`;
+
+exports[`end-to-end --avoid-single-file ignore-node-modules: ignore-node-modules/node_modules/add.js 1`] = `
+"require('./subtract')
+"
+`;
+
+exports[`end-to-end --avoid-single-file ignore-node-modules: ignore-node-modules/node_modules/subtract.js 1`] = `""`;
+
 exports[`end-to-end --avoid-single-file index-cycle 1`] = `
 "index-cycle
 ├── index
@@ -1074,6 +1094,27 @@ exports[`end-to-end globals: globals/src/index/helper.js 1`] = `
 export const five = 5;
 "
 `;
+
+exports[`end-to-end ignore-node-modules 1`] = `
+"ignore-node-modules
+├── index
+│   └── file2.js
+├── index.js
+└── node_modules
+    ├── add.js
+    └── subtract.js"
+`;
+
+exports[`end-to-end ignore-node-modules: ignore-node-modules/index.js 1`] = `"require('./index/file2')"`;
+
+exports[`end-to-end ignore-node-modules: ignore-node-modules/index/file2.js 1`] = `""`;
+
+exports[`end-to-end ignore-node-modules: ignore-node-modules/node_modules/add.js 1`] = `
+"require('./subtract')
+"
+`;
+
+exports[`end-to-end ignore-node-modules: ignore-node-modules/node_modules/subtract.js 1`] = `""`;
 
 exports[`end-to-end index-cycle 1`] = `
 "index-cycle

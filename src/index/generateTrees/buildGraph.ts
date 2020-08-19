@@ -7,7 +7,7 @@ import { findImports } from "../shared/findImports";
 import { findSharedParent } from "./shared/findSharedParent";
 
 const isFilePathIgnored = (filePath: string) => {
-  const ignoreList = [/^\.git/];
+  const ignoreList = [/^\.git|node_modules/];
 
   return ignoreList.some(re => re.test(filePath));
 };
