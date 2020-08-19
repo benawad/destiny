@@ -1,3 +1,19 @@
+## [0.7.1](https://github.com/benawad/destiny/compare/v0.7.0...v0.7.1) (2020-08-19)
+
+
+### Bug Fixes
+
+* [#115](https://github.com/benawad/destiny/issues/115), fix [#107](https://github.com/benawad/destiny/issues/107) ([8a4ea3e](https://github.com/benawad/destiny/commit/8a4ea3e36c5e2ca38691f99b808ae0a4be32c670))
+* [#136](https://github.com/benawad/destiny/issues/136) ([b194bbf](https://github.com/benawad/destiny/commit/b194bbfc440e5b1d4c010927219c08b1031b94f3))
+* [#138](https://github.com/benawad/destiny/issues/138) ([54bd159](https://github.com/benawad/destiny/commit/54bd1598de9182896a3d8e9decd8647ec0ae68de))
+* add utils to spec fixture ([9d75c93](https://github.com/benawad/destiny/commit/9d75c937cf383e1e8136e9af14f188a373a49bc3))
+* don't overwrite existing files ([9a2c6c4](https://github.com/benawad/destiny/commit/9a2c6c4bed1798eaa57c90383bb803bc9f7fb9d5))
+* handle edge cases where linked file is not found ([3a139cd](https://github.com/benawad/destiny/commit/3a139cd1931649cf86b4b3fc20e345ce42b65737))
+* look for source file based on test file name first instead of first import ([0544d61](https://github.com/benawad/destiny/commit/0544d61c4e09014f23e910a3539eae8b2aca9963))
+* remove node_module test because git ignores that folder ([6036bab](https://github.com/benawad/destiny/commit/6036bab049f51b63b1cccbf53dd8ded1730af0d5))
+* treat story files like tests ([16edcb7](https://github.com/benawad/destiny/commit/16edcb7f03c63517f7c4ee8c160e7079771aee4a))
+* unused files ([85543f4](https://github.com/benawad/destiny/commit/85543f432ee552d5941ca29c6900c3ba849612df))
+
 # [0.7.0](https://github.com/benawad/destiny/compare/v0.6.2...v0.7.0) (2020-05-23)
 
 
