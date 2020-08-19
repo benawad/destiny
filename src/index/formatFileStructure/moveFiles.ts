@@ -20,7 +20,14 @@ export async function moveFiles(
 ) {
   const git = Git(parentFolder);
   const isFolderGitTracked = await git.checkIsRepo();
-  for (const [oldPath, newPath] of Object.entries(tree)) {
+  const entries = Object.entries(tree);
+  const fileAlreadyExistsEntries = [] as typeof entries;
+  while (entries.length || fileAlreadyExistsEntries.length) {
+    /* eslint-disable @typescript-eslint/no-non-null-assertion */
+    const [oldPath, newPath] = entries.length
+      ? entries.pop()!
+      : fileAlreadyExistsEntries.pop()!;
+    /* eslint-enable */
     // skip globals
     if (oldPath.includes("..")) continue;
 
@@ -32,6 +39,18 @@ export async function moveFiles(
     // Create folder for files
     const newDirname = path.dirname(newAbsolutePath);
     fs.ensureDirSync(newDirname);
+
+    if (fs.existsSync(newAbsolutePath)) {
+      if (entries.length) {
+        // try moving this file later after the other files have been moved
+        fileAlreadyExistsEntries.push([oldPath, newPath]);
+      } else {
+        logger.warn(
+          `not moving "${oldAbsolutePath}" to "${newAbsolutePath}" because "${newAbsolutePath}" already exists`
+        );
+      }
+      continue;
+    }
 
     const shouldGitMv =
       isFolderGitTracked && (await isFileGitTracked(git, oldAbsolutePath));

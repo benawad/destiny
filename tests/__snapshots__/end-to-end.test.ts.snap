@@ -336,6 +336,17 @@ import \\"@testing-library/jest-dom/extend-expect\\";
 "
 `;
 
+exports[`end-to-end --avoid-single-file dir-and-file-same-name 1`] = `
+"dir-and-file-same-name
+├── cost-of-living
+│   └── cost-of-living.js
+└── cost-of-living.js"
+`;
+
+exports[`end-to-end --avoid-single-file dir-and-file-same-name: dir-and-file-same-name/cost-of-living.js 1`] = `"require('./cost-of-living')"`;
+
+exports[`end-to-end --avoid-single-file dir-and-file-same-name: dir-and-file-same-name/cost-of-living/cost-of-living.js 1`] = `""`;
+
 exports[`end-to-end --avoid-single-file duplicate-imports 1`] = `
 "duplicate-imports
 ├── index
@@ -991,6 +1002,17 @@ exports[`end-to-end cra: cra/setupTests.js 1`] = `
 import \\"@testing-library/jest-dom/extend-expect\\";
 "
 `;
+
+exports[`end-to-end dir-and-file-same-name 1`] = `
+"dir-and-file-same-name
+├── cost-of-living
+│   └── cost-of-living.js
+└── cost-of-living.js"
+`;
+
+exports[`end-to-end dir-and-file-same-name: dir-and-file-same-name/cost-of-living.js 1`] = `"require('./cost-of-living/cost-of-living')"`;
+
+exports[`end-to-end dir-and-file-same-name: dir-and-file-same-name/cost-of-living/cost-of-living.js 1`] = `""`;
 
 exports[`end-to-end duplicate-imports 1`] = `
 "duplicate-imports

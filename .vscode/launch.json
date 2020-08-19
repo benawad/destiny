@@ -11,7 +11,7 @@
         "--runInBand",
         "end-to-end",
         "-t",
-        "linked-files"
+        "dir-and-file-same-name"
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
