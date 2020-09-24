@@ -15,14 +15,14 @@
     "structure"
   ],
   "scripts": {
-    "build": "npm-run-all clean check -p 'build:* -- {@}' --",
+    "build": "npm-run-all clean check -p \"build:* -- {@}\" --",
     "build:cjs": "rollup -c",
     "check": "tsc",
     "clean": "rimraf coverage lib",
     "format": "run-s format:*",
     "format:eslint": "npm run lint -- --fix",
-    "format:prettier": "prettier --write '{**/*,*}.{js,json,md,ts,yaml}'",
-    "lint": "eslint '{**/*,*}.{js,ts}'",
+    "format:prettier": "prettier --write \"{**/*,*}.{js,json,md,ts,yaml}\"",
+    "lint": "eslint \"{**/*,*}.{js,ts}\"",
     "prepare": "npm run build",
     "prepublishOnly": "npm run build",
     "start": "nodemon lib/destiny.js",
