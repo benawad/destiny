@@ -51,6 +51,23 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
     treeSet.add(newLocation);
   };
 
+  const updateDependencyImportPaths = (
+    currentPath: string,
+    newFilePath: string
+  ): void => {
+    const imports = graph[currentPath];
+    if (imports?.length > 0) {
+      const newDir = path.basename(newFilePath, path.extname(newFilePath));
+      const newDirPath = path.dirname(newFilePath);
+      for (const importFilePath of imports) {
+        const filename = path.basename(importFilePath);
+        const newLocation = path.join(newDirPath, newDir, filename);
+        changeImportLocation(importFilePath, newLocation);
+        updateDependencyImportPaths(importFilePath, tree[importFilePath]);
+      }
+    }
+  };
+
   const fn = (filePath: string, folderPath: string, graph: Graph) => {
     const basename = path.basename(filePath);
     if (isLinkedFile(basename)) {
@@ -129,6 +146,8 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
       );
 
       changeImportLocation(currentPath, newFilePath);
+      // propagate path changes to sub-dependencies
+      updateDependencyImportPaths(currentPath, newFilePath);
     });
   }
 

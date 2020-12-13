@@ -108,4 +108,28 @@ describe("detectLonelyFiles", () => {
     "file.js": "file.js",
     "page/page.js": "page.js",
   });
+
+  t("shared-with-dependencies", {
+    "Area.js": "index/shared/Area.js",
+    "Area.module.scss": "index/shared/Area/Area.module.scss",
+    "Area.config.js": "index/shared/Area/Area.config.js",
+    "CheckboxWithLabel.js": "index/shared/CheckboxWithLabel.js",
+    "CheckboxWithLabel.scss": "index/shared/CheckboxWithLabel.scss",
+    "ConfigForm.js":
+      "index/ParticipantSetup/ParticipantSetupForm/ConfigForm.js",
+    "ConfigForm.module.scss":
+      "index/ParticipantSetup/ParticipantSetupForm/ConfigForm/ConfigForm.module.scss",
+    "ParticipantSetup.js": "index/ParticipantSetup.js",
+    "ParticipantSetup.scss": "index/ParticipantSetup/ParticipantSetup.scss",
+    "ParticipantSetupForm.js": "index/ParticipantSetup/ParticipantSetupForm.js",
+    "ParticipantSetupForm.scss":
+      "index/ParticipantSetup/ParticipantSetupForm/ParticipantSetupForm.scss",
+    "RadioBoxGroup.js":
+      "index/ParticipantSetup/ParticipantSetupForm/ConfigForm/RadioBoxGroup.js",
+    "RadioBoxGroup.scss":
+      "index/ParticipantSetup/ParticipantSetupForm/ConfigForm/RadioBoxGroup.scss",
+    "SomeOtherResource.js": "index/SomeOtherResource.js",
+    "SomeOtherResource.module.scss": "index/SomeOtherResource.module.scss",
+    "index.js": "index.js",
+  });
 });

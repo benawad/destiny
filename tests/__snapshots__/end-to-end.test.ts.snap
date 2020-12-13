@@ -518,6 +518,113 @@ exports[`end-to-end --avoid-single-file linked-files: linked-files/index/file1/i
 
 exports[`end-to-end --avoid-single-file linked-files: linked-files/index/file1/img@3x.png 1`] = `""`;
 
+exports[`end-to-end --avoid-single-file shared-with-dependencies 1`] = `
+"shared-with-dependencies
+├── index
+│   ├── ParticipantSetup
+│   │   ├── ParticipantSetup.scss
+│   │   ├── ParticipantSetupForm
+│   │   │   ├── ConfigForm
+│   │   │   │   ├── ConfigForm.module.scss
+│   │   │   │   ├── RadioBoxGroup.js
+│   │   │   │   └── RadioBoxGroup.scss
+│   │   │   ├── ConfigForm.js
+│   │   │   └── ParticipantSetupForm.scss
+│   │   └── ParticipantSetupForm.js
+│   ├── ParticipantSetup.js
+│   ├── SomeOtherResource.js
+│   ├── SomeOtherResource.module.scss
+│   └── shared
+│       ├── Area
+│       │   ├── Area.config.js
+│       │   └── Area.module.scss
+│       ├── Area.js
+│       ├── CheckboxWithLabel.js
+│       └── CheckboxWithLabel.scss
+└── index.js"
+`;
+
+exports[`end-to-end --avoid-single-file shared-with-dependencies: shared-with-dependencies/index.js 1`] = `
+"export { SEVEN } from './index/SomeOtherResource';
+export { TEN } from './index/ParticipantSetup';
+"
+`;
+
+exports[`end-to-end --avoid-single-file shared-with-dependencies: shared-with-dependencies/index/ParticipantSetup.js 1`] = `
+"import './ParticipantSetup/ParticipantSetup.scss';
+import { NINE } from './ParticipantSetup/ParticipantSetupForm';
+import { THREE } from './shared/Area';
+
+export const TEN = NINE - THREE + 4;
+"
+`;
+
+exports[`end-to-end --avoid-single-file shared-with-dependencies: shared-with-dependencies/index/ParticipantSetup/ParticipantSetup.scss 1`] = `""`;
+
+exports[`end-to-end --avoid-single-file shared-with-dependencies: shared-with-dependencies/index/ParticipantSetup/ParticipantSetupForm.js 1`] = `
+"import './ParticipantSetupForm/ParticipantSetupForm.scss';
+import { SIX } from './ParticipantSetupForm/ConfigForm';
+
+export const NINE = SIX + 3;
+"
+`;
+
+exports[`end-to-end --avoid-single-file shared-with-dependencies: shared-with-dependencies/index/ParticipantSetup/ParticipantSetupForm/ConfigForm.js 1`] = `
+"import './ConfigForm/ConfigForm.module.scss';
+import { FOUR } from '../../shared/CheckboxWithLabel';
+import { TWO } from './ConfigForm/RadioBoxGroup';
+
+export const SIX = FOUR + TWO;
+"
+`;
+
+exports[`end-to-end --avoid-single-file shared-with-dependencies: shared-with-dependencies/index/ParticipantSetup/ParticipantSetupForm/ConfigForm/ConfigForm.module.scss 1`] = `""`;
+
+exports[`end-to-end --avoid-single-file shared-with-dependencies: shared-with-dependencies/index/ParticipantSetup/ParticipantSetupForm/ConfigForm/RadioBoxGroup.js 1`] = `
+"import './RadioBoxGroup.scss';
+
+export const TWO = 2;
+"
+`;
+
+exports[`end-to-end --avoid-single-file shared-with-dependencies: shared-with-dependencies/index/ParticipantSetup/ParticipantSetupForm/ConfigForm/RadioBoxGroup.scss 1`] = `""`;
+
+exports[`end-to-end --avoid-single-file shared-with-dependencies: shared-with-dependencies/index/ParticipantSetup/ParticipantSetupForm/ParticipantSetupForm.scss 1`] = `""`;
+
+exports[`end-to-end --avoid-single-file shared-with-dependencies: shared-with-dependencies/index/SomeOtherResource.js 1`] = `
+"import './SomeOtherResource.module.scss';
+import { FOUR } from './shared/CheckboxWithLabel';
+import { THREE } from './shared/Area';
+
+export const SEVEN = FOUR + THREE;
+"
+`;
+
+exports[`end-to-end --avoid-single-file shared-with-dependencies: shared-with-dependencies/index/SomeOtherResource.module.scss 1`] = `""`;
+
+exports[`end-to-end --avoid-single-file shared-with-dependencies: shared-with-dependencies/index/shared/Area.js 1`] = `
+"import './Area/Area.module.scss';
+import { ONE } from './Area/Area.config';
+export const THREE = 2 + ONE;
+"
+`;
+
+exports[`end-to-end --avoid-single-file shared-with-dependencies: shared-with-dependencies/index/shared/Area/Area.config.js 1`] = `
+"export const ONE = 1;
+"
+`;
+
+exports[`end-to-end --avoid-single-file shared-with-dependencies: shared-with-dependencies/index/shared/Area/Area.module.scss 1`] = `""`;
+
+exports[`end-to-end --avoid-single-file shared-with-dependencies: shared-with-dependencies/index/shared/CheckboxWithLabel.js 1`] = `
+"import './CheckboxWithLabel.scss';
+
+export const FOUR = 3 + 1;
+"
+`;
+
+exports[`end-to-end --avoid-single-file shared-with-dependencies: shared-with-dependencies/index/shared/CheckboxWithLabel.scss 1`] = `""`;
+
 exports[`end-to-end --avoid-single-file sharing 1`] = `
 "sharing
 ├── index
@@ -1169,6 +1276,116 @@ exports[`end-to-end linked-files: linked-files/index/file1/img.png 1`] = `""`;
 exports[`end-to-end linked-files: linked-files/index/file1/img@2x.png 1`] = `""`;
 
 exports[`end-to-end linked-files: linked-files/index/file1/img@3x.png 1`] = `""`;
+
+exports[`end-to-end shared-with-dependencies 1`] = `
+"shared-with-dependencies
+├── index
+│   ├── ParticipantSetup
+│   │   ├── ParticipantSetup.scss
+│   │   ├── ParticipantSetupForm
+│   │   │   ├── ConfigForm
+│   │   │   │   ├── ConfigForm.module.scss
+│   │   │   │   ├── RadioBoxGroup
+│   │   │   │   │   └── RadioBoxGroup.scss
+│   │   │   │   └── RadioBoxGroup.js
+│   │   │   ├── ConfigForm.js
+│   │   │   └── ParticipantSetupForm.scss
+│   │   └── ParticipantSetupForm.js
+│   ├── ParticipantSetup.js
+│   ├── SomeOtherResource
+│   │   └── SomeOtherResource.module.scss
+│   ├── SomeOtherResource.js
+│   └── shared
+│       ├── Area
+│       │   ├── Area.config.js
+│       │   └── Area.module.scss
+│       ├── Area.js
+│       ├── CheckboxWithLabel
+│       │   └── CheckboxWithLabel.scss
+│       └── CheckboxWithLabel.js
+└── index.js"
+`;
+
+exports[`end-to-end shared-with-dependencies: shared-with-dependencies/index.js 1`] = `
+"export { SEVEN } from './index/SomeOtherResource';
+export { TEN } from './index/ParticipantSetup';
+"
+`;
+
+exports[`end-to-end shared-with-dependencies: shared-with-dependencies/index/ParticipantSetup.js 1`] = `
+"import './ParticipantSetup/ParticipantSetup.scss';
+import { NINE } from './ParticipantSetup/ParticipantSetupForm';
+import { THREE } from './shared/Area';
+
+export const TEN = NINE - THREE + 4;
+"
+`;
+
+exports[`end-to-end shared-with-dependencies: shared-with-dependencies/index/ParticipantSetup/ParticipantSetup.scss 1`] = `""`;
+
+exports[`end-to-end shared-with-dependencies: shared-with-dependencies/index/ParticipantSetup/ParticipantSetupForm.js 1`] = `
+"import './ParticipantSetupForm/ParticipantSetupForm.scss';
+import { SIX } from './ParticipantSetupForm/ConfigForm';
+
+export const NINE = SIX + 3;
+"
+`;
+
+exports[`end-to-end shared-with-dependencies: shared-with-dependencies/index/ParticipantSetup/ParticipantSetupForm/ConfigForm.js 1`] = `
+"import './ConfigForm/ConfigForm.module.scss';
+import { FOUR } from '../../shared/CheckboxWithLabel';
+import { TWO } from './ConfigForm/RadioBoxGroup';
+
+export const SIX = FOUR + TWO;
+"
+`;
+
+exports[`end-to-end shared-with-dependencies: shared-with-dependencies/index/ParticipantSetup/ParticipantSetupForm/ConfigForm/ConfigForm.module.scss 1`] = `""`;
+
+exports[`end-to-end shared-with-dependencies: shared-with-dependencies/index/ParticipantSetup/ParticipantSetupForm/ConfigForm/RadioBoxGroup.js 1`] = `
+"import './RadioBoxGroup/RadioBoxGroup.scss';
+
+export const TWO = 2;
+"
+`;
+
+exports[`end-to-end shared-with-dependencies: shared-with-dependencies/index/ParticipantSetup/ParticipantSetupForm/ConfigForm/RadioBoxGroup/RadioBoxGroup.scss 1`] = `""`;
+
+exports[`end-to-end shared-with-dependencies: shared-with-dependencies/index/ParticipantSetup/ParticipantSetupForm/ParticipantSetupForm.scss 1`] = `""`;
+
+exports[`end-to-end shared-with-dependencies: shared-with-dependencies/index/SomeOtherResource.js 1`] = `
+"import './SomeOtherResource/SomeOtherResource.module.scss';
+import { FOUR } from './shared/CheckboxWithLabel';
+import { THREE } from './shared/Area';
+
+export const SEVEN = FOUR + THREE;
+"
+`;
+
+exports[`end-to-end shared-with-dependencies: shared-with-dependencies/index/SomeOtherResource/SomeOtherResource.module.scss 1`] = `""`;
+
+exports[`end-to-end shared-with-dependencies: shared-with-dependencies/index/shared/Area.js 1`] = `
+"import './Area/Area.module.scss';
+import { ONE } from './Area/Area.config';
+export const THREE = 2 + ONE;
+"
+`;
+
+exports[`end-to-end shared-with-dependencies: shared-with-dependencies/index/shared/Area/Area.config.js 1`] = `
+"export const ONE = 1;
+"
+`;
+
+exports[`end-to-end shared-with-dependencies: shared-with-dependencies/index/shared/Area/Area.module.scss 1`] = `""`;
+
+exports[`end-to-end shared-with-dependencies: shared-with-dependencies/index/shared/CheckboxWithLabel.js 1`] = `
+"import './CheckboxWithLabel/CheckboxWithLabel.scss';
+
+export const FOUR = 3 + 1;
+"
+`;
+
+exports[`end-to-end shared-with-dependencies: shared-with-dependencies/index/shared/CheckboxWithLabel/CheckboxWithLabel.scss 1`] = `""`;
 
 exports[`end-to-end sharing 1`] = `
 "sharing

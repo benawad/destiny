@@ -67,4 +67,28 @@ describe("build graph", () => {
     "file.js": ["page/page.js"],
     "page/page.js": [],
   });
+
+  t("shared-with-dependencies", {
+    "Area.js": ["Area.module.scss", "Area.config.js"],
+    "Area.config.js": [],
+    "ParticipantSetup.js": [
+      "ParticipantSetup.scss",
+      "ParticipantSetupForm.js",
+      "Area.js",
+    ],
+    "ParticipantSetupForm.js": ["ParticipantSetupForm.scss", "ConfigForm.js"],
+    "RadioBoxGroup.js": ["RadioBoxGroup.scss"],
+    "CheckboxWithLabel.js": ["CheckboxWithLabel.scss"],
+    "ConfigForm.js": [
+      "ConfigForm.module.scss",
+      "CheckboxWithLabel.js",
+      "RadioBoxGroup.js",
+    ],
+    "index.js": ["SomeOtherResource.js", "ParticipantSetup.js"],
+    "SomeOtherResource.js": [
+      "SomeOtherResource.module.scss",
+      "CheckboxWithLabel.js",
+      "Area.js",
+    ],
+  });
 });
