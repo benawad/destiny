@@ -106,7 +106,9 @@ describe(toFractalTree, () => {
     );
     const { graph } = buildGraph(filePaths);
 
-    const tree = toFractalTree(graph, findEntryPoints(graph));
+    const tree = toFractalTree(graph, findEntryPoints(graph), {
+      nestMainModules: false,
+    });
     expect(tree).toEqual(resultingTree);
   });
 });
