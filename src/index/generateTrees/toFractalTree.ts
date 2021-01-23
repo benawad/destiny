@@ -72,15 +72,13 @@ export function toFractalTree(
 
   const updateDependencyImportPaths = (
     currentPath: string,
-    newFilePath: string
+    newDirPath: string
   ): void => {
     const imports = graph[currentPath];
     if (imports?.length > 0) {
-      const newDir = path.basename(newFilePath, path.extname(newFilePath));
-      const newDirPath = path.dirname(newFilePath);
       for (const importFilePath of imports) {
         const filename = path.basename(importFilePath);
-        const newLocation = path.join(newDirPath, newDir, filename);
+        const newLocation = path.join(newDirPath, filename);
         changeImportLocation(importFilePath, newLocation);
         updateDependencyImportPaths(importFilePath, tree[importFilePath]);
       }
@@ -162,16 +160,29 @@ export function toFractalTree(
 
       const fileName = getFileName(currentPath);
 
-      const newFilePath = path.join(
-        parent,
-        "shared",
-        graph[currentPath]?.length > 0 ? fileName : "",
-        fileName + path.extname(currentPath)
-      );
+      const newFilePath = path.join(parent, "shared");
 
-      changeImportLocation(currentPath, newFilePath);
+      let newDirPath;
+      if (nestMainModules) {
+        if (graph[currentPath]?.length > 0) {
+          newDirPath = path.join(newFilePath, fileName);
+        } else {
+          newDirPath = path.join(newFilePath);
+        }
+      } else {
+        newDirPath = path.join(newFilePath);
+      }
+
+      changeImportLocation(
+        currentPath,
+        path.join(newDirPath, fileName + path.extname(currentPath))
+      );
       // propagate path changes to sub-dependencies
-      updateDependencyImportPaths(currentPath, newFilePath);
+      const dependenciesDirPath = nestMainModules
+        ? newDirPath
+        : path.join(newDirPath, fileName);
+
+      updateDependencyImportPaths(currentPath, dependenciesDirPath);
     });
   }
 

@@ -71,11 +71,7 @@ describe("end-to-end", () => {
       const rootPath =
         testCase === "globals" ? path.join(testCase, "src") : testCase;
 
-      await run([
-        "--write",
-        "--nest-main-modules",
-        path.join(tmpPath, rootPath),
-      ]);
+      await run(["--write", path.join(tmpPath, rootPath)]);
       buildGraph(glob.sync(path.join(copyPath, "/**/*.*")));
 
       expect(treeDir(path.join(tmpPath, rootPath))).toMatchSnapshot();
