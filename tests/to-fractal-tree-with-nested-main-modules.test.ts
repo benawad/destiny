@@ -71,10 +71,11 @@ const table: [string, { [key: string]: string }][] = [
   [
     "shared-with-dependencies",
     {
-      "Area.config.js": "shared/Area/Area.config.js",
-      "Area.js": "shared/Area.js",
+      "Area.config.js": "shared/Area/Area.config/Area.config.js",
+      "Area.js": "shared/Area/Area.js",
       "Area.module.scss": "shared/Area/Area.module.scss",
-      "CheckboxWithLabel.js": "shared/CheckboxWithLabel.js",
+      "Area.nested.config.js": "shared/Area.config/Area.nested.config.js",
+      "CheckboxWithLabel.js": "shared/CheckboxWithLabel/CheckboxWithLabel.js",
       "CheckboxWithLabel.scss":
         "shared/CheckboxWithLabel/CheckboxWithLabel.scss",
       "ConfigForm.js":

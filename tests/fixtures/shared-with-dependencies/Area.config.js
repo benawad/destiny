@@ -1,1 +1,3 @@
-export const ONE = 1;
+import { FIVE } from './Area.nested.config';
+
+export const ONE = FIVE / FIVE;

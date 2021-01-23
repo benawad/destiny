@@ -10,6 +10,17 @@ import chalk from "chalk";
 import { fileWithoutExtension } from "../shared/fileWithoutExtension";
 import { isTestFile } from "./shared/isTestFile";
 
+function getFileName(currentPath: string) {
+  const fileName = path.basename(currentPath, path.extname(currentPath));
+  const currentFolder = path.basename(path.dirname(currentPath));
+
+  if (fileName === "index" && currentFolder && currentFolder !== ".") {
+    return currentFolder;
+  }
+
+  return fileName;
+}
+
 interface FractalTreeConfig {
   nestMainModules: boolean;
 }
@@ -88,15 +99,8 @@ export function toFractalTree(
       return;
     }
 
-    let fileName = path.basename(filePath, path.extname(filePath));
-    const currentFolder = path.basename(path.dirname(filePath));
-
-    if (fileName === "index" && currentFolder && currentFolder !== ".") {
-      fileName = currentFolder;
-    }
-
+    let fileName = getFileName(filePath);
     const isGlobal = filePath.includes("..");
-
     const imports = graph[filePath];
 
     let folderPath;
@@ -155,17 +159,14 @@ export function toFractalTree(
       }
 
       const parent = findSharedParent(dependencies);
-      const filename = path.basename(currentPath);
-      const currentDir = path.dirname(currentPath);
+
+      const fileName = getFileName(currentPath);
 
       const newFilePath = path.join(
         parent,
         "shared",
-        path.basename(filename, path.extname(filename)) === "index" &&
-          currentDir &&
-          currentDir !== "."
-          ? path.join(currentDir + path.extname(filename))
-          : filename
+        graph[currentPath]?.length > 0 ? fileName : "",
+        fileName + path.extname(currentPath)
       );
 
       changeImportLocation(currentPath, newFilePath);
