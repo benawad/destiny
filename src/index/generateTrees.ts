@@ -15,7 +15,7 @@ const getRootFolder = (parentDir: string) => parentDir.split(path.sep).pop();
 
 export function generateTrees(
   restructureMap: { [key: string]: string[] },
-  { avoidSingleFile }: Config
+  config: Config
 ) {
   return Object.entries(restructureMap).reduce<Root[]>(
     (rootOptions, [rootPath, filePaths]) => {
@@ -26,9 +26,9 @@ export function generateTrees(
       const { graph, parentFolder } = buildGraph(filePaths);
 
       const entryPoints = findEntryPoints(graph);
-      let tree = toFractalTree(graph, entryPoints);
+      let tree = toFractalTree(graph, entryPoints, config);
 
-      if (avoidSingleFile) {
+      if (config.avoidSingleFile) {
         tree = detectLonelyFiles(tree);
       }
 

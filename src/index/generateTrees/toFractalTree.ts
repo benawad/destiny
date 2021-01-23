@@ -9,8 +9,16 @@ import { isLinkedFile, linkedFileToOriginal } from "./shared/isLinkedFile";
 import chalk from "chalk";
 import { fileWithoutExtension } from "../shared/fileWithoutExtension";
 import { isTestFile } from "./shared/isTestFile";
+import { getFileName } from "./toFractalTree/getFileName";
+interface FractalTreeConfig {
+  nestMainModules: boolean;
+}
 
-export function toFractalTree(graph: Graph, entryPoints: string[]) {
+export function toFractalTree(
+  graph: Graph,
+  entryPoints: string[],
+  { nestMainModules }: FractalTreeConfig
+) {
   const tree: RootOption["tree"] = {};
   const treeSet = new Set<string>();
   const dependencies: Record<string, string[]> = {};
@@ -53,53 +61,58 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
 
   const updateDependencyImportPaths = (
     currentPath: string,
-    newFilePath: string
+    newDirPath: string
   ): void => {
     const imports = graph[currentPath];
     if (imports?.length > 0) {
-      const newDir = path.basename(newFilePath, path.extname(newFilePath));
-      const newDirPath = path.dirname(newFilePath);
       for (const importFilePath of imports) {
         const filename = path.basename(importFilePath);
-        const newLocation = path.join(newDirPath, newDir, filename);
+        const newLocation = path.join(newDirPath, filename);
         changeImportLocation(importFilePath, newLocation);
         updateDependencyImportPaths(importFilePath, tree[importFilePath]);
       }
     }
   };
 
-  const fn = (filePath: string, folderPath: string, graph: Graph) => {
+  const fn = (
+    filePath: string,
+    parentfolderPath: string,
+    parentFileName: string,
+    graph: Graph
+  ) => {
     const basename = path.basename(filePath);
     if (isLinkedFile(basename)) {
       linkedFiles.add(filePath);
       return;
     }
 
-    let directoryName = path.basename(filePath, path.extname(filePath));
-    const currentFolder = path.basename(path.dirname(filePath));
+    let fileName = getFileName(filePath);
     const isGlobal = filePath.includes("..");
+    const imports = graph[filePath];
+
+    let folderPath;
+    if (nestMainModules) {
+      if (imports?.length > 0 && !entryPoints.includes(filePath)) {
+        folderPath = path.join(parentfolderPath, fileName);
+      } else {
+        folderPath = parentfolderPath;
+      }
+    } else {
+      folderPath = path.join(parentfolderPath, parentFileName);
+    }
 
     const tempLocation = isGlobal
       ? filePath
-      : path.join(
-          folderPath,
-          directoryName === "index" && currentFolder && currentFolder !== "."
-            ? currentFolder + path.extname(filePath)
-            : basename
-        );
+      : path.join(folderPath, fileName + path.extname(filePath));
 
     const location = checkDuplicates(tempLocation, folderPath, filePath);
-    directoryName = path.basename(location, path.extname(location));
+    fileName = path.basename(location, path.extname(location));
 
     if (!isGlobal) {
       changeImportLocation(filePath, location);
     }
 
-    const imports = graph[filePath];
-
     if (imports?.length > 0) {
-      const newDestination = path.join(folderPath, directoryName);
-
       for (const importFilePath of imports) {
         // if importFilePath includes .. then it's a global
         // we don't store globals in tree, so check if cycle
@@ -116,13 +129,14 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
         }
 
         addDependency(importFilePath, location);
-        fn(importFilePath, newDestination, graph);
+
+        fn(importFilePath, folderPath, fileName, graph);
       }
     }
   };
 
   for (const filePath of entryPoints) {
-    fn(filePath, "", graph);
+    fn(filePath, "", "", graph);
   }
 
   if (!containsCycle) {
@@ -132,22 +146,32 @@ export function toFractalTree(graph: Graph, entryPoints: string[]) {
       }
 
       const parent = findSharedParent(dependencies);
-      const filename = path.basename(currentPath);
-      const currentDir = path.dirname(currentPath);
 
-      const newFilePath = path.join(
-        parent,
-        "shared",
-        path.basename(filename, path.extname(filename)) === "index" &&
-          currentDir &&
-          currentDir !== "."
-          ? path.join(currentDir + path.extname(filename))
-          : filename
+      const fileName = getFileName(currentPath);
+
+      const newFilePath = path.join(parent, "shared");
+
+      let newDirPath;
+      if (nestMainModules) {
+        if (graph[currentPath]?.length > 0) {
+          newDirPath = path.join(newFilePath, fileName);
+        } else {
+          newDirPath = path.join(newFilePath);
+        }
+      } else {
+        newDirPath = path.join(newFilePath);
+      }
+
+      changeImportLocation(
+        currentPath,
+        path.join(newDirPath, fileName + path.extname(currentPath))
       );
-
-      changeImportLocation(currentPath, newFilePath);
       // propagate path changes to sub-dependencies
-      updateDependencyImportPaths(currentPath, newFilePath);
+      const dependenciesDirPath = nestMainModules
+        ? newDirPath
+        : path.join(newDirPath, fileName);
+
+      updateDependencyImportPaths(currentPath, dependenciesDirPath);
     });
   }
 

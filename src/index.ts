@@ -18,6 +18,7 @@ export type Config = {
   version: boolean;
   write: boolean;
   avoidSingleFile: boolean;
+  nestMainModules: boolean;
   debug: boolean | string;
 };
 
@@ -27,6 +28,7 @@ const defaultConfig: Config = {
   version: false,
   write: false,
   avoidSingleFile: false,
+  nestMainModules: false,
   debug: false,
 };
 
@@ -52,6 +54,10 @@ const printHelp = (exitCode: number) => {
       flags: ["-S", "--avoid-single-file"],
       description:
         "Flag to indicate if single files in folders should be avoided",
+    },
+    {
+      flags: ["--nest-main-modules"],
+      description: "Nests main module file in folders",
     },
     {
       flags: ["--debug [?output file]"],
@@ -86,6 +92,9 @@ const parseArgs = (args: string[]) => {
       case "-S":
       case "--avoid-single-file":
         cliConfig.avoidSingleFile = true;
+        break;
+      case "--nest-main-modules":
+        cliConfig.nestMainModules = true;
         break;
       case "--debug":
         cliConfig.debug =

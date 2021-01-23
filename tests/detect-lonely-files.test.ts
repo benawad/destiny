@@ -22,7 +22,11 @@ const t = (folder: string, g2: any, entryPoints?: string[]) => {
       glob.sync(path.join(__dirname, "fixtures", folder, "/**/*.js"))
     ).graph;
     expect(
-      detectLonelyFiles(toFractalTree(g1, entryPoints || findEntryPoints(g1)))
+      detectLonelyFiles(
+        toFractalTree(g1, entryPoints || findEntryPoints(g1), {
+          nestMainModules: false,
+        })
+      )
     ).toEqual(g2);
   });
 };
