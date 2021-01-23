@@ -49,7 +49,7 @@ const mocks = {
     .mockImplementationOnce(code => code),
 };
 
-describe("end-to-end", () => {
+function t(options: string[]) {
   beforeEach(() => {
     process.env.NODE_ENV = "production";
   });
@@ -71,7 +71,7 @@ describe("end-to-end", () => {
       const rootPath =
         testCase === "globals" ? path.join(testCase, "src") : testCase;
 
-      await run(["--write", path.join(tmpPath, rootPath)]);
+      await run([...options, path.join(tmpPath, rootPath)]);
       buildGraph(glob.sync(path.join(copyPath, "/**/*.*")));
 
       expect(treeDir(path.join(tmpPath, rootPath))).toMatchSnapshot();
@@ -85,46 +85,20 @@ describe("end-to-end", () => {
       });
     });
   }
+}
+
+describe("end-to-end", () => {
+  t(["--write"]);
 });
 
 describe("end-to-end --avoid-single-file", () => {
-  beforeEach(() => {
-    process.env.NODE_ENV = "production";
-  });
+  t(["--write", "--avoid-single-file"]);
+});
 
-  afterEach(() => {
-    jest.resetAllMocks();
-    jest.resetModules();
-  });
+describe("end-to-end --nested-main-modules", () => {
+  t(["--write", "--nested-main-modules"]);
+});
 
-  const fixturePath = path.join(__dirname, "fixtures");
-  const testCases = fs.readdirSync(fixturePath);
-
-  for (const testCase of testCases) {
-    const templateFolder = path.join(fixturePath, testCase);
-    const copyPath = path.join(tmpPath, testCase);
-
-    fs.copySync(templateFolder, copyPath);
-    it(testCase, async () => {
-      const rootPath =
-        testCase === "globals" ? path.join(testCase, "src") : testCase;
-
-      await run([
-        "--write",
-        "--avoid-single-file",
-        path.join(tmpPath, rootPath),
-      ]);
-      buildGraph(glob.sync(path.join(copyPath, "/**/*.*")));
-
-      expect(treeDir(path.join(tmpPath, rootPath))).toMatchSnapshot();
-      expect(mocks.log).toBeCalledWith(
-        chalk.bold.blue(rootPath.split(path.sep).pop())
-      );
-
-      const treeContents = treeDirWithContents(copyPath);
-      Object.keys(treeContents).forEach(k => {
-        expect(treeContents[k]).toMatchSnapshot(k);
-      });
-    });
-  }
+describe("end-to-end --nested-main-modules --avoid-single-file", () => {
+  t(["--write", "--nested-main-modules", "--avoid-single-file"]);
 });
