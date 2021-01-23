@@ -40,14 +40,14 @@ const treeDirWithContents = (dir: string) => {
 };
 
 const mocks = {
-  log: jest.spyOn(console, "log").mockImplementationOnce(() => {}),
-  error: jest.spyOn(console, "error").mockImplementationOnce(() => {}),
-  info: jest.spyOn(console, "info").mockImplementationOnce(() => {}),
-  warn: jest.spyOn(console, "warn").mockImplementationOnce(() => {}),
+  log: jest.spyOn(console, "log").mockImplementation(() => {}),
+  error: jest.spyOn(console, "error").mockImplementation(() => {}),
+  info: jest.spyOn(console, "info").mockImplementation(() => {}),
+  warn: jest.spyOn(console, "warn").mockImplementation(() => {}),
   exit: jest
     .spyOn(process, "exit")
     // @ts-ignore - eslint won't allow assertion of `code as never`
-    .mockImplementationOnce(code => code),
+    .mockImplementation(code => code),
 };
 
 function t(options: string[]) {
