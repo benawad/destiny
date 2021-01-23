@@ -3,6 +3,7 @@ import glob from "glob";
 import path from "path";
 import treeDir from "tree-node-cli";
 import chalk from "chalk";
+import { randomBytes } from "crypto";
 
 import { buildGraph } from "../src/index/generateTrees/buildGraph";
 import { run } from "../src/index";
@@ -50,6 +51,8 @@ const mocks = {
 };
 
 function t(options: string[]) {
+  const uniqeDirName = randomBytes(8).toString("hex");
+
   beforeEach(() => {
     process.env.NODE_ENV = "production";
   });
@@ -64,12 +67,14 @@ function t(options: string[]) {
 
   for (const testCase of testCases) {
     const templateFolder = path.join(fixturePath, testCase);
-    const copyPath = path.join(tmpPath, testCase);
+    const copyPath = path.join(tmpPath, uniqeDirName, testCase);
 
     fs.copySync(templateFolder, copyPath);
     it(testCase, async () => {
       const rootPath =
-        testCase === "globals" ? path.join(testCase, "src") : testCase;
+        testCase === "globals"
+          ? path.join(uniqeDirName, testCase, "src")
+          : path.join(uniqeDirName, testCase);
 
       await run([...options, path.join(tmpPath, rootPath)]);
       buildGraph(glob.sync(path.join(copyPath, "/**/*.*")));
@@ -81,7 +86,7 @@ function t(options: string[]) {
 
       const treeContents = treeDirWithContents(copyPath);
       Object.keys(treeContents).forEach(k => {
-        expect(treeContents[k]).toMatchSnapshot(k);
+        expect(treeContents[k]).toMatchSnapshot(path.relative(uniqeDirName, k));
       });
     });
   }
@@ -95,10 +100,10 @@ describe("end-to-end --avoid-single-file", () => {
   t(["--write", "--avoid-single-file"]);
 });
 
-describe("end-to-end --nested-main-modules", () => {
-  t(["--write", "--nested-main-modules"]);
+describe("end-to-end --nest-main-modules", () => {
+  t(["--write", "--nest-main-modules"]);
 });
 
-describe("end-to-end --nested-main-modules --avoid-single-file", () => {
-  t(["--write", "--nested-main-modules", "--avoid-single-file"]);
+describe("end-to-end --nest-main-modules --avoid-single-file", () => {
+  t(["--write", "--nest-main-modules", "--avoid-single-file"]);
 });
