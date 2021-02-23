@@ -5,16 +5,12 @@
       "name": "Debug Jest Tests",
       "type": "node",
       "request": "launch",
-      "runtimeArgs": [
-        "--inspect-brk",
-        "${workspaceRoot}/node_modules/.bin/jest",
-        "--runInBand",
-        "end-to-end",
-        "-t",
-        "shared-with-dependencies"
-      ],
+      "args": ["--runInBand"],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
+      "internalConsoleOptions": "neverOpen",
+      "windows": {
+        "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+      }
     }
   ]
 }
