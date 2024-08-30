@@ -68,6 +68,35 @@ const table: [string, { [key: string]: string }][] = [
       "existent.js": "index/existent.js",
     },
   ],
+  [
+    "shared-with-dependencies",
+    {
+      "Area.js": "index/shared/Area.js",
+      "Area.config.js": "index/shared/Area/Area.config.js",
+      "Area.module.scss": "index/shared/Area/Area.module.scss",
+      "CheckboxWithLabel.js": "index/shared/CheckboxWithLabel.js",
+      "CheckboxWithLabel.scss":
+        "index/shared/CheckboxWithLabel/CheckboxWithLabel.scss",
+      "ConfigForm.js":
+        "index/ParticipantSetup/ParticipantSetupForm/ConfigForm.js",
+      "ConfigForm.module.scss":
+        "index/ParticipantSetup/ParticipantSetupForm/ConfigForm/ConfigForm.module.scss",
+      "ParticipantSetup.js": "index/ParticipantSetup.js",
+      "ParticipantSetup.scss": "index/ParticipantSetup/ParticipantSetup.scss",
+      "ParticipantSetupForm.js":
+        "index/ParticipantSetup/ParticipantSetupForm.js",
+      "ParticipantSetupForm.scss":
+        "index/ParticipantSetup/ParticipantSetupForm/ParticipantSetupForm.scss",
+      "RadioBoxGroup.js":
+        "index/ParticipantSetup/ParticipantSetupForm/ConfigForm/RadioBoxGroup.js",
+      "RadioBoxGroup.scss":
+        "index/ParticipantSetup/ParticipantSetupForm/ConfigForm/RadioBoxGroup/RadioBoxGroup.scss",
+      "SomeOtherResource.js": "index/SomeOtherResource.js",
+      "SomeOtherResource.module.scss":
+        "index/SomeOtherResource/SomeOtherResource.module.scss",
+      "index.js": "index.js",
+    },
+  ],
 ];
 
 describe(toFractalTree, () => {

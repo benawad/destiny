@@ -11,7 +11,7 @@
         "--runInBand",
         "end-to-end",
         "-t",
-        "dir-and-file-same-name"
+        "shared-with-dependencies"
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
